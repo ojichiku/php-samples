@@ -1,0 +1,26 @@
+{
+    "$schema": "https://www.schemastore.org/package.json",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite",
+        "browser:install": "playwright install chromium --only-shell",
+        "browser:install-deps": "playwright install-deps chromium",
+        "test:browser:check": "node tests/Browser/check-environment.cjs",
+        "test:browser:learning": "node tests/Browser/learning-flow.cjs",
+        "test:browser:tools": "node tests/Browser/tool-flow.cjs",
+        "test:browser": "npm run test:browser:learning && npm run test:browser:tools"
+    },
+    "devDependencies": {
+        "@tailwindcss/vite": "^4.0.0",
+        "concurrently": "^10.0.3",
+        "laravel-vite-plugin": "^3.1",
+        "playwright": "1.64.1",
+        "tailwindcss": "^4.0.0",
+        "vite": "^8.0.0"
+    },
+    "optionalDependencies": {
+        "@laravel/multiplex": "^0.4.1"
+    }
+}

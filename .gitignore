@@ -1,0 +1,26 @@
+# Local configuration and credentials, across all samples
+.env
+.env.*
+!.env.example
+auth.json
+*.pem
+*.key
+
+# Installed dependencies and generated artifacts
+**/vendor/
+**/node_modules/
+**/public/build/
+**/public/hot
+**/public/storage
+**/test-results/
+**/.phpunit.cache/
+**/.phpunit.result.cache
+*.log
+*.sqlite
+*.sqlite-*
+
+# Editor and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
