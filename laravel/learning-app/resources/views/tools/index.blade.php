@@ -5,7 +5,7 @@
         <p class="lead">必要な道具を選んで、すぐに使えます。<br>使えるツールを、ここに少しずつ増やしていきます。</p>
     </section>
     <section aria-labelledby="tools-heading">
-        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">1つのツールが利用できます</span></div>
+        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">2つのツールが利用できます</span></div>
         <div class="tool-grid">
             <article class="tool-card available">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">Aa</span><span class="badge">利用できます</span></div>
@@ -13,11 +13,11 @@
                 <p>文字数と使う文字を選んで、パスワードを生成します。生成した値をコピーできます。</p>
                 <a class="button" href="{{ route('password.guide') }}">使い方を見る <span aria-hidden="true">→</span></a>
             </article>
-            <article class="tool-card upcoming">
-                <div class="card-top"><span class="tool-icon" aria-hidden="true">31</span><span class="badge neutral">準備中</span></div>
-                <h3>カレンダー</h3>
-                <p>月ごとの日付を確認するツールを準備しています。まだ利用できません。</p>
-                <p class="card-note">公開までお待ちください</p>
+            <article class="tool-card available">
+                <div class="card-top"><span class="tool-icon" aria-hidden="true">31</span><span class="badge">利用できます</span></div>
+                <h3>年間カレンダー</h3>
+                <p>一年分の日付・祝日・六曜・記念日を確認できます。過去や未来の年へ切り替えられます。</p>
+                <a class="button" href="{{ route('calendar') }}">カレンダーを開く <span aria-hidden="true">→</span></a>
             </article>
             <article class="tool-card upcoming">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">◎</span><span class="badge neutral">準備中</span></div>

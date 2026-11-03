@@ -83,3 +83,51 @@ textarea { width: 100%; resize: vertical; background: #f3f5ef; border: 1px solid
     .character-options { grid-template-columns: 1fr; }
     .site-footer { margin-top: 40px; }
 }
+/* Annual calendar */
+.calendar-heading { padding-bottom: 24px; }
+.calendar-toolbar { padding: 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
+.calendar-year h2 { margin: 0; font-size: 2rem; line-height: 1.4; }
+.calendar-year h2 span { display: inline-block; font-size: 1rem; font-weight: 500; color: var(--muted); }
+.calendar-controls, .calendar-controls form { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.calendar-controls .button { padding: 8px 12px; font-size: .85rem; }
+.calendar-controls input { width: 105px; }
+.calendar-current { font-size: .85rem; padding: 10px; }
+.calendar-notices { margin-block: 20px; font-size: .8rem; color: var(--muted); }
+.calendar-notices p { margin-block: 8px; }
+.calendar-legend { display: inline-block; margin-right: 14px; font-weight: 650; }
+.holiday-text { color: #a03830; }
+.saturday-text { color: #285e97; }
+.calendar-warning { padding: 12px 16px; border-left: 3px solid #a66d24; background: #fff3dc; color: #70491c; }
+.year-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.month-card { background: #fffdf8; border: 1px solid var(--line); border-radius: 16px; padding: 16px 12px; min-width: 0; scroll-margin-top: 20px; }
+.month-card h2 { font-size: 1.7rem; margin: 0 0 12px 8px; line-height: 1.4; }
+.month-card h2 span { font-size: .85rem; padding-left: 3px; }
+.month-table { table-layout: fixed; width: 100%; border-collapse: collapse; }
+.month-table th { font-size: .75rem; font-weight: 600; height: 30px; color: var(--muted); }
+.month-table th:first-child { color: #a03830; }
+.month-table th:last-child { color: #285e97; }
+.month-table td { vertical-align: top; text-align: center; border-top: 1px solid #e8eade; height: 76px; padding: 5px 1px; }
+.calendar-day { position: relative; }
+.calendar-day time { font-size: .96rem; font-weight: 700; }
+.calendar-day.is-holiday time, .day-holiday { color: #a03830; }
+.calendar-day.is-saturday time { color: #285e97; }
+.calendar-day.is-today { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 6px; background: #eff4e8; }
+.day-rokuyo { display: block; font-size: .58rem; line-height: 1.5; color: var(--muted); }
+.day-holiday { display: block; font-size: .56rem; line-height: 1.4; overflow-wrap: anywhere; margin-top: 2px; }
+.day-details summary { cursor: pointer; list-style: none; min-height: 30px; }
+.day-details summary::-webkit-details-marker { display: none; }
+.anniversary-mark { display: inline-block; color: #a06a23; font-size: .4rem; vertical-align: top; }
+.anniversary-content { position: absolute; right: 0; top: 34px; z-index: 2; width: 130px; padding: 10px; font-size: .8rem; background: #fff7df; border: 1px solid #cda96a; border-radius: 8px; box-shadow: 0 4px 12px #20382f20; }
+.holiday-list { margin-top: 28px; }
+.holiday-list dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 24px; }
+.holiday-list dl > div { display: flex; gap: 12px; padding-block: 7px; border-bottom: 1px solid var(--line); font-size: .85rem; }
+.holiday-list dt { min-width: 70px; }
+.holiday-list dd { margin: 0; }
+.calendar-sources { margin-top: 28px; font-size: .8rem; color: var(--muted); }
+.calendar-sources h2 { font-size: 1rem; margin-bottom: 8px; }
+.calendar-sources p { margin-bottom: 12px; }
+@media (max-width: 900px) and (min-width: 601px) { .year-grid { gap: 10px; } .month-card { padding-inline: 4px; } .day-rokuyo { font-size: .52rem; } .holiday-list dl { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .year-grid { grid-template-columns: 1fr; } .month-card { padding: 20px 12px; } .month-table td { height: 70px; } .day-rokuyo { font-size: .68rem; } .day-holiday { font-size: .62rem; } .holiday-list dl { grid-template-columns: 1fr; } .calendar-toolbar { padding: 18px; } .calendar-controls { width: 100%; } }
+
+.calendar-today-label { margin: 0 0 8px; font-size: .85rem; color: var(--accent); font-weight: 650; }
+.today-mark { display: block; width: fit-content; margin: 1px auto; padding: 0 3px; border-radius: 3px; background: var(--accent); color: white; font-size: .55rem; line-height: 1.5; }

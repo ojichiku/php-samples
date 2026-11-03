@@ -6,12 +6,12 @@ use Tests\TestCase;
 
 class ToolNavigationTest extends TestCase
 {
-    public function test_menu_links_to_available_tool_and_keeps_future_tools_unlinked(): void
+    public function test_menu_links_to_available_tools_and_keeps_owner_menu_unlinked(): void
     {
         $this->get(route('tools.index'))->assertOk()
             ->assertSee('サンプルツール集')
             ->assertSee(route('password.guide'))
-            ->assertSee('準備中')->assertDontSee('href="'.url('/calendar').'"', false)
+            ->assertSee(route('calendar'))
             ->assertDontSee('href="'.url('/login').'"', false);
     }
 
@@ -33,8 +33,8 @@ class ToolNavigationTest extends TestCase
             ->assertHeader('X-Robots-Tag', 'noindex, nofollow');
     }
 
-    public function test_unimplemented_calendar_does_not_expose_a_placeholder_tool(): void
+    public function test_calendar_is_available(): void
     {
-        $this->get('/calendar')->assertNotFound();
+        $this->get('/calendar')->assertOk()->assertSee('年間カレンダー');
     }
 }

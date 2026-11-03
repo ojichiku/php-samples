@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\GreetingController;
 use App\Http\Controllers\PasswordGeneratorController;
 use App\Http\Middleware\PreventSensitiveResponseCaching;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'tools.index')->name('tools.index');
+Route::get('/calendar', CalendarController::class)->name('calendar');
 Route::view('/password-generator', 'tools.password-guide')->name('password.guide');
 
 Route::middleware(PreventSensitiveResponseCaching::class)->group(function (): void {

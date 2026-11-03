@@ -19,6 +19,7 @@
             <nav aria-label="共通メニュー">
                 <a href="{{ route('tools.index') }}" @if($active === 'tools') aria-current="page" @endif>ツール一覧</a>
                 <a href="{{ route('password.guide') }}" @if($active === 'password') aria-current="page" @endif>パスワード生成</a>
+                <a href="{{ route('calendar') }}" @if($active === 'calendar') aria-current="page" @endif>年間カレンダー</a>
             </nav>
         </div>
     </header>
