@@ -136,3 +136,18 @@ npm run test:browser:calendar
 ```
 
 カレンダーの年切替と記念日の展開はJavaScriptなしで動作します。予定の登録・保存機能はありません。
+
+## ブラウザーでパスワード生成（既存を残して追加）
+
+`/password-generator-browser`。8〜128文字・1〜100件、初期値16文字・1件。英小/大/数字/記号を選択し、選んだ文字種を最低1文字含めます。記号は半角ASCII記号32種すべて、基本10種、ハイフン/アンダースコア、直接入力から選択。直接入力はASCII記号だけを許可し重複を除きます。
+
+外部ライブラリを追加せず、自作JS＋crypto.getRandomValuesでブラウザー内生成。uint32範囲の不完全な末尾を棄却して文字を抽選し、必須文字種を含まない候補を再生成します。生成・コピー時にリクエストを送りません。DB/ログ/Web Storageへ保存するコードなし。条件変更とpagehide/pageshowで結果を消しますが、メモリーからの完全消去を保証するものではありません。クリップボードは利用者のコピー操作で変更し、消去しません。
+
+乱数APIなしでは生成ボタンを無効化。コピー不可時は手動選択を案内。専用ルートはno-store/no-referrer/noindexで、CSPにconnect-src/form-actionのnoneを設定。既存の`/password-generator`とサーバー生成機能・テストは維持します。
+
+```bash
+npm run test:js
+npm run test:browser:password-browser
+```
+
+ソースは`resources/js/browser-password-engine.js`（生成）、`browser-password.js`（画面操作）、`resources/views/tools/password-browser.blade.php`。ブラウザーテストは生成100件・記号制限・コピーと失敗時・非通信・Web Storageなし・乱数/JSなし・横幅4種を確認します。

@@ -3,6 +3,7 @@
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\GreetingController;
 use App\Http\Controllers\PasswordGeneratorController;
+use App\Http\Middleware\BrowserPasswordPolicy;
 use App\Http\Middleware\PreventSensitiveResponseCaching;
 use Illuminate\Support\Facades\Route;
 
@@ -11,6 +12,8 @@ Route::get('/calendar', CalendarController::class)->name('calendar');
 Route::view('/password-generator', 'tools.password-guide')->name('password.guide');
 
 Route::middleware(PreventSensitiveResponseCaching::class)->group(function (): void {
+    Route::view('/password-generator-browser', 'tools.password-browser')->name('password.browser')
+        ->middleware(BrowserPasswordPolicy::class);
     Route::get('/password-generator/generate', [PasswordGeneratorController::class, 'form'])->name('password.form');
     Route::post('/password-generator/generate', [PasswordGeneratorController::class, 'generate'])
         ->middleware('throttle:password-generation')->name('password.generate');

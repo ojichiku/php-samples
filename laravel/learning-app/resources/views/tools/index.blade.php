@@ -5,7 +5,7 @@
         <p class="lead">必要な道具を選んで、すぐに使えます。<br>使えるツールを、ここに少しずつ増やしていきます。</p>
     </section>
     <section aria-labelledby="tools-heading">
-        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">2つのツールが利用できます</span></div>
+        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">3つのツールが利用できます</span></div>
         <div class="tool-grid">
             <article class="tool-card available">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">Aa</span><span class="badge">利用できます</span></div>
@@ -18,6 +18,12 @@
                 <h3>年間カレンダー</h3>
                 <p>一年分の日付・祝日・六曜・記念日を確認できます。過去や未来の年へ切り替えられます。</p>
                 <a class="button" href="{{ route('calendar') }}">カレンダーを開く <span aria-hidden="true">→</span></a>
+            </article>
+            <article class="tool-card available">
+                <div class="card-top"><span class="tool-icon" aria-hidden="true">Aa+</span><span class="badge">利用できます</span></div>
+                <h3>ブラウザーでパスワード生成</h3>
+                <p>この端末で複数のパスワードを生成します。利用できる記号の直接入力やプリセットを選べます。</p>
+                <a class="button" href="{{ route('password.browser') }}">ブラウザーで生成 <span aria-hidden="true">→</span></a>
             </article>
             <article class="tool-card upcoming">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">◎</span><span class="badge neutral">準備中</span></div>

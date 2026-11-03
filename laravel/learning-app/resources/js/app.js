@@ -1,3 +1,5 @@
+import './browser-password.js';
+
 const result = document.querySelector('#generated-password');
 const copyButton = document.querySelector('#copy-password');
 const status = document.querySelector('#copy-status');

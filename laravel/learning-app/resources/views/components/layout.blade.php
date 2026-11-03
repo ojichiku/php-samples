@@ -20,6 +20,7 @@
                 <a href="{{ route('tools.index') }}" @if($active === 'tools') aria-current="page" @endif>ツール一覧</a>
                 <a href="{{ route('password.guide') }}" @if($active === 'password') aria-current="page" @endif>パスワード生成</a>
                 <a href="{{ route('calendar') }}" @if($active === 'calendar') aria-current="page" @endif>年間カレンダー</a>
+                <a href="{{ route('password.browser') }}" @if($active === 'password-browser') aria-current="page" @endif>ブラウザー生成</a>
             </nav>
         </div>
     </header>

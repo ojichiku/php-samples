@@ -131,3 +131,18 @@ textarea { width: 100%; resize: vertical; background: #f3f5ef; border: 1px solid
 
 .calendar-today-label { margin: 0 0 8px; font-size: .85rem; color: var(--accent); font-weight: 650; }
 .today-mark { display: block; width: fit-content; margin: 1px auto; padding: 0 3px; border-radius: 3px; background: var(--accent); color: white; font-size: .55rem; line-height: 1.5; }
+
+/* Browser-only password generator */
+[hidden] { display: none !important; }
+.browser-number-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+#browser-symbol-mode, #browser-custom-symbols { display: block; width: 100%; margin-top: 10px; padding: 10px; border: 1px solid #91a18d; border-radius: 8px; background: white; font: inherit; }
+#browser-symbol-mode { font-size: .85rem; }
+#browser-custom-field { margin-top: 18px; }
+.browser-symbol-preview { overflow-wrap: anywhere; font-family: ui-monospace, monospace; }
+.browser-password-row { display: flex; gap: 8px; margin-bottom: 12px; }
+.browser-password-row input { min-width: 0; width: 100%; font: 1rem ui-monospace, monospace; padding: 10px; border: 1px solid #91a18d; border-radius: 8px; background: #f3f5ef; }
+.browser-password-row .button { padding: 8px 12px; flex-shrink: 0; font-size: .85rem; }
+.browser-result-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.browser-password-guide { margin-top: 24px; font-size: .9rem; }
+.browser-password-guide p { margin-top: 12px; }
+@media (max-width: 360px) { .browser-number-fields { grid-template-columns: 1fr; gap: 0; } }
