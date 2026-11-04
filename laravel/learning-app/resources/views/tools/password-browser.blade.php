@@ -33,13 +33,12 @@
             <section class="panel" aria-labelledby="browser-result-heading">
                 <h2 id="browser-result-heading">生成したパスワード</h2>
                 <p class="field-help" id="browser-password-empty">条件を選び、「パスワードを生成」を押してください。</p>
-                <div id="browser-password-results"></div>
                 <textarea id="browser-all-results" aria-label="全件のパスワード" readonly autocomplete="off" autocapitalize="off" spellcheck="false" rows="4" hidden></textarea>
                 <div class="browser-result-actions"><button class="button secondary" type="button" id="browser-copy-all" disabled>全件コピー</button><button class="button secondary" type="button" id="browser-clear" disabled>結果を消す</button></div>
                 <p class="copy-status" id="browser-password-status" role="status" aria-live="polite"></p>
                 <p class="field-help">生成値はサーバーへ送信せず、保存しません。条件変更・画面移動で結果は消えます。コピーした値はクリップボードに残る場合があります。</p>
             </section>
         </div>
-        <section class="panel browser-password-guide"><h2>使い方と注意点</h2><ol class="steps"><li>文字数・発行数・使う文字種を選びます。</li><li>記号を使う場合は、利用先が認める記号を選択または入力します。</li><li>生成後、1件ずつまたは全件をコピーします。</li></ol><p>生成にはブラウザーの暗号用途の乱数を使います。利用先のパスワード要件も確認してください。同じパスワードを複数のサービスで使い回さないでください。</p><p>このアプリに保存機能はありません。必要なパスワードは、ご自身のパスワード管理方法で保管してください。</p></section>
+        <section class="panel browser-password-guide"><h2>使い方と注意点</h2><ol class="steps"><li>文字数・発行数・使う文字種を選びます。</li><li>記号を使う場合は、利用先が認める記号を選択または入力します。</li><li>生成後、テキストエリアに全件を表示します。「全件コピー」または必要な行を選択してコピーします。</li></ol><p>生成にはブラウザーの暗号用途の乱数を使います。利用先のパスワード要件も確認してください。同じパスワードを複数のサービスで使い回さないでください。</p><p>このアプリに保存機能はありません。必要なパスワードは、ご自身のパスワード管理方法で保管してください。</p></section>
     </div>
 </x-layout>

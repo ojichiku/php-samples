@@ -24,32 +24,31 @@ const {chromium} = require('playwright');
             const generate = page.getByRole('button', {name: 'パスワードを生成', exact: true});
             await page.locator('#browser-count').fill('5');
             await generate.click();
-            assert.equal(await page.locator('.browser-password-row').count(), 5);
-            const values = await page.locator('.browser-password-row input').evaluateAll(inputs => inputs.map(input => input.value));
+            assert.equal((await page.locator('#browser-all-results').inputValue()).split('\n').length, 5);
+            const values = (await page.locator('#browser-all-results').inputValue()).split('\n');
             for (const value of values) {
                 assert.equal(value.length, 16);
                 assert.match(value, /[a-z]/); assert.match(value, /[A-Z]/); assert.match(value, /[0-9]/);
                 assert.match(value, /^[a-zA-Z0-9]+$/);
             }
-            await page.getByRole('button', {name: '1件目をコピー', exact: true}).click();
-            assert.equal(await page.evaluate(() => navigator.clipboard.readText()), values[0]);
             await page.getByRole('button', {name: '全件コピー', exact: true}).click();
             assert.equal(await page.evaluate(() => navigator.clipboard.readText()), values.join('\n'));
             await page.locator('input[value="symbols"]').check();
-            assert.equal(await page.locator('.browser-password-row').count(), 0);
+            assert.equal(await page.locator('#browser-all-results').inputValue(), '');
             await page.locator('#browser-symbol-mode').selectOption('custom');
             await page.locator('#browser-custom-symbols').fill('<>&');
             await page.locator('#browser-length').fill('128');
             await page.locator('#browser-count').fill('100');
             await generate.click();
-            const custom = await page.locator('.browser-password-row input').evaluateAll(inputs => inputs.map(input => input.value));
+            const custom = (await page.locator('#browser-all-results').inputValue()).split('\n');
             assert.equal(custom.length, 100);
             for (const value of custom) {
                 assert.equal(value.length, 128); assert.match(value, /[<>&]/); assert.match(value, /^[a-zA-Z0-9<>&]+$/);
             }
-            assert.equal(await page.locator('#browser-password-results script, #browser-password-results img').count(), 0);
+            assert.equal(await page.locator('#browser-all-results').isVisible(), true);
+            assert.ok(await page.locator('#browser-all-results').evaluate(area => area.scrollHeight <= area.clientHeight + 2), 'all wrapped lines must be visible');
             await page.getByRole('button', {name: '結果を消す', exact: true}).click();
-            assert.equal(await page.locator('.browser-password-row').count(), 0);
+            assert.equal(await page.locator('#browser-all-results').inputValue(), '');
             await page.locator('#browser-custom-symbols').fill('abc');
             await generate.click();
             assert.match(await page.locator('#browser-password-error').innerText(), /半角ASCII記号/);
@@ -72,10 +71,10 @@ const {chromium} = require('playwright');
             await page.getByRole('button', {name: '結果を消す', exact: true}).click();
             await page.screenshot({path: `${output}/browser-password-${width}.png`, fullPage: true});
             await generate.click();
-            assert.equal(await page.locator('.browser-password-row').count(), 3);
+            assert.equal((await page.locator('#browser-all-results').inputValue()).split('\n').length, 3);
             await page.evaluate(() => {window.dispatchEvent(new PageTransitionEvent('pagehide'));});
             assert.equal(await page.locator('#browser-all-results').inputValue(), '');
-            assert.equal(await page.locator('.browser-password-row').count(), 0);
+            assert.equal(await page.locator('#browser-all-results').inputValue(), '');
             results.push({width, generation: 'passed', batch100: 'passed', customSymbols: 'passed', copies: 'passed', validation: 'passed', storageEntries: 0, requestsDuringUse: 0, javascriptErrors: 0, horizontalOverflow: false});
             await context.close();
         }

@@ -7,11 +7,11 @@ use Tests\TestCase;
 
 class CalendarTest extends TestCase
 {
-    public function test_annual_calendar_displays_all_months_holidays_and_anniversary(): void
+    public function test_annual_calendar_displays_all_months_and_holidays(): void
     {
         $this->get('/calendar?year=2026')->assertOk()
             ->assertSee('2026年')->assertSee('令和8年')
-            ->assertSee('2026-09-22')->assertSee('元日')->assertSee('犬の日')
+            ->assertSee('2026-09-22')->assertSee('元日')->assertDontSee('犬の日')->assertDontSee('day-details')->assertDontSee('の記念日')
             ->assertSee('大安')->assertSee('仏滅')
             ->assertViewHas('months', fn ($months) => count($months) === 12)
             ->assertViewHas('holidayCovered', true)->assertViewHas('rokuyoCovered', true);

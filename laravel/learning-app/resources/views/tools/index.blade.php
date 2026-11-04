@@ -16,7 +16,7 @@
             <article class="tool-card available">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">31</span><span class="badge">利用できます</span></div>
                 <h3>年間カレンダー</h3>
-                <p>一年分の日付・祝日・六曜・記念日を確認できます。過去や未来の年へ切り替えられます。</p>
+                <p>一年分の日付・祝日・六曜を確認できます。過去や未来の年へ切り替えられます。</p>
                 <a class="button" href="{{ route('calendar') }}">カレンダーを開く <span aria-hidden="true">→</span></a>
             </article>
             <article class="tool-card available">

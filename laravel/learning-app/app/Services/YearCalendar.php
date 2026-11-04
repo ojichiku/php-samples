@@ -26,7 +26,6 @@ class YearCalendar
         }
         $holidays = $this->holidays();
         $metadata = json_decode(file_get_contents($this->dataDirectory.'/holidays-meta.json'), true, flags: JSON_THROW_ON_ERROR);
-        $anniversaries = $this->anniversaries($year);
         $rokuyo = $this->rokuyo($year);
         $today = CarbonImmutable::now('Asia/Tokyo')->format('Y-m-d');
         $months = [];
@@ -40,7 +39,6 @@ class YearCalendar
                     'date' => $key, 'day' => $day, 'weekday' => (int) $date->format('w'),
                     'holiday' => $holidays[$key] ?? null,
                     'rokuyo' => $rokuyo[$key] ?? null,
-                    'anniversaries' => $anniversaries[$date->format('m-d')] ?? [],
                     'today' => $key === $today,
                 ];
             }
@@ -89,19 +87,6 @@ class YearCalendar
             $dates[$row['date']] = $row['name'];
         }
         ksort($dates);
-
-        return $dates;
-    }
-
-    /** @return array<string, list<array{name: string, source: string}>> */
-    private function anniversaries(int $year): array
-    {
-        $dates = [];
-        foreach ($this->csv('anniversaries.csv') as $row) {
-            if ($year >= (int) $row['start_year']) {
-                $dates[$row['month_day']][] = ['name' => $row['name'], 'source' => $row['source']];
-            }
-        }
 
         return $dates;
     }

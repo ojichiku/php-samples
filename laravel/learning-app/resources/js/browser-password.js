@@ -12,15 +12,14 @@ if (root) {
     const symbolPreview = root.querySelector('#browser-symbol-preview');
     const status = root.querySelector('#browser-password-status');
     const error = root.querySelector('#browser-password-error');
-    const results = root.querySelector('#browser-password-results');
     const allResults = root.querySelector('#browser-all-results');
     const copyAll = root.querySelector('#browser-copy-all');
     const clearButton = root.querySelector('#browser-clear');
     const empty = root.querySelector('#browser-password-empty');
 
     function clearResults() {
-        results.replaceChildren();
         allResults.value = '';
+        allResults.style.height = '';
         allResults.hidden = true;
         empty.hidden = false;
         copyAll.disabled = true;
@@ -58,27 +57,10 @@ if (root) {
                 symbolMode: symbolMode.value,
                 customSymbols: customSymbols.value,
             });
-            passwords.forEach((value, index) => {
-                const row = document.createElement('div');
-                row.className = 'browser-password-row';
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.readOnly = true;
-                input.autocomplete = 'off';
-                input.spellcheck = false;
-                input.setAttribute('autocapitalize', 'off');
-                input.setAttribute('aria-label', `${index + 1}件目のパスワード`);
-                input.value = value;
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'button secondary';
-                button.textContent = 'コピー';
-                button.setAttribute('aria-label', `${index + 1}件目をコピー`);
-                button.addEventListener('click', () => copy(input.value, input));
-                row.append(input, button);
-                results.append(row);
-            });
             allResults.value = passwords.join('\n');
+            allResults.hidden = false;
+            allResults.style.height = 'auto';
+            allResults.style.height = `${allResults.scrollHeight + 2}px`;
             empty.hidden = true;
             copyAll.disabled = false;
             clearButton.disabled = false;
@@ -90,11 +72,16 @@ if (root) {
         }
     });
     root.querySelectorAll('input, select').forEach(input => {
-        if (input.closest('#browser-password-results') || input === allResults) return;
+        if (input === allResults) return;
         input.addEventListener('input', () => {clearResults(); synchronizeSymbols();});
     });
     copyAll.addEventListener('click', () => copy(allResults.value, allResults));
     clearButton.addEventListener('click', clearResults);
+    window.addEventListener('resize', () => {
+        if (allResults.hidden) return;
+        allResults.style.height = 'auto';
+        allResults.style.height = `${allResults.scrollHeight + 2}px`;
+    });
     window.addEventListener('pagehide', clearResults);
     window.addEventListener('pageshow', clearResults);
     synchronizeSymbols();
