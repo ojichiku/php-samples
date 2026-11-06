@@ -4,6 +4,7 @@
         <h1>作業に役立つ、<br>小さなツール。</h1>
         <p class="lead">必要な道具を選んで、すぐに使えます。<br>使えるツールを、ここに少しずつ増やしていきます。</p>
     </section>
+    <x-ad-slot />
     <section aria-labelledby="tools-heading">
         <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">3つのツールが利用できます</span></div>
         <div class="tool-grid">
@@ -23,7 +24,7 @@
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">Aa+</span><span class="badge">利用できます</span></div>
                 <h3>ブラウザーでパスワード生成</h3>
                 <p>この端末で複数のパスワードを生成します。利用できる記号の直接入力やプリセットを選べます。</p>
-                <a class="button" href="{{ route('password.browser') }}">ブラウザーで生成 <span aria-hidden="true">→</span></a>
+                <a class="button" href="{{ route('password.browser.guide') }}">ブラウザー版の使い方 <span aria-hidden="true">→</span></a>
             </article>
             <article class="tool-card upcoming">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">◎</span><span class="badge neutral">準備中</span></div>
@@ -33,4 +34,5 @@
             </article>
         </div>
     </section>
+    <x-ad-slot />
 </x-layout>

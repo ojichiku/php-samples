@@ -50,6 +50,7 @@
             </article>
         @endforeach
     </section>
+    <x-ad-slot />
     <section class="panel holiday-list" aria-labelledby="holiday-heading">
         <h2 id="holiday-heading">{{ $year }}年の祝日・休日一覧</h2>
         @if($holidayCovered)

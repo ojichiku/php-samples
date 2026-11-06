@@ -151,3 +151,14 @@ npm run test:browser:password-browser
 ```
 
 ソースは`resources/js/browser-password-engine.js`（生成）、`browser-password.js`（画面操作）、`resources/views/tools/password-browser.blade.php`。ブラウザーテストは生成100件・記号制限・コピーと失敗時・非通信・Web Storageなし・乱数/JSなし・横幅4種を確認します。
+
+
+## 任意の広告設定
+
+初期状態では広告は無効です。実際の広告IDは含めていません。ツール一覧は説明後とカード一覧後の2枠、カレンダーと新旧パスワード説明は各1枠が対象です。パスワード生成画面では広告などの第三者スクリプトを読み込みません。ブラウザー版は`/password-generator-browser/guide`から使い方を確認でき、従来の生成URLも利用できます。
+
+手動広告を使用する場合は、自分の管理画面の広告コードから`ADSENSE_CLIENT`と`ADSENSE_SLOT`を設定し、本番環境で`ADSENSE_ENABLED=true`にします。実広告は`APP_ENV=production`のときだけ読み込みます。自動広告の有効/無効と掲載ルールは自分のサイトに合わせて管理画面で確認してください。設定キャッシュを使用している環境では設定変更後に更新してください。
+
+ローカルは`ADSENSE_PREVIEW=true php artisan serve --host=127.0.0.1 --port=8000`で通信しない仮枠を表示できます。このサーバーに対して`node tests/Browser/advertising-flow.cjs`を実行すると320/375/768/1280px幅で配置順、横はみ出し、印刷時の非表示、生成画面の除外を確認します。ローカルの仮枠は実広告の高さ・配信を再現するものではありません。
+
+コードの設置は広告の配信や収益を保証しません。公開時には掲載内容、操作との干渉、ads.txt、プライバシー表示などを確認してください。

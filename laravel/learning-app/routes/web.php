@@ -11,6 +11,8 @@ Route::view('/', 'tools.index')->name('tools.index');
 Route::get('/calendar', CalendarController::class)->name('calendar');
 Route::view('/password-generator', 'tools.password-guide')->name('password.guide');
 
+Route::view('/password-generator-browser/guide', 'tools.password-browser-guide')->name('password.browser.guide');
+
 Route::middleware(PreventSensitiveResponseCaching::class)->group(function (): void {
     Route::view('/password-generator-browser', 'tools.password-browser')->name('password.browser')
         ->middleware(BrowserPasswordPolicy::class);
