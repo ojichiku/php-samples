@@ -24,7 +24,7 @@
             </nav>
         </div>
     </header>
-    <main @class(['shell', 'calendar-shell' => $active === 'calendar']) id="main">
+    <main @class(['shell', 'calendar-shell' => $active === 'calendar', 'text-tools-shell' => $active === 'text-tools']) id="main">
         {{ $slot }}
     </main>
     <footer class="shell site-footer">

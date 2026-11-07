@@ -6,7 +6,7 @@
     </section>
     <x-ad-slot />
     <section aria-labelledby="tools-heading">
-        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">3つのツールが利用できます</span></div>
+        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">4つのツールが利用できます</span></div>
         <div class="tool-grid">
             <article class="tool-card available">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">Aa</span><span class="badge">利用できます</span></div>
@@ -25,6 +25,12 @@
                 <h3>ブラウザーでパスワード生成</h3>
                 <p>この端末で複数のパスワードを生成します。利用できる記号の直接入力やプリセットを選べます。</p>
                 <a class="button" href="{{ route('password.browser.guide') }}">ブラウザー版の使い方 <span aria-hidden="true">→</span></a>
+            </article>
+            <article class="tool-card available">
+                <div class="card-top"><span class="tool-icon" aria-hidden="true">T</span><span class="badge">利用できます</span></div>
+                <h3>テキスト便利ツール集</h3>
+                <p>文字数・整形・置換・行整理・文字変換と、正規表現の一致確認・サンプル生成ができます。</p>
+                <a class="button" href="{{ route('text.tools') }}">テキストツールを開く <span aria-hidden="true">→</span></a>
             </article>
             <article class="tool-card upcoming">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">◎</span><span class="badge neutral">準備中</span></div>

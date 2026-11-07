@@ -1,3 +1,4 @@
+import './text-tools.js';
 import './browser-password.js';
 
 const result = document.querySelector('#generated-password');
