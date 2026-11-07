@@ -1,10 +1,12 @@
 <x-layout title="ブラウザーでパスワード生成" active="password-browser">
     <section class="page-heading compact">
         <a class="back-link" href="{{ route('tools.index') }}">← ツール一覧</a>
-        <p class="eyebrow">この端末で生成。送信・保存なし。</p>
+        <p class="eyebrow">生成処理はこの端末で。広告を掲載しています。</p>
         <h1>ブラウザーでパスワード生成</h1>
         <p class="lead">文字数・発行数・使える記号を選び、まとめて生成できます。使い方と結果を、この画面にまとめました。</p>
     </section>
+    <p class="browser-ad-notice">この画面は広告を読み込むため外部通信が発生します。生成処理自身は生成値を送信・保存しませんが、同じページで第三者スクリプトが動作します。第三者コードから生成値を隔離する構成ではありません。</p>
+    <x-ad-slot />
     <div id="browser-password-tool">
         <noscript><p class="error-box">生成にはJavaScriptが必要です。パスワードをサーバーで生成することはありません。</p></noscript>
         <div class="generator-grid">
@@ -36,9 +38,10 @@
                 <textarea id="browser-all-results" aria-label="全件のパスワード" readonly autocomplete="off" autocapitalize="off" spellcheck="false" rows="4" hidden></textarea>
                 <div class="browser-result-actions"><button class="button secondary" type="button" id="browser-copy-all" disabled>全件コピー</button><button class="button secondary" type="button" id="browser-clear" disabled>結果を消す</button></div>
                 <p class="copy-status" id="browser-password-status" role="status" aria-live="polite"></p>
-                <p class="field-help">生成値はサーバーへ送信せず、保存しません。条件変更・画面移動で結果は消えます。コピーした値はクリップボードに残る場合があります。</p>
+                <p class="field-help">生成処理自身には生成値の送信・保存処理がありません。条件変更・画面移動で結果は消えます。コピーした値はクリップボードに残る場合があります。</p>
             </section>
         </div>
         <section class="panel browser-password-guide"><h2>使い方と注意点</h2><ol class="steps"><li>文字数・発行数・使う文字種を選びます。</li><li>記号を使う場合は、利用先が認める記号を選択または入力します。</li><li>生成後、テキストエリアに全件を表示します。「全件コピー」または必要な行を選択してコピーします。</li></ol><p>生成にはブラウザーの暗号用途の乱数を使います。利用先のパスワード要件も確認してください。同じパスワードを複数のサービスで使い回さないでください。</p><p>このアプリに保存機能はありません。必要なパスワードは、ご自身のパスワード管理方法で保管してください。</p></section>
     </div>
+    <x-ad-slot />
 </x-layout>

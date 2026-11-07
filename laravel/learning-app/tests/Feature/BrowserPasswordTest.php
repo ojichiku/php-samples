@@ -21,6 +21,22 @@ class BrowserPasswordTest extends TestCase
         $this->assertStringContainsString("connect-src 'none'", $response->headers->get('Content-Security-Policy'));
     }
 
+    public function test_advertising_allows_external_resources_without_changing_sensitive_headers(): void
+    {
+        $this->app->instance('env', 'production');
+        config(['advertising.enabled' => true, 'advertising.client' => 'ca-pub-0000000000000000', 'advertising.slot' => '1234567890']);
+        $response = $this->get(route('password.browser'))->assertOk()
+            ->assertSee('同じページで第三者スクリプト')->assertSee('adsbygoogle')
+            ->assertHeader('Referrer-Policy', 'no-referrer')
+            ->assertHeader('X-Robots-Tag', 'noindex, nofollow');
+        $this->assertStringContainsString('no-store', $response->headers->get('Cache-Control'));
+        $this->assertStringNotContainsString("connect-src 'none'", $response->headers->get('Content-Security-Policy'));
+        $this->assertStringContainsString("form-action 'none'", $response->headers->get('Content-Security-Policy'));
+        config(['advertising.client' => 'invalid']);
+        $response = $this->get(route('password.browser'))->assertDontSee('adsbygoogle');
+        $this->assertStringContainsString("connect-src 'none'", $response->headers->get('Content-Security-Policy'));
+    }
+
     public function test_original_password_routes_remain_and_menu_links_to_both_tools(): void
     {
         $this->get(route('password.guide'))->assertOk()->assertSee(route('password.form'));

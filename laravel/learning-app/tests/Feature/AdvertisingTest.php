@@ -16,12 +16,12 @@ class AdvertisingTest extends TestCase
     public function test_live_ads_only_appear_on_public_content_pages(): void
     {
         $this->enableAds('production');
-        foreach (['/', '/calendar', '/password-generator', '/password-generator-browser/guide'] as $path) {
+        foreach (['/', '/calendar', '/password-generator', '/password-generator-browser/guide', '/password-generator-browser'] as $path) {
             $html = $this->get($path)->assertOk()->assertSee('data-ad-slot="1234567890"', false)->getContent();
             $this->assertSame(1, substr_count($html, 'pagead2.googlesyndication.com'));
-            $this->assertSame($path === '/' ? 2 : 1, substr_count($html, 'data-ad-slot='));
+            $this->assertSame(in_array($path, ['/', '/password-generator-browser'], true) ? 2 : 1, substr_count($html, 'data-ad-slot='));
         }
-        foreach (['/password-generator/generate', '/password-generator-browser', '/hello/view', '/missing-page'] as $path) {
+        foreach (['/password-generator/generate', '/hello/view', '/missing-page'] as $path) {
             $this->get($path)->assertDontSee('adsbygoogle')->assertDontSee('ad-preview');
         }
         $this->app->instance('env', 'testing');
@@ -33,7 +33,7 @@ class AdvertisingTest extends TestCase
     {
         $this->enableAds('local');
         $this->get('/')->assertOk()->assertSee('広告の配置確認用スペース')->assertDontSee('adsbygoogle');
-        $this->get('/password-generator-browser')->assertOk()->assertDontSee('ad-preview')->assertDontSee('adsbygoogle');
+        $this->get('/password-generator-browser')->assertOk()->assertSee('ad-preview')->assertDontSee('adsbygoogle');
     }
 
     public function test_disabled_or_invalid_configuration_does_not_load_ads(): void

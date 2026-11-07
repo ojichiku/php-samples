@@ -177,3 +177,6 @@ textarea { width: 100%; resize: vertical; background: #f3f5ef; border: 1px solid
 .text-tools-shell .ad-slot { min-height: 150px; }
 @media(max-width:900px) { .text-tool-pair { grid-template-columns: 1fr; gap: 0; } .text-tool-nav { grid-template-columns: repeat(2,minmax(0,1fr)); } .text-stats { margin-top: 0; } }
 @media(max-width:600px) { .text-tool-body { padding: 0 16px 20px; } .text-tool summary { padding: 16px; } .text-tool-body textarea { min-height: 180px; } .text-actions { display: grid; } }
+
+.browser-ad-notice { margin-bottom: 24px; padding: 16px; background: #fff4db; border-left: 3px solid #a66d24; font-size: 1rem; overflow-wrap: anywhere; }
+body:has(#browser-password-tool) .ad-slot { min-height: 150px; }

@@ -46,10 +46,14 @@ const {chromium} = require('playwright');
             await page.goto(base + '/password-generator-browser/guide');
             await page.getByRole('link', {name: 'ブラウザーで生成する'}).click();
             assert.equal(new URL(page.url()).pathname, new URL(base + '/password-generator-browser').pathname);
+            assert.equal(await page.locator('.ad-slot').count(), 2);
+            assert.equal(await page.locator('.ad-preview').count(), 2);
+            assert.ok(await page.evaluate(() => document.querySelector('.ad-slot').getBoundingClientRect().bottom <= document.querySelector('#browser-password-tool').getBoundingClientRect().top));
+            await page.goto(base + '/password-generator/generate');
             assert.equal(await page.locator('.ad-slot, .adsbygoogle').count(), 0);
             assert.deepEqual(external, []);
             assert.deepEqual(errors, []);
-            results.push({width, pages: 4, noOverflow: true, noExternalRequests: true, printHidden: true, generatorExcluded: true});
+            results.push({width, pages: 4, noOverflow: true, noExternalRequests: true, printHidden: true, browserGeneratorAdSlots: 2, serverGeneratorExcluded: true});
             await page.close();
         }
         fs.writeFileSync(path.join(output, 'browser-results.json'), JSON.stringify(results, null, 2));

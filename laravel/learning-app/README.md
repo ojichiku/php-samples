@@ -143,7 +143,7 @@ npm run test:browser:calendar
 
 外部ライブラリを追加せず、自作JS＋crypto.getRandomValuesでブラウザー内生成。uint32範囲の不完全な末尾を棄却して文字を抽選し、必須文字種を含まない候補を再生成します。生成・コピー時にリクエストを送りません。DB/ログ/Web Storageへ保存するコードなし。結果は改行区切りで1つのテキストエリアに全件表示し、折り返しと高さ自動調整で全文を表示します。全件コピーまたは必要な行の手動選択でコピーします。条件変更とpagehide/pageshowで結果を消しますが、メモリーからの完全消去を保証するものではありません。クリップボードは利用者のコピー操作で変更し、消去しません。
 
-乱数APIなしでは生成ボタンを無効化。コピー不可時は手動選択を案内。専用ルートはno-store/no-referrer/noindexで、CSPにconnect-src/form-actionのnoneを設定。既存の`/password-generator`とサーバー生成機能・テストは維持します。
+乱数APIなしでは生成ボタンを無効化。コピー不可時は手動選択を案内。専用ルートはno-store/no-referrer/noindex。広告が無効な場合はCSPでscript-src self/connect-src noneを指定します。広告有効の本番では外部の広告スクリプト・通信を許可し、form-action none等を維持します。既存の`/password-generator`とサーバー生成機能・テストは維持します。
 
 ```bash
 npm run test:js
@@ -155,7 +155,7 @@ npm run test:browser:password-browser
 
 ## 任意の広告設定
 
-初期状態では広告は無効です。実際の広告IDは含めていません。ツール一覧は説明後とカード一覧後の2枠、カレンダーと新旧パスワード説明は各1枠が対象です。パスワード生成画面では広告などの第三者スクリプトを読み込みません。ブラウザー版は`/password-generator-browser/guide`から使い方を確認でき、従来の生成URLも利用できます。
+初期状態では広告は無効です。実際の広告IDは含めていません。ツール一覧は説明後とカード一覧後の2枠、カレンダーと新旧パスワード説明は各1枠が対象です。サーバー版の生成画面では広告などの第三者スクリプトを読み込みません。ブラウザー版の生成画面には見出し・注意書きの後と、生成ツール全体の後へ各1枠を置きます。ブラウザー版は`/password-generator-browser/guide`から使い方を確認でき、従来の生成URLも利用できます。
 
 手動広告を使用する場合は、自分の管理画面の広告コードから`ADSENSE_CLIENT`と`ADSENSE_SLOT`を設定し、本番環境で`ADSENSE_ENABLED=true`にします。実広告は`APP_ENV=production`のときだけ読み込みます。自動広告の有効/無効と掲載ルールは自分のサイトに合わせて管理画面で確認してください。設定キャッシュを使用している環境では設定変更後に更新してください。
 
@@ -171,3 +171,5 @@ npm run test:browser:password-browser
 正規表現はWorker内で実行し1秒で中止。置換・変換・一致確認はJavaScript構文とi/m/s/u、生成は限定ASCII構文とuのみです。生成後は同じ式で文字列全体への一致を検証します。後方参照・先読み/後読み・否定クラス・ドット・Unicodeプロパティなどの生成は未対応で、要求数に達しない場合があります。入力10万・パターン/置換語1,000・結果100万コードポイント、一致表示1,000件、生成1〜10件/1件256文字の上限があります。
 
 `npm run test:js`と`php artisan test --compact --filter=TextTools`、起動後に`npm run test:browser:text-tools`で確認できます。広告は既存設定を再利用し、解析は本番の`ANALYTICS_ENABLED=true`と`ANALYTICS_MEASUREMENT_ID`で有効化。解析イベントは固定ツール名・成功/失敗分類のみで入力内容を含めません。公開サンプルに実IDは含めません。
+
+広告付きの生成画面はページ全体で通信し、第三者スクリプトから生成値を隔離しません。生成・コピー処理自身に送信・保存を追加せず、解析も追加しません。`BrowserPasswordPolicy`の広告有効条件と広告部品の条件は合わせて管理してください。

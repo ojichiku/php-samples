@@ -25,7 +25,7 @@ class TextToolsTest extends TestCase
         $html = $this->get('/text-tools')->assertOk()->assertSee('data-text-analytics="G-TEST123456"', false)->getContent();
         $this->assertSame(2, substr_count($html, 'data-ad-slot='));
         $this->assertSame(1, substr_count($html, 'pagead2.googlesyndication.com'));
-        $this->get('/password-generator-browser')->assertDontSee('data-text-analytics')->assertDontSee('adsbygoogle')
+        $this->get('/password-generator-browser')->assertDontSee('data-text-analytics')->assertSee('adsbygoogle')
             ->assertHeader('Content-Security-Policy');
         $this->get('/calendar')->assertDontSee('data-text-analytics');
         $this->app->instance('env', 'local');
