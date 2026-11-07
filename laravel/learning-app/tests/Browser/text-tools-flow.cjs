@@ -40,7 +40,7 @@ const {chromium} = require('playwright');
             const sentinel='PRIVATE_TEXT_SENTINEL_74x';requests.length=0;await input(match,'text').fill(sentinel);await input(match,'pattern').fill('[A-Z]+');await run(match);
             assert.ok(requests.every(r=>!decodeURIComponent(r).includes(sentinel)));
             await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:()=>Promise.reject(new Error())},configurable:true}));await match.locator('[data-copy]').click();assert.match(await match.locator('[data-status]').innerText(),/手動/);
-            if(width===1280){await input(match,'text').fill('a'.repeat(40000)+'!');await input(match,'pattern').fill('(a+)+$');await run(match);assert.match(await match.locator('[data-status]').innerText(),/中止/);}
+            if(width===1280){await input(match,'text').fill('😀a');await input(match,'pattern').fill('.');await match.locator('[data-flag=u]').uncheck();await run(match);assert.deepEqual(await match.locator('[data-matches] tr td:nth-child(3)').allTextContents(),['1行1列','1行1列','1行2列']);await match.locator('[data-flag=u]').check();await input(match,'text').fill('a'.repeat(40000)+'!');await input(match,'pattern').fill('(a+)+$');await run(match);assert.match(await match.locator('[data-status]').innerText(),/中止/);}
             await input(match,'text').fill('注文12、追加3');await input(match,'pattern').fill('[0-9]+');await run(match);assert.equal(await match.locator('[data-highlight] mark').count(),2);
             assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));assert.deepEqual(errors,[]);
             await match.screenshot({path:path.join(output,`regex-${width}.png`)});await page.screenshot({path:path.join(output,`page-${width}.png`)});

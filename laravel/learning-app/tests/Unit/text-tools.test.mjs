@@ -67,3 +67,8 @@ test('sample generator explicitly rejects unsupported constructs and bounded rep
     assert.throws(() => generateSamples('a', 'i', 1), /uのみ/);
     assert.equal(generateSamples('(a{100}){100}', 'u', 1).count, 0);
 });
+
+test('column positions remain codepoint-based even when regex splits a surrogate pair', () => {
+    const result = run({ tool: 'match', text: '😀a\nb', pattern: '.', flags: '' });
+    assert.deepEqual(result.matches.map(match => [match.row, match.column]), [[1, 1], [1, 1], [1, 2], [2, 1]]);
+});

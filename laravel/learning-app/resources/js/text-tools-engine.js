@@ -127,8 +127,12 @@ export function processText(options) {
         let positionIndex = 0, row = 1, column = 1;
         for (const match of matches(compile(pattern, flags), text)) {
             if (found.length === 1000) { truncated = true; break; }
-            for (const c of text.slice(positionIndex, match.index)) { if (c === '\n') { row++; column = 1; } else column++; }
-            positionIndex = match.index;
+            while (positionIndex < match.index) {
+                const point = text.codePointAt(positionIndex), size = point > 0xffff ? 2 : 1;
+                if (positionIndex + size > match.index) break;
+                if (point === 10) { row++; column = 1; } else column++;
+                positionIndex += size;
+            }
             found.push({ value: match[0], index: match.index, row, column, captures: match.slice(1).map(value => value ?? null), groups: match.groups ?? null });
         }
         return { text, matches: found, truncated, count: found.length, output: found.map(match => match.value === '' ? '（空文字）' : match.value).join('\n') };
