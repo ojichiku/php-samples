@@ -180,3 +180,13 @@ textarea { width: 100%; resize: vertical; background: #f3f5ef; border: 1px solid
 
 .browser-ad-notice { margin-bottom: 24px; padding: 16px; background: #fff4db; border-left: 3px solid #a66d24; font-size: 1rem; overflow-wrap: anywhere; }
 body:has(#browser-password-tool) .ad-slot { min-height: 150px; }
+.text-tool-body fieldset { min-width: 0; margin: 16px 0; padding: 12px; border: 1px solid var(--line); border-radius: 8px; }
+.text-tool-body legend { font-weight: 700; padding: 0 6px; }
+.text-tool-body input[type=checkbox], .text-tool-body input[type=radio] { width: 20px; height: 20px; vertical-align: middle; margin-right: 6px; }
+.text-tool-body label:has(input[type=checkbox]), .text-tool-body label:has(input[type=radio]) { min-height: 44px; display: flex; align-items: center; gap: 6px; }
+.text-tool-body p, #regex-help { overflow-wrap: anywhere; }
+
+@media(min-width:700px) {
+    .text-tool-body fieldset > label:has(input[type=radio]), .text-tool-body fieldset > label:has(input[data-target]) { display: inline-flex; margin-right: 24px; }
+}
+.text-tool-body input:disabled { background: #eef0e9; }

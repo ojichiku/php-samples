@@ -72,3 +72,27 @@ test('column positions remain codepoint-based even when regex splits a surrogate
     const result = run({ tool: 'match', text: '😀a\nb', pattern: '.', flags: '' });
     assert.deepEqual(result.matches.map(match => [match.row, match.column]), [[1, 1], [1, 1], [1, 2], [2, 1]]);
 });
+
+test('batch edit preserves original, runs only selected operations and follows documented order', () => {
+    const text = ' Ｂ２ \n a1 \n Ｂ２ \n\n';
+    const options = { tool: 'edit', text, width: 'half', targets: ['letters', 'numbers'], letterCase: 'lower', trim: true, blank: 'blank', unique: true, sort: 'asc', replaceEnabled: true, rules: [{search: 'b', replacement:'c'}, {search:'c', replacement:'d'}] };
+    assert.equal(run(options).output, 'a1\nd2');
+    assert.equal(options.text, text);
+    assert.equal(run({tool:'edit',text}).output,text);
+    assert.equal(run({...options,sort:'desc'}).output,'d2\na1');
+    assert.equal(run({tool:'edit',text:'aaa',replaceEnabled:true,rules:[{search:'a',replacement:''},{search:'b',replacement:'c'}]}).output,'');
+    assert.throws(()=>run({tool:'edit',text:'abc',replaceEnabled:true,rules:[{search:'',replacement:'x'}]}),/検索語/);
+    assert.equal(run({tool:'edit',text:'abc DEF',scope:'regex',pattern:'[a-z]+',letterCase:'upper'}).output,'ABC DEF');
+    assert.equal(run({tool:'edit',text:'2026-11',replaceEnabled:true,rules:[{mode:'regex',search:'(\\d{4})-(\\d{2})',replacement:'$1/$2'}]}).output,'2026/11');
+});
+test('pattern builder escapes literals, generalizes explicitly and validates both kinds of example', () => {
+    for (const text of ['ABC-123','a.b+$[](){}?^|\\','日本語😀\n']) {
+        const result=run({tool:'build',text});
+        const regex=new RegExp(result.output,'u');
+        assert.ok(regex.test(text));assert.ok(!regex.test(text+'\n'));assert.ok(!regex.test('x'+text));
+    }
+    const result=run({tool:'build',text:'ABC-123',buildMode:'general',positive:'XYZ-456\nwrong',negative:'abc-123\nABC-123'});
+    assert.deepEqual(result.checks.map(c=>c.passed),[true,false,true,false]);
+    assert.ok(new RegExp(result.output,'u').test('XYZ-456'));
+    assert.throws(()=>run({tool:'build',text:'a'.repeat(1001)}),/1,000/);
+});

@@ -13,7 +13,7 @@ const {chromium}=require('playwright');
   page.on('pageerror',e=>errors.push(e.message));
   page.on('response',r=>{if(/googletagmanager.com\/gtag\/js|googlesyndication.com\/pagead\/js/.test(r.url()))responses.push({service:new URL(r.url()).hostname,status:r.status()});});
   assert.equal((await page.goto(base+'/text-tools')).status(),200);
-  await page.locator('[data-tool=count] [data-clear]:enabled').waitFor();
+  await page.locator('[data-tool=edit] [data-clear]:enabled').waitFor();
   await page.locator('.text-tool-nav a[href="#text-match"]').click();
   const sentinel='PRIVATE_INPUT_PROBE_86a';
   await page.locator('#match-input').fill(sentinel);

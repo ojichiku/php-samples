@@ -88,6 +88,8 @@ export function processText(options) {
         compile(pattern, flags);
         return generateSamples(pattern, flags, Number(options.amount));
     }
+    if (options.tool === 'edit') return editText(text, options);
+    if (options.tool === 'build') return buildPattern(text, options);
     if (options.tool !== 'match' && text === '') throw new Error('文章を入力してください。');
     if (options.tool === 'format') {
         let lines = text.split('\n');
@@ -138,4 +140,63 @@ export function processText(options) {
         return { text, matches: found, truncated, count: found.length, output: found.map(match => match.value === '' ? '（空文字）' : match.value).join('\n') };
     }
     throw new Error('ツールを選んでください。');
+}
+
+function editText(text, options) {
+    if (!text) throw new Error('文章を入力してください。');
+    let value = text;
+    for (const operation of [options.width, options.letterCase]) {
+        if (!operation || operation === 'none') continue;
+        value = processText({ tool: 'convert', text: value, operation, targets: options.targets,
+            mode: options.scope, pattern: options.pattern, flags: 'u' }).output;
+    }
+    if (options.replaceEnabled) {
+        if (!options.rules?.length || options.rules.length > 20) throw new Error('置換ルールは1〜20件にしてください。');
+        for (const rule of options.rules) {
+            // Replacement may delete the entire input; subsequent rules still require validation.
+            const replacement = normalize(rule.replacement), search = normalize(rule.search);
+            if (codepoints(replacement) > 1000) throw new Error('置換語は1,000文字以内にしてください。');
+            if (rule.mode === 'regex') value = transformMatches(value, compile(search, 'u'), match => replacementValue(replacement, match, value)).output;
+            else {
+                if (!search || codepoints(search) > 1000) throw new Error('検索語は1〜1,000文字で入力してください。');
+                const pieces = value.split(search);
+                if (codepoints(value) + (pieces.length - 1) * (codepoints(replacement) - codepoints(search)) > OUTPUT_LIMIT) throw new Error('結果が100万文字を超えるため中止しました。');
+                value = bounded(pieces.join(replacement));
+            }
+        }
+    }
+    let lines = value.split('\n');
+    if (options.trim) lines = lines.map(line => line.replace(/^[ \t\u3000]+|[ \t\u3000]+$/g, ''));
+    if (options.blank === 'blank') lines = lines.filter(line => !/^[ \t\u3000]*$/.test(line));
+    if (options.blank === 'collapse') {
+        let previousBlank = false;
+        lines = lines.filter(line => { const blank = /^[ \t\u3000]*$/.test(line); const keep = !blank || !previousBlank; previousBlank = blank; return keep; }).map(line => /^[ \t\u3000]*$/.test(line) ? '' : line);
+    }
+    if (options.unique) lines = [...new Set(lines)];
+    if (['asc', 'desc'].includes(options.sort)) {
+        lines.sort(compareLines);
+        if (options.sort === 'desc') lines.reverse();
+    }
+    return { output: bounded(lines.join('\n')) };
+}
+function buildPattern(text, options) {
+    if (!text || codepoints(text) > 1000) throw new Error('元になる入力例は1〜1,000文字で入力してください。');
+    const escape = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
+    let body = escape(text);
+    if (options.buildMode === 'general') body = (text.match(/[A-Z]+|[a-z]+|[0-9]+|[^A-Za-z0-9]+/g) ?? []).map(part => {
+        const type = /^[A-Z]+$/.test(part) ? '[A-Z]' : /^[a-z]+$/.test(part) ? '[a-z]' : /^[0-9]+$/.test(part) ? '[0-9]' : null;
+        return type ? type + '{' + part.length + '}' : escape(part);
+    }).join('');
+    const output = '^(?:' + body + ')(?![\\s\\S])';
+    const regex = compile(output, 'u');
+    const checks = [];
+    for (const [key, expected] of [['positive', true], ['negative', false]]) {
+        const examples = normalize(options[key]);
+        if (codepoints(examples) > 1000) throw new Error('検証例は各1,000文字以内にしてください。');
+        for (const example of examples.split('\n').filter(value => value !== '')) {
+            regex.lastIndex = 0;
+            checks.push({ expected, passed: regex.test(example) === expected });
+        }
+    }
+    return { output, checks };
 }

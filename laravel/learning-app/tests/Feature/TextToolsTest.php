@@ -6,12 +6,13 @@ use Tests\TestCase;
 
 class TextToolsTest extends TestCase
 {
-    public function test_tools_are_independent_and_navigation_is_available(): void
+    public function test_editing_and_regex_sections_are_available(): void
     {
         $response = $this->get('/text-tools')->assertOk();
-        foreach (['count', 'format', 'replace', 'lines', 'convert', 'match', 'generate'] as $tool) {
+        foreach (['edit', 'build', 'match', 'generate'] as $tool) {
             $response->assertSee('data-tool="'.$tool.'"', false);
         }
+        $response->assertDontSee('このツールを消去')->assertSee('入力と結果をクリア')->assertSee('処理順')->assertSee('正規表現の書き方');
         $response->assertSee('機密情報は入力しないでください')->assertSee('サンプル生成');
         $this->get('/')->assertSee(route('text.tools'))->assertSee('4つのツール');
         $this->post('/text-tools', ['text' => 'private'])->assertStatus(405);

@@ -8,240 +8,17 @@
 <noscript>
 <p class="error-box">このツールにはJavaScriptが必要です。</p>
 </noscript>
-<nav class="text-tool-nav" id="text-tool-nav" aria-label="ページ内のツール一覧">
-<a href="#text-count">文字数カウンター</a>
-<a href="#text-format">テキスト整形</a>
-<a href="#text-replace">文字列置換</a>
-<a href="#text-lines">行の整理</a>
-<a href="#text-convert">文字変換</a>
-<a href="#text-match">正規表現の一致確認</a>
-<a href="#text-generate">正規表現のサンプル生成</a>
-</nav>
-<x-ad-slot />
-<div id="text-tools">
-<details id="text-count" class="text-tool" data-tool="count" open>
-<summary>文字数カウンター</summary>
-<div class="text-tool-body">
-<p>文章を入力すると文字数・空白除外文字数・行数を確認できます。</p>
-<div class="text-tool-pair">
-<div>
-<label for="count-input">対象テキスト（最大10万文字）</label>
-<textarea id="count-input" data-field="text" rows="6" spellcheck="false" autocomplete="off">
-</textarea>
-</div>
-<div class="text-stats" data-stats>文字数 0 ／ 空白除外 0 ／ 行数 0</div>
-</div>
-<div class="text-actions">
-<button type="button" class="button secondary" data-clear disabled>このツールを消去</button>
-</div>
-<p class="text-status" data-status role="status" aria-live="polite">
-</p>
-<p>
-<a href="#text-tool-nav">ツール一覧へ戻る</a>
-</p>
-</div>
-</details>
-<details id="text-format" class="text-tool" data-tool="format">
-<summary>テキスト整形</summary>
-<div class="text-tool-body">
-<p>各行の空白や空行を整理します。</p>
-<label for="format-operation">整形方法</label>
-<select id="format-operation" data-field="operation">
-<option value="trim">各行の前後空白を除去</option>
-<option value="blank">空行を削除</option>
-<option value="collapse">連続する空行を1行に</option>
-</select>
-<div class="text-tool-pair">
-<div>
-<label for="format-input">対象テキスト（最大10万文字）</label>
-<textarea id="format-input" data-field="text" rows="6" spellcheck="false" autocomplete="off">
-</textarea>
-</div>
-<div>
-<label for="format-output">結果（読み取り専用）</label>
-<textarea id="format-output" data-output rows="6" readonly>
-</textarea>
-</div>
-</div>
-<div class="text-actions">
-<button type="button" class="button" data-run disabled>実行</button>
-<button type="button" class="button secondary" data-cancel hidden>中止</button>
-<button type="button" class="button secondary" data-copy disabled>結果をコピー</button>
-<button type="button" class="button secondary" data-clear disabled>このツールを消去</button>
-</div>
-<p class="text-status" data-status role="status" aria-live="polite">
-</p>
-<p>
-<a href="#text-tool-nav">ツール一覧へ戻る</a>
-</p>
-</div>
-</details>
-<details id="text-replace" class="text-tool" data-tool="replace">
-<summary>文字列置換</summary>
-<div class="text-tool-body">
-<p>通常の文字列、または正規表現で置き換えます。</p>
-<label for="replace-mode">検索方法</label>
-<select id="replace-mode" data-field="mode">
-<option value="literal">通常の文字列</option>
-<option value="regex">正規表現</option>
-</select>
-<div data-literal-fields>
-<label for="replace-search">検索する文字列</label>
-<input id="replace-search" data-field="search" type="text" autocomplete="off">
-</div>
-<div data-regex-fields hidden>
-<label for="replace-pattern">正規表現（前後の / は不要）</label>
-<input id="replace-pattern" data-field="pattern" type="text" spellcheck="false" autocomplete="off" placeholder="例: [0-9]+">
-<fieldset class="text-flags">
-<legend>フラグ</legend>
-<label>
-<input type="checkbox" data-flag="i"> i：大小文字を区別しない</label>
-<label>
-<input type="checkbox" data-flag="m"> m：行ごとの先頭・末尾</label>
-<label>
-<input type="checkbox" data-flag="s"> s：ドットが改行にも一致</label>
-<label>
-<input type="checkbox" data-flag="u" checked> u：Unicode</label>
-</fieldset>
-</div>
-<label for="replace-replacement">置換後の文字列（空欄で削除）</label>
-<input id="replace-replacement" data-field="replacement" type="text" autocomplete="off">
-<p class="field-help">全件を置換します。正規表現では $1（グループ1）、$&amp;（一致全体）、$$（$そのもの）などを使えます。通常検索ではそのままの文字列として扱います。</p>
-<div class="text-tool-pair">
-<div>
-<label for="replace-input">対象テキスト（最大10万文字）</label>
-<textarea id="replace-input" data-field="text" rows="6" spellcheck="false" autocomplete="off">
-</textarea>
-</div>
-<div>
-<label for="replace-output">結果（読み取り専用）</label>
-<textarea id="replace-output" data-output rows="6" readonly>
-</textarea>
-</div>
-</div>
-<div class="text-actions">
-<button type="button" class="button" data-run disabled>実行</button>
-<button type="button" class="button secondary" data-cancel hidden>中止</button>
-<button type="button" class="button secondary" data-copy disabled>結果をコピー</button>
-<button type="button" class="button secondary" data-clear disabled>このツールを消去</button>
-</div>
-<p class="text-status" data-status role="status" aria-live="polite">
-</p>
-<p>
-<a href="#text-tool-nav">ツール一覧へ戻る</a>
-</p>
-</div>
-</details>
-<details id="text-lines" class="text-tool" data-tool="lines">
-<summary>行の整理</summary>
-<div class="text-tool-body">
-<p>重複行の削除と、文字コード順の並べ替えができます。</p>
-<label for="lines-operation">整理方法</label>
-<select id="lines-operation" data-field="operation">
-<option value="unique">重複行を削除</option>
-<option value="asc">昇順（文字コード順）</option>
-<option value="desc">降順（文字コード順）</option>
-</select>
-<p class="field-help">大小文字・空白を区別します。並べ替えは日本語の読み順・数値順ではありません。</p>
-<div class="text-tool-pair">
-<div>
-<label for="lines-input">対象テキスト（最大10万文字）</label>
-<textarea id="lines-input" data-field="text" rows="6" spellcheck="false" autocomplete="off">
-</textarea>
-</div>
-<div>
-<label for="lines-output">結果（読み取り専用）</label>
-<textarea id="lines-output" data-output rows="6" readonly>
-</textarea>
-</div>
-</div>
-<div class="text-actions">
-<button type="button" class="button" data-run disabled>実行</button>
-<button type="button" class="button secondary" data-cancel hidden>中止</button>
-<button type="button" class="button secondary" data-copy disabled>結果をコピー</button>
-<button type="button" class="button secondary" data-clear disabled>このツールを消去</button>
-</div>
-<p class="text-status" data-status role="status" aria-live="polite">
-</p>
-<p>
-<a href="#text-tool-nav">ツール一覧へ戻る</a>
-</p>
-</div>
-</details>
-<details id="text-convert" class="text-tool" data-tool="convert">
-<summary>文字変換</summary>
-<div class="text-tool-body">
-<p>全文、または正規表現に一致した部分だけを変換します。</p>
-<label for="convert-operation">変換方法</label>
-<select id="convert-operation" data-field="operation">
-<option value="upper">英字を大文字に</option>
-<option value="lower">英字を小文字に</option>
-<option value="half">全角から半角</option>
-<option value="full">半角から全角</option>
-</select>
-<label for="convert-mode">適用範囲</label>
-<select id="convert-mode" data-field="mode">
-<option value="all">全文</option>
-<option value="regex">正規表現に一致した部分だけ</option>
-</select>
-<div data-regex-fields hidden>
-<label for="convert-pattern">正規表現（前後の / は不要）</label>
-<input id="convert-pattern" data-field="pattern" type="text" spellcheck="false" autocomplete="off" placeholder="例: [0-9]+">
-<fieldset class="text-flags">
-<legend>フラグ</legend>
-<label>
-<input type="checkbox" data-flag="i"> i：大小文字を区別しない</label>
-<label>
-<input type="checkbox" data-flag="m"> m：行ごとの先頭・末尾</label>
-<label>
-<input type="checkbox" data-flag="s"> s：ドットが改行にも一致</label>
-<label>
-<input type="checkbox" data-flag="u" checked> u：Unicode</label>
-</fieldset>
-</div>
-<fieldset class="text-flags" data-width-targets hidden>
-<legend>全角・半角の変換対象</legend>
-<label>
-<input type="checkbox" data-target="letters" checked> 英字</label>
-<label>
-<input type="checkbox" data-target="numbers" checked> 数字</label>
-<label>
-<input type="checkbox" data-target="symbols"> 記号</label>
-<label>
-<input type="checkbox" data-target="space"> スペース</label>
-</fieldset>
-<p class="field-help">大小変換はASCII英字、全角・半角は英数字・記号・スペースが対象です。カタカナは変換しません。</p>
-<div class="text-tool-pair">
-<div>
-<label for="convert-input">対象テキスト（最大10万文字）</label>
-<textarea id="convert-input" data-field="text" rows="6" spellcheck="false" autocomplete="off">
-</textarea>
-</div>
-<div>
-<label for="convert-output">結果（読み取り専用）</label>
-<textarea id="convert-output" data-output rows="6" readonly>
-</textarea>
-</div>
-</div>
-<div class="text-actions">
-<button type="button" class="button" data-run disabled>実行</button>
-<button type="button" class="button secondary" data-cancel hidden>中止</button>
-<button type="button" class="button secondary" data-copy disabled>結果をコピー</button>
-<button type="button" class="button secondary" data-clear disabled>このツールを消去</button>
-</div>
-<p class="text-status" data-status role="status" aria-live="polite">
-</p>
-<p>
-<a href="#text-tool-nav">ツール一覧へ戻る</a>
-</p>
-</div>
-</details>
-<details id="text-match" class="text-tool" data-tool="match">
+<nav class="text-tool-nav" id="text-tool-nav" aria-label="ページ内のツール一覧"><a href="#text-edit">テキスト編集</a><a href="#text-build">正規表現の作成</a><a href="#text-match">一致確認</a><a href="#text-generate">サンプル生成</a><a href="#regex-help">正規表現の書き方</a></nav><x-ad-slot /><div id="text-tools"><details id="text-edit" class="text-tool" data-tool="edit" open><summary>テキスト編集</summary><div class="text-tool-body">
+<p>変換を選んでまとめて実行できます。入力は残るため、選び直して再実行できます。</p>
+<p class="field-help">処理順：全角・半角 → 大小文字 → 置換（ルール順）→ 前後空白 → 空行 → 重複削除 → 並べ替え。選ばない処理は実行しません。</p>
+<fieldset><legend>全角・半角</legend><label><input type="radio" name="edit-width" data-choice="width" value="none" checked> 変更しない</label> <label><input type="radio" name="edit-width" data-choice="width" value="half"> 半角に</label> <label><input type="radio" name="edit-width" data-choice="width" value="full"> 全角に</label> </fieldset><fieldset><legend>全角・半角の変換対象</legend><label><input type="checkbox" data-target="letters" checked> 英字</label> <label><input type="checkbox" data-target="numbers" checked> 数字</label> <label><input type="checkbox" data-target="symbols"> 記号</label> <label><input type="checkbox" data-target="space"> スペース</label> </fieldset><fieldset><legend>英字の大小文字</legend><label><input type="radio" name="edit-letterCase" data-choice="letterCase" value="none" checked> 変更しない</label> <label><input type="radio" name="edit-letterCase" data-choice="letterCase" value="upper"> 大文字に</label> <label><input type="radio" name="edit-letterCase" data-choice="letterCase" value="lower"> 小文字に</label> </fieldset><p class="field-help">幅変換は英数字・記号・スペース（カタカナは対象外）。大小変換は半角英字が対象です。</p><fieldset><legend>文字変換の適用範囲</legend><label><input type="radio" name="edit-scope" data-choice="scope" value="all" checked> 全文</label> <label><input type="radio" name="edit-scope" data-choice="scope" value="regex"> 正規表現に一致する部分</label> </fieldset><label for="edit-pattern">文字変換する部分の正規表現</label><input id="edit-pattern" data-field="pattern" type="text" autocomplete="off" placeholder="例：[a-z]+"><p><a href="#regex-help">正規表現の書き方</a>（前後の / は不要、u固定・全件処理）</p><fieldset><legend>置換</legend><label><input type="checkbox" data-choice="replaceEnabled"> 置換する</label><p>有効な場合、上から順に適用します。A→B、B→Cなら元のAもCになります。空の置換語は削除です。</p><div data-rules></div><button type="button" class="button secondary" data-add-rule>置換ルールを追加</button><p class="field-help">正規表現では $1・$&amp;・$&lt;name&gt; などを使えます。各ルールはu固定、全件置換です。</p></fieldset>
+<label><input type="checkbox" data-choice="trim"> 各行の前後空白を除去</label>
+<fieldset><legend>空行</legend><label><input type="radio" name="edit-blank" data-choice="blank" value="none" checked> 変更しない</label> <label><input type="radio" name="edit-blank" data-choice="blank" value="blank"> 空行を削除</label> <label><input type="radio" name="edit-blank" data-choice="blank" value="collapse"> 連続する空行を1行に</label> </fieldset><label><input type="checkbox" data-choice="unique"> 重複行を削除</label><fieldset><legend>並べ替え</legend><label><input type="radio" name="edit-sort" data-choice="sort" value="none" checked> 変更しない</label> <label><input type="radio" name="edit-sort" data-choice="sort" value="asc"> 昇順</label> <label><input type="radio" name="edit-sort" data-choice="sort" value="desc"> 降順</label> </fieldset><p class="field-help">重複判定はこの段階の行で行います。並べ替えは文字コード順で、日本語の読み順・数値順ではありません。</p><div class="text-tool-pair"><div><label for="edit-input">対象テキスト（最大10万文字）</label><textarea id="edit-input" data-field="text" rows="8" spellcheck="false" autocomplete="off"></textarea></div><div><label for="edit-output">結果（読み取り専用）</label><textarea id="edit-output" data-output readonly rows="8" spellcheck="false" autocomplete="off"></textarea></div></div><p data-stats>文字数 0 ／ 空白除外 0 ／ 行数 0</p><div class="text-actions"><button type="button" class="button" data-run disabled>選んだ処理を実行</button><button type="button" class="button secondary" data-cancel hidden>中止</button><button type="button" class="button secondary" data-copy disabled>結果をコピー</button><button type="button" class="button secondary" data-clear disabled>入力と結果をクリア</button></div><p data-status role="status" aria-live="polite"></p><p class="field-help">クリアは文章・検索語・正規表現・置換語・結果を消します。選択設定は保持します。</p></div></details><section aria-label="正規表現"><h2>正規表現</h2><details id="text-build" class="text-tool" data-tool="build"><summary>入力例から正規表現を作る</summary><div class="text-tool-body"><p>入力だけでは意図を決められません。一致させたい範囲を選んで候補を確認してください。</p><div><label for="build-input">元になる入力例（最大1,000文字）</label><textarea id="build-input" data-field="text" rows="8" spellcheck="false" autocomplete="off"></textarea></div><fieldset><legend>候補の作り方</legend><label><input type="radio" name="build-mode" data-choice="buildMode" value="exact" checked> 入力そのものに完全一致</label><label><input type="radio" name="build-mode" data-choice="buildMode" value="general"> 英字・数字を同じ種類・文字数に一般化</label></fieldset><p class="field-help">ABC-123 → [A-Z]{3}-[0-9]{3} のように変換。大小は区別し、日本語・記号はそのまま一致させます。用途の正しさは判定しません。</p><div><label for="build-positive">一致してほしい例（1行1件、空行は無視）</label><textarea id="build-positive" data-field="positive" rows="8" spellcheck="false" autocomplete="off"></textarea></div><div><label for="build-negative">一致してほしくない例（1行1件、空行は無視）</label><textarea id="build-negative" data-field="negative" rows="8" spellcheck="false" autocomplete="off"></textarea></div><div><label for="build-output">正規表現の候補（uフラグ、読み取り専用）</label><textarea id="build-output" data-output readonly rows="8" spellcheck="false" autocomplete="off"></textarea></div><div class="text-actions"><button type="button" class="button" data-run disabled>選んだ処理を実行</button><button type="button" class="button secondary" data-cancel hidden>中止</button><button type="button" class="button secondary" data-copy disabled>結果をコピー</button><button type="button" class="button secondary" data-clear disabled>入力と結果をクリア</button></div><p data-status role="status" aria-live="polite"></p><p data-checks></p><button type="button" class="button secondary" data-use-pattern disabled>候補を一致確認へ適用</button><p><a href="#regex-help">正規表現の書き方</a></p></div></details><details id="text-match" class="text-tool" data-tool="match">
 <summary>正規表現の一致確認</summary>
 <div class="text-tool-body">
 <p>一致箇所・位置・キャプチャグループを確認します。</p>
 <div data-regex-fields>
-<label for="match-pattern">正規表現（前後の / は不要）</label>
+<p><a href="#regex-help">正規表現の書き方</a></p><label for="match-pattern">正規表現（前後の / は不要）</label>
 <input id="match-pattern" data-field="pattern" type="text" spellcheck="false" autocomplete="off" placeholder="例: [0-9]+">
 <fieldset class="text-flags">
 <legend>フラグ</legend>
@@ -271,7 +48,7 @@
 <button type="button" class="button" data-run disabled>実行</button>
 <button type="button" class="button secondary" data-cancel hidden>中止</button>
 <button type="button" class="button secondary" data-copy disabled>結果をコピー</button>
-<button type="button" class="button secondary" data-clear disabled>このツールを消去</button>
+<button type="button" class="button secondary" data-clear disabled>入力と結果をクリア</button>
 </div>
 <p class="text-status" data-status role="status" aria-live="polite">
 </p>
@@ -288,7 +65,7 @@
 <th>番号</th>
 <th>一致文字列</th>
 <th>行・列</th>
-<th>キャプチャ</th>
+<th>取り出した部分（グループ）</th>
 </tr>
 </thead>
 <tbody data-matches>
@@ -306,7 +83,7 @@
 <summary>正規表現のサンプル生成</summary>
 <div class="text-tool-body">
 <p>対応するパターン全体に一致する文字列の例を生成します。</p>
-<label for="generate-pattern">正規表現（前後の / は不要）</label>
+<p><a href="#regex-help">正規表現の書き方</a></p><label for="generate-pattern">正規表現（前後の / は不要）</label>
 <input id="generate-pattern" data-field="pattern" type="text" spellcheck="false" autocomplete="off" placeholder="例: [A-Z]{2}[0-9]{3}">
 <label for="generate-amount">生成件数（1〜10件）</label>
 <input id="generate-amount" data-field="amount" type="number" min="1" max="10" value="3">
@@ -322,7 +99,7 @@
 <button type="button" class="button" data-run disabled>実行</button>
 <button type="button" class="button secondary" data-cancel hidden>中止</button>
 <button type="button" class="button secondary" data-copy disabled>結果をコピー</button>
-<button type="button" class="button secondary" data-clear disabled>このツールを消去</button>
+<button type="button" class="button secondary" data-clear disabled>入力と結果をクリア</button>
 </div>
 <p class="text-status" data-status role="status" aria-live="polite">
 </p>
@@ -331,15 +108,4 @@
 </p>
 </div>
 </details>
-</div>
-<x-ad-slot />
-<section class="panel text-tools-help">
-<h2>使い方と制限</h2>
-<p>各ツールの入力・結果は独立しています。別のツールで続きを行う場合は、結果をコピーして貼り付けてください。ページを離れると内容は失われます。</p>
-<p>文字数は見た目の1文字に近い書記素単位で数え、改行は除外します。空白除外では半角・全角スペースとタブも除きます。末尾改行の後の空行も行数に含めます。</p>
-<p>正規表現はJavaScriptの構文です。置換・変換・一致確認はi/m/s/uに対応し、全件を重なりなしで処理します。空文字一致も位置を進めて処理します。実行は1秒で中止します。サンプル生成は対応構文に限り、生成した文字列全体への一致を検証します。要求数に達しない場合もあります。</p>
-<p>正規表現の置換では $1〜$99、$&amp;、$&lt;name&gt;、$$、$`（前の文脈）、$'（後の文脈）をJavaScript標準の規則で使えます。未一致のグループは空、存在しないグループ参照は標準の規則に従います。関数やコードは入力できません。</p>
-<p>検索語・正規表現・置換語は各1,000文字、出力は100万文字までです。広告・解析の通信は発生します。アプリが送る解析イベントに、文章・正規表現・置換語・結果は含めません。</p>
-</section>
-<x-text-analytics />
-</x-layout>
+</section></div><x-ad-slot /><section class="panel" id="regex-help"><h2>正規表現の書き方</h2><p>JavaScriptの正規表現を使います。正規表現は「探す文字の条件」です。前後の / は入力しません。</p><ul><li>[0-9]+：数字が1文字以上続く部分（例：123）</li><li>[A-Z]{3}：英大文字が3文字（例：ABC）</li><li>^：先頭、$：末尾（末尾改行の直前にも一致します）</li><li>丸括弧は部分を取り出すグループ。([0-9]{4})-([0-9]{2}) なら2026-11からグループ1に2026、グループ2に11を取り出せます。</li><li>(?&lt;year&gt;[0-9]{4})：yearという名前を付けたグループ。置換では $&lt;year&gt; を使えます。</li><li>ドットなどの記号そのものを探すにはバックスラッシュを付けます（例：\.）。</li></ul><p>i：大小を区別しない、m：行ごとの先頭・末尾、s：ドットが改行にも一致、u：Unicode。編集・作成はu固定。一致確認はi/m/s/uを選べます。全件を重なりなしで処理します。</p><p>作成機能の候補は入力全体への一致を確認します。入力例に合っても、あらゆる入力に対する正しさは保証しません。日付などの業務上の妥当性は別途確認してください。</p></section><section class="panel text-tools-help"><h2>使い方と制限</h2><p>編集と正規表現の入力は独立しています。入力を変更すると古い結果を消します。ページを離れると入力内容は失われます。</p><p>入力は10万文字、検索語・正規表現・置換語は各1,000文字、結果は100万文字まで。正規表現作成と検証例は各1,000文字まで。処理は1秒で中止します。サンプル生成は対応する構文のみです。</p><p>文字数は書記素単位で改行を除外し、空白除外は半角・全角スペースとタブも除きます。末尾改行後の空行も行数に含みます。</p><p>広告・解析の通信は発生します。アプリの解析イベントに文章・正規表現・置換語・結果は含めません。</p></section><x-text-analytics /></x-layout>
