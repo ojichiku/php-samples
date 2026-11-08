@@ -9,10 +9,10 @@ class TextToolsTest extends TestCase
     public function test_editing_and_regex_sections_are_available(): void
     {
         $response = $this->get('/text-tools')->assertOk();
-        foreach (['edit', 'build', 'match', 'generate'] as $tool) {
-            $response->assertSee('data-tool="'.$tool.'"', false);
+        foreach (['format', 'replace', 'lines', 'regex'] as $tool) {
+            $response->assertSee('data-tab="'.$tool.'"', false);
         }
-        $response->assertDontSee('このツールを消去')->assertSee('入力と結果をクリア')->assertSee('処理順')->assertSee('正規表現の書き方');
+        $response->assertDontSee('このツールを消去')->assertSee('入力と結果をクリア')->assertSee('テキストファイルを保存')->assertSee('貼り付け')->assertSee('コードポイント数')->assertSee('正規表現の書き方');
         $response->assertSee('機密情報は入力しないでください')->assertSee('サンプル生成');
         $this->get('/')->assertSee(route('text.tools'))->assertSee('4つのツール');
         $this->post('/text-tools', ['text' => 'private'])->assertStatus(405);

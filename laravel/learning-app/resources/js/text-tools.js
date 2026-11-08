@@ -1,7 +1,9 @@
-import { countText, codepoints } from './text-tools-engine.js';
+import { codepoints } from './text-tools-engine.js';
+import { downloadText } from './text-tools-download.js';
 
 const root = document.querySelector('#text-tools');
 if (root) {
+const $ = selector => root.querySelector(selector);
     const analytics = document.querySelector('[data-text-analytics]');
     if (analytics) {
         window.dataLayer = window.dataLayer || [];
@@ -18,80 +20,34 @@ if (root) {
     const track = (tool, outcome) => {
         if (analytics) window.gtag('event', 'text_tool_run', { tool_name: tool, outcome, page_location: location.origin + location.pathname, page_referrer: '' });
     };
-    for (const link of document.querySelectorAll('.text-tool-nav a')) {
-        link.addEventListener('click', () => {
-            const target = document.querySelector(link.hash);
-            if (target?.tagName === 'DETAILS') { target.open = true; target.querySelector('summary').focus(); }
-        });
-    }
-    for (const tool of root.querySelectorAll('[data-tool]')) {
-        const name = tool.dataset.tool;
-        const field = key => tool.querySelector(`[data-field="${key}"]`);
-        const status = tool.querySelector('[data-status]');
-        const output = tool.querySelector('[data-output]');
-        const run = tool.querySelector('[data-run]');
-        const cancel = tool.querySelector('[data-cancel]');
-        const copy = tool.querySelector('[data-copy]');
-        const clear = tool.querySelector('[data-clear]');
-        let worker = null, timer = null, tableText = '';
-        const addRule = () => {
-            const container = tool.querySelector('[data-rules]');
-            if (container.children.length >= 20) { status.textContent = '置換ルールは20件までです。'; return; }
-            const row = document.createElement('fieldset');
-            row.dataset.rule = '';
-            row.innerHTML = '<legend>置換ルール</legend><label><input type="checkbox" data-rule-regex> 正規表現を使う</label><label>検索語・正規表現<input type="text" data-rule-search autocomplete="off"></label><label>置換語（空欄で削除）<input type="text" data-rule-replacement autocomplete="off"></label><button type="button" class="button secondary" data-remove-rule>このルールを削除</button>';
-            row.querySelector('[data-remove-rule]').addEventListener('click', () => { row.remove(); invalidate(); sync(); status.textContent = 'ルールを削除しました。再実行してください。'; });
-            container.append(row);
-        };
-        if (name === 'edit') {
-            addRule();
-            tool.querySelector('[data-add-rule]').addEventListener('click', () => { addRule(); invalidate(); sync(); });
-        }
-        tool.querySelector('[data-use-pattern]')?.addEventListener('click', () => {
-            const match = root.querySelector('[data-tool="match"]');
-            const pattern = match.querySelector('[data-field="pattern"]');
-            pattern.value = output.value;
-            for (const flag of match.querySelectorAll('[data-flag]')) flag.checked = flag.dataset.flag === 'u';
-            pattern.dispatchEvent(new Event('input', { bubbles: true }));
-            match.open = true; pattern.focus(); match.scrollIntoView({ block: 'start' });
-        });
-        const stop = () => {
-            if (worker) worker.terminate(); worker = null;
-            clearTimeout(timer); timer = null;
-            if (cancel) cancel.hidden = true;
-            if (run) run.disabled = !('Worker' in window);
-        };
-        const invalidate = () => {
-            stop();
-            if (output) output.value = '';
-            if (copy) copy.disabled = true;
-            tableText = '';
-            const use = tool.querySelector('[data-use-pattern]'); if (use) use.disabled = true;
-            const checks = tool.querySelector('[data-checks]'); if (checks) checks.textContent = '';
-            const results = tool.querySelector('[data-match-results]');
-            if (results) {
-                results.hidden = true;
-                tool.querySelector('[data-highlight]').replaceChildren();
-                tool.querySelector('[data-matches]').replaceChildren();
-                tool.querySelector('[data-copy-list]').disabled = true;
-            }
-        };
-        const sync = () => {
-            const regex = field('mode')?.value === 'regex';
-            const regexFields = tool.querySelector('[data-regex-fields]');
-            if (regexFields && ['replace', 'convert'].includes(name)) regexFields.hidden = !regex;
-            const literal = tool.querySelector('[data-literal-fields]'); if (literal) literal.hidden = regex;
-            const targets = tool.querySelector('[data-width-targets]');
-            if (targets) targets.hidden = !['half', 'full'].includes(field('operation').value);
-            if (name === 'edit') {
-                const scope = tool.querySelector('[data-choice="scope"]:checked').value;
-                field('pattern').disabled = scope !== 'regex';
-                for (const input of tool.querySelectorAll('[data-rule] input, [data-add-rule], [data-remove-rule]')) input.disabled = !tool.querySelector('[data-choice="replaceEnabled"]').checked;
-            }
-            clear.disabled = false;
-        };
+
+const states = {};
+let active = 'format', regexMode = 'build', worker, timer, currentResult = null, tableText = '';
+let inputRevision = 0;
+const titles = { format:['テキスト整形','空白や空行をまとめて整理します。','整形する'], replace:['置換・文字変換','必要な処理を選ぶと、その設定が表示されます。','置換・変換する'], lines:['行の整理','重複の削除と並べ替えを組み合わせられます。','行を整理する'], regex:['正規表現','作成・確認・サンプル生成を切り替えられます。','実行する'] };
+const checkbox = (key,label,checked=false) => `<label><input type="checkbox" name="${key}" ${checked?'checked':''}> ${label}</label>`;
+const radios = (key,title,values) => `<fieldset><legend>${title}</legend><div class="choices">${values.map(([value,label],i)=>`<label><input type="radio" name="${key}" value="${value}" ${!i?'checked':''}> ${label}</label>`).join('')}</div></fieldset>`;
+const textField = (key,label,placeholder='') => `<label class="field"><span>${label}</span><input type="text" name="${key}" placeholder="${placeholder}" autocomplete="off"></label>`;
+const formatOptions = () => `<div class="choices">${checkbox('trim','各行の前後空白を除く',true)}</div>${radios('blank','空行',['none:変更しない','blank:削除する','collapse:連続する空行を1行に'].map(s=>s.split(':')))}`;
+const lineOptions = () => `<div class="choices">${checkbox('unique','重複行を削除する',true)}</div>${radios('sort','並べ替え',[['none','しない'],['asc','昇順'],['desc','降順']])}<p class="hint">大小文字と空白を区別。並べ替えは文字コード順です。</p>`;
+const conversionOptions = () => `<div class="choices">${checkbox('caseEnabled','大小文字を変換')}${checkbox('widthEnabled','全角・半角を変換')}</div><div data-detail="caseEnabled" class="detail" hidden>${radios('letterCase','英字を',[['upper','大文字に'],['lower','小文字に']])}</div><div data-detail="widthEnabled" class="detail" hidden>${radios('width','変換先',[['half','半角に'],['full','全角に']])}<fieldset><legend>変換する文字</legend><div class="choices">${checkbox('letters','英字',true)}${checkbox('numbers','数字',true)}${checkbox('symbols','記号')}${checkbox('space','スペース')}</div></fieldset><p class="hint">カタカナは変換しません。</p></div><details data-conversion-scope hidden><summary>文字変換する部分を正規表現で絞る</summary>${checkbox('scopeEnabled','一致する部分だけを変換')}<div data-detail="scopeEnabled" hidden>${textField('pattern','正規表現','例：[a-z]+')}<a href="#help">書き方</a></div></details>`;
+const replacementOptions = (enabled=true) => `<div class="choices">${checkbox('replaceEnabled','文字列を置換',enabled)}</div><div data-detail="replaceEnabled"><div id="rules"></div><button type="button" id="add-rule" class="small-button">＋ 置換ルールを追加</button><p class="hint">上から順に適用。置換語が空欄なら削除します。</p></div>${conversionOptions()}`;
+function regexOptions() {
+ if(regexMode==='build') return radios('buildMode','作り方',[['exact','入力そのものに一致'],['general','英字・数字を同じ種類・文字数にする']])+`<details class="verification"><summary>一致する例・しない例で確かめる</summary><label class="field"><span>一致してほしい例（1行1件）</span><textarea name="positive"></textarea></label><label class="field"><span>一致してほしくない例（1行1件）</span><textarea name="negative"></textarea></label></details>`;
+ if(regexMode==='match') return textField('pattern','正規表現','例：([0-9]{4})-([0-9]{2})')+`<details><summary>検索の詳しい設定</summary><div class="choices">${checkbox('flagI','大小文字を区別しない')}${checkbox('flagM','行ごとの先頭・末尾')}${checkbox('flagS','ドットが改行にも一致')}${checkbox('flagU','Unicodeとして扱う',true)}</div></details><a href="#help">正規表現の書き方</a>`;
+ return `<label class="field"><span>生成件数（1〜10）</span><input type="number" name="amount" min="1" max="10" value="3"></label><p class="hint">ASCII文字・文字クラス・選択・グループ・回数指定に対応。先読み等は生成できません。</p>`;
+}
+function readSettings() {
+ const settings={};
+ for (const el of $('#options').querySelectorAll('input,textarea')) {
+  if(el.type==='radio'&&!el.checked)continue;
+  if(el.name)settings[el.name]=el.type==='checkbox'?el.checked:el.value;
+ }
+ settings.rules=[...root.querySelectorAll('[data-rule]')].map(row=>({mode:row.querySelector('[data-rule-regex]').checked?'regex':'literal',search:row.querySelector('[data-search]').value,replacement:row.querySelector('[data-replacement]').value}));
+ return settings;
+}
         const renderMatches = result => {
-            const highlight = tool.querySelector('[data-highlight]'), rows = tool.querySelector('[data-matches]');
+            const highlight = $('#highlight'), rows = $('#matches');
             let previous = 0;
             const rowFragment = document.createDocumentFragment(), textFragment = document.createDocumentFragment();
             const lines = ['番号\t一致文字列\t行\t列\tキャプチャ'];
@@ -114,89 +70,118 @@ if (root) {
             });
             textFragment.append(document.createTextNode(result.text.slice(previous)));
             highlight.replaceChildren(textFragment); rows.replaceChildren(rowFragment);
-            tool.querySelector('[data-match-results]').hidden = false;
-            tableText = lines.join('\n'); tool.querySelector('[data-copy-list]').disabled = result.count === 0;
+            $('#match-results').hidden = false;
+            tableText = lines.join('\n'); $('#copy-list').disabled = result.count === 0;
         };
-        const copyValue = async (value, fallback) => {
-            try {
-                if (!navigator.clipboard?.writeText) throw new Error();
-                await navigator.clipboard.writeText(value); status.textContent = 'コピーしました。';
-            } catch {
-                fallback.focus(); fallback.select(); status.textContent = '自動コピーできませんでした。結果を選択して手動でコピーしてください。';
-            }
-        };
-        copy?.addEventListener('click', () => copyValue(output.value, output));
-        tool.querySelector('[data-copy-list]')?.addEventListener('click', () => {
-            const previous = output.value;
-            output.value = tableText;
-            copyValue(tableText, output).then(() => { if (document.activeElement !== output) output.value = previous; });
-        });
-        tool.addEventListener('input', event => {
-            if (event.target.matches('[data-output]')) return;
-            invalidate(); sync(); status.textContent = '';
-            if (['count', 'edit'].includes(name)) {
-                try {
-                    const counts = countText(field('text').value);
-                    tool.querySelector('[data-stats]').textContent = `文字数 ${counts.characters} ／ 空白除外 ${counts.withoutSpaces} ／ 行数 ${counts.lines}`;
-                } catch (error) { tool.querySelector('[data-stats]').textContent = '計測できません'; status.textContent = error.message; }
-            }
-        });
-        clear.addEventListener('click', () => {
-            const populated = [...tool.querySelectorAll('textarea:not([readonly]), input[type=text]')].some(input => input.value);
-            if (populated && !window.confirm('文章・検索語・正規表現・置換語・結果をクリアしますか？ 選択設定は保持します。')) return;
-            invalidate();
-            for (const input of tool.querySelectorAll('textarea, input[type=text]')) input.value = '';
-            if (['count', 'edit'].includes(name)) tool.querySelector('[data-stats]').textContent = '文字数 0 ／ 空白除外 0 ／ 行数 0';
-            status.textContent = '入力と結果をクリアしました。選択設定は保持しています。'; sync();
-        });
-        cancel?.addEventListener('click', () => { stop(); status.textContent = '中止しました。入力は保持しています。'; });
-        run?.addEventListener('click', () => {
-            invalidate(); sync();
-            const options = { tool: name, flags: [...tool.querySelectorAll('[data-flag]:checked')].map(input => input.dataset.flag).join('') };
-            if (name === 'generate') options.flags = 'u';
-            for (const input of tool.querySelectorAll('[data-field]')) options[input.dataset.field] = input.value;
-            for (const input of tool.querySelectorAll('[data-choice]')) {
-                if (input.type === 'radio' && !input.checked) continue;
-                options[input.dataset.choice] = input.type === 'checkbox' ? input.checked : input.value;
-            }
-            options.rules = [...tool.querySelectorAll('[data-rule]')].map(row => ({
-                mode: row.querySelector('[data-rule-regex]').checked ? 'regex' : 'literal',
-                search: row.querySelector('[data-rule-search]').value,
-                replacement: row.querySelector('[data-rule-replacement]').value,
-            }));
-            options.targets = [...tool.querySelectorAll('[data-target]:checked')].map(input => input.dataset.target);
-            if (codepoints(options.text ?? '') > 100_000) { status.textContent = '入力は10万文字以内にしてください。'; return; }
-            try {
-                worker = new Worker(new URL('./text-tools-worker.js', import.meta.url), { type: 'module' });
-                run.disabled = true; cancel.hidden = false; status.textContent = '処理中です…';
-                worker.onmessage = ({ data }) => {
-                    stop();
-                    if (!data.ok) { status.textContent = data.error; track(name, 'error'); return; }
-                    const result = data.result; output.value = result.output;
-                    copy.disabled = result.output === '';
-                    if (name === 'match') {
-                        renderMatches(result);
-                        status.textContent = result.truncated ? '先頭1,000件を表示・以降は未確認です。' : `${result.count}件一致しました。`;
-                    } else if (name === 'build') {
-                        status.textContent = '候補を作成しました。用途に合うか確認してください。';
-                        tool.querySelector('[data-checks]').textContent = result.checks.length ? result.checks.map((check, index) => `${index + 1}件目（${check.expected ? '一致してほしい' : '一致してほしくない'}）：${check.passed ? 'OK' : '期待と異なります'}`).join(' ／ ') : '検証例は未指定です。';
-                        tool.querySelector('[data-use-pattern]').disabled = false;
-                    } else if (name === 'generate') {
-                        status.textContent = result.count === 0 ? '条件内で生成できませんでした。' : `${result.count}件生成し、全体への一致を検証しました。${result.count < result.requested ? '要求件数に達しませんでした。' : ''}`;
-                    } else {
-                        status.textContent = result.output === '' ? '結果は空です。' : result.output === (options.text ?? '').replace(/\r\n?/g, '\n') ? '変更はありません。' : '処理しました。';
-                        if (result.count !== undefined) status.textContent += ` 一致・置換 ${result.count}件。`;
-                        if (result.changed !== undefined && name === 'convert') status.textContent += ` 変化 ${result.changed}件。`;
-                    }
-                    track(name, 'success');
-                };
-                worker.onerror = () => { stop(); status.textContent = '処理を開始できませんでした。ページを再読込みしてください。'; track(name, 'error'); };
-                worker.postMessage(options);
-                timer = setTimeout(() => { stop(); status.textContent = '処理に時間がかかるため中止しました。入力は保持しています。'; track(name, 'timeout'); }, 1000);
-            } catch { stop(); status.textContent = 'このブラウザーは別領域での処理に対応していません。'; }
-        });
-        sync();
-        if (run && !('Worker' in window)) status.textContent = 'このブラウザーはWeb Workerに対応していません。';
-        window.addEventListener('pagehide', () => { invalidate(); for (const input of tool.querySelectorAll('textarea, input[type=text]')) input.value = ''; });
-    }
+
+const key=()=>active==='regex'?'regex-'+regexMode:active;
+function save() {states[key()]={text:$('#input').value,output:$('#output').value,settings:readSettings(),status:$('#status').textContent,details:$('#result-details').textContent,result:currentResult};}
+function stop(){worker?.terminate();worker=null;clearTimeout(timer);$('#run').disabled=!('Worker' in window);$('#cancel').hidden=true;}
+function invalidate(){stop();currentResult=null;$('#match-results').hidden=true;$('#highlight').replaceChildren();$('#matches').replaceChildren();$('#copy-list').disabled=true;tableText='';$('#output').value='';$('#result-details').textContent='';$('#status').textContent='';syncOutput();}
+function addRule(value={}) {
+ const container=$('#rules');if(container.children.length>=20){$('#status').textContent='置換ルールは20件までです。';return;}
+ const row=document.createElement('div');row.className='rule';row.dataset.rule='';
+ row.innerHTML='<div class="rule-head"><label class="choices"><input type="checkbox" data-rule-regex> 正規表現</label><button type="button" class="small-button" data-remove>削除</button></div><div class="rule-grid"><label class="field"><span>検索する文字列</span><input type="text" autocomplete="off" data-search placeholder="例：りんご"></label><label class="field"><span>置換後の文字列</span><input type="text" autocomplete="off" data-replacement placeholder="例：リンゴ"></label></div>';
+ row.querySelector('[data-search]').value=value.search||'';row.querySelector('[data-replacement]').value=value.replacement||'';row.querySelector('[data-rule-regex]').checked=value.mode==='regex';
+ row.querySelector('[data-remove]').onclick=()=>{row.remove();invalidate();};container.append(row);
+}
+function syncDetails() {
+ for(const detail of root.querySelectorAll('[data-detail]'))detail.hidden=!$('#options').querySelector(`[name="${detail.dataset.detail}"]`)?.checked;
+ const scope=$('[data-conversion-scope]');if(scope)scope.hidden=!$('[name=caseEnabled]').checked&&!$('[name=widthEnabled]').checked;
+ const order=active==='replace';$('#order').hidden=!order;
+ if(order){const s=readSettings();const steps=[];if(s.widthEnabled)steps.push('全角・半角');if(s.caseEnabled)steps.push('大小文字');if(s.replaceEnabled)steps.push('置換（ルール順）');$('#order').hidden=steps.length<2;$('#order').textContent=steps.length?'実行順：'+steps.join(' → '):'処理が選ばれていません。';}
+}
+function syncOutput(){
+ const empty=$('#output').value==='';$('#copy').disabled=empty;$('#use-regex').disabled=empty;$('#download').disabled=currentResult===null;
+ $('#output-stats').textContent=`結果：${codepoints($('#output').value).toLocaleString('ja-JP')}文字／UTF-8：${new Blob([$('#output').value]).size.toLocaleString('ja-JP')}バイト（最大100万文字）`;
+}
+
+function updateCount(){
+ const text=$('#input').value,limit=active==='regex'&&regexMode!=='match'?1000:100000;
+ $('#count').textContent=`${codepoints(text).toLocaleString('ja-JP')}文字・${text?text.split('\n').length:0}行／UTF-8：${new Blob([text]).size.toLocaleString('ja-JP')}バイト`;
+ $('#input-limit').textContent=`入力上限：${limit.toLocaleString('ja-JP')}文字（改行を含むコードポイント数）`;
+}
+function render() {
+ const config=titles[active];$('#tool-title').textContent=config[0];$('#tool-description').textContent=config[1];$('#run').textContent=config[2];
+ $('#regex-modes').hidden=active!=='regex';
+ for(const tab of root.querySelectorAll('[data-tab]'))tab.setAttribute('aria-pressed',String(active===tab.dataset.tab));
+ for(const mode of root.querySelectorAll('[data-regex]'))mode.setAttribute('aria-pressed',String(regexMode===mode.dataset.regex));
+ $('#input-label').textContent=active==='regex'?(regexMode==='build'?'元になる入力例':regexMode==='generate'?'正規表現':'対象テキスト'):'入力テキスト';
+ $('#output-label').textContent=active==='regex'&&regexMode==='build'?'正規表現の候補':'結果';
+ $('#use-regex').hidden=!(active==='regex'&&regexMode==='build');
+ let html=active==='format'?formatOptions():active==='replace'?replacementOptions():active==='lines'?lineOptions():regexOptions();
+ $('#options').innerHTML=html;
+ const state=states[key()];
+ if($('#rules')){for(const rule of state?.settings?.rules??[{}])addRule(rule);$('#add-rule').onclick=()=>{addRule();invalidate();};}
+ if(state) for(const el of $('#options').querySelectorAll('[name]')){
+  const value=state.settings?.[el.name];if(value===undefined)continue;
+  if(el.type==='radio')el.checked=el.value===value;else if(el.type==='checkbox')el.checked=value;else el.value=value;
+ }
+ $('#input').value=state?.text??'';$('#output').value=state?.output??'';$('#status').textContent=state?.status??'';$('#result-details').textContent=state?.details??'';
+ currentResult=state?.result??null;$('#match-results').hidden=true;if(active==='regex'&&regexMode==='match'&&currentResult)renderMatches(currentResult);inputRevision++;
+ $('#options').oninput=()=>{invalidate();syncDetails();};syncDetails();syncOutput();updateCount();
+}
+function switchTo(next){save();stop();active=next;render();}
+for(const tab of root.querySelectorAll('[data-tab]'))tab.onclick=()=>switchTo(tab.dataset.tab);
+for(const mode of root.querySelectorAll('[data-regex]'))mode.onclick=()=>{save();stop();regexMode=mode.dataset.regex;render();};
+$('#input').oninput=()=>{inputRevision++;invalidate();updateCount();};
+$('#cancel').onclick=()=>{stop();$('#status').textContent='中止しました。入力は残っています。';};
+$('#clear').onclick=()=>{
+ if(($('#input').value||$('#output').value)&&!confirm('この用途の入力・検索語・正規表現・置換語・結果をクリアしますか？ 選択設定は保持します。'))return;
+ inputRevision++;invalidate();$('#input').value='';for(const el of $('#options').querySelectorAll('input[type=text],textarea'))el.value='';updateCount();$('#status').textContent='入力と結果をクリアしました。';
+};
+$('#copy').onclick=async()=>{try{await navigator.clipboard.writeText($('#output').value);$('#status').textContent='コピーしました。';}catch{$('#output').focus();$('#output').select();$('#status').textContent='結果を選択しました。右クリックまたは長押しで手動でコピーしてください。';}};
+$('#download').onclick=()=>{
+ if(currentResult===null)return;
+ try{downloadText($('#output').value);$('#status').textContent='保存を開始しました。端末のダウンロード・保存画面を確認してください。';}
+ catch{$('#status').textContent='保存を開始できませんでした。結果をコピーして保存してください。';}
+};
+$('#copy-list').onclick=async()=>{
+ try{await navigator.clipboard.writeText(tableText);$('#status').textContent='一致一覧をコピーしました。';}
+ catch{$('#result-details').textContent=tableText;$('#status').textContent='自動コピーできませんでした。下の一致一覧を選択して手動でコピーしてください。';}
+};
+$('#paste').onclick=async()=>{
+ const revision=inputRevision, destination=key();
+ try{
+  if(!navigator.clipboard?.readText)throw new Error();
+  const text=await navigator.clipboard.readText();
+  if(destination!==key()||revision!==inputRevision){$('#status').textContent='入力が変わったため貼り付けを中止しました。もう一度操作してください。';return;}
+  if(!text){$('#status').textContent='クリップボードにテキストがありません。';return;}
+  if($('#input').value&&!confirm('入力欄全体をクリップボードのテキストに置き換えますか？'))return;
+  $('#input').value=text.replace(/\r\n?/g,'\n');$('#input').dispatchEvent(new Event('input',{bubbles:true}));$('#status').textContent='貼り付けました。';$('#input').focus();
+ }catch{$('#input').focus();$('#status').textContent='自動で貼り付けできません。入力欄を右クリック、または長押しして「貼り付け」を選んでください。';}
+};
+$('#use-regex').onclick=()=>{
+ const pattern=$('#output').value,previous=states['regex-match'];
+ if(previous?.settings?.pattern&&!confirm('一致確認の正規表現をこの候補に置き換えますか？'))return;
+ save();states['regex-match']={...previous,text:previous?.text??$('#input').value,output:'',settings:{...previous?.settings,pattern},status:'候補を設定しました。対象テキストで確認できます。'};regexMode='match';render();
+};
+$('#run').onclick=()=>{
+ invalidate();const s=readSettings(),text=$('#input').value;
+ let options={tool:'edit',text,flags:'u',width:s.widthEnabled?s.width:'none',letterCase:s.caseEnabled?s.letterCase:'none',targets:['letters','numbers','symbols','space'].filter(key=>s[key]),scope:s.scopeEnabled?'regex':'all',pattern:s.pattern,rules:s.rules,replaceEnabled:!!s.replaceEnabled,trim:!!s.trim,blank:s.blank,unique:!!s.unique,sort:s.sort};
+ if(active==='regex')options={...s,text,tool:regexMode,flags:(regexMode==='match'?(s.flagU?'u':''):'u')+(s.flagI?'i':'')+(s.flagM?'m':'')+(s.flagS?'s':''),pattern:regexMode==='generate'?text:s.pattern,amount:s.amount};
+ try{
+  worker=new Worker(new URL('./text-tools-worker.js',import.meta.url),{type:'module'});$('#run').disabled=true;$('#cancel').hidden=false;$('#status').textContent='処理中…';
+  worker.onmessage=({data})=>{
+   stop();if(!data.ok){$('#status').textContent=data.error;track(active,'error');return;}
+   const result=data.result;currentResult=result;$('#output').value=result.output;track(active,'success');
+   $('#status').textContent=result.output===text?'変更はありません。':result.output===''?'結果は空です。':'処理しました。';
+   if(active==='regex'&&regexMode==='build'){
+    $('#status').textContent='候補を作りました。意図に合うか確認してください。';$('#result-details').textContent=result.checks.length?result.checks.map((c,i)=>`${i+1}件目：${c.passed?'OK':'期待と異なります'}`).join('\n'):'検証例は未指定です。';
+   }
+   if(active==='regex'&&regexMode==='match'){
+    $('#status').textContent=result.truncated?'先頭1,000件を表示・以降は未確認です。':`${result.count}件一致しました。`;
+    renderMatches(result);
+   }
+   syncOutput();
+  };
+  worker.onerror=()=>{stop();$('#status').textContent='処理を開始できません。ページを再読み込みしてください。';};
+  worker.postMessage(options);timer=setTimeout(()=>{stop();$('#status').textContent='時間がかかるため中止しました。入力は残っています。';track(active,'timeout');},1000);
+ }catch{stop();$('#status').textContent='このブラウザーでは処理を開始できません。';}
+};
+for(const link of root.querySelectorAll('a[href="#help"]'))link.onclick=()=>{$('#help').open=true;};
+window.addEventListener('pagehide',()=>{inputRevision++;invalidate();for(const key of Object.keys(states))delete states[key];for(const field of root.querySelectorAll('textarea,input[type=text]'))field.value='';updateCount();});
+render();
+if(!('Worker' in window))$('#status').textContent='このブラウザーはWeb Workerに対応していません。';
+
 }
