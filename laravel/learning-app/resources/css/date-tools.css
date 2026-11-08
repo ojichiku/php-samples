@@ -1,0 +1,50 @@
+#date-tools { --ink:#243c36; --green:#226a56; --line:#d4dfd8; --muted:#596b64; display:grid;grid-template-columns:180px minmax(0,1fr);gap:24px;align-items:start;font-size:16px;line-height:1.65; }
+.date-tool-privacy {font-size:14px;color:var(--muted);margin-top:16px;max-width:850px;}
+#date-tools [hidden]{display:none!important}
+#date-tools fieldset {border:0;margin:0;padding:0;min-width:0;}
+#date-tools button,#date-tools input,#date-tools select,#date-tools textarea {font:inherit;color:inherit;}
+#date-tools button {min-height:44px;padding:8px 16px;border:1px solid #a8bbb0;border-radius:9px;background:white;cursor:pointer;}
+#date-tools button:hover {border-color:var(--green)}
+#date-tools input,#date-tools select,#date-tools textarea {min-width:0;max-width:100%;width:100%;min-height:46px;padding:8px 10px;border:1px solid #94a89b;border-radius:7px;background:white;}
+#date-tools input[type=checkbox] {width:20px;min-height:20px;flex-shrink:0;appearance:auto;}
+#date-tools input[type=date] {appearance:none;}
+#date-tools label {display:block;font-weight:650;margin-bottom:7px;}
+#date-tools .field {margin-bottom:18px;}
+#date-tools .hint,#date-tools .note {font-size:14px;color:var(--muted);}
+#date-tools .hint {margin:6px 0;}
+#date-tools .note {margin:16px 0 0;}
+#date-tools nav {display:grid;gap:8px;}
+#date-tools nav button {text-align:left;font-weight:650;}
+#date-tools button[aria-pressed=true],#date-tools button.primary {background:var(--green);color:white;border-color:var(--green);}
+#date-tools section {background:white;border:1px solid var(--line);border-radius:14px;padding:24px;min-width:0;}
+#date-tools h2 {font-size:22px;margin:0 0 6px;}
+#date-tools h3 {font-size:17px;margin:0 0 12px;}
+#date-tools p {margin:8px 0 14px;}
+#date-tools .intro {color:var(--muted);margin-bottom:22px;}
+#date-tools .workspace {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;}
+#date-tools .workspace>* {min-width:0;}
+#date-tools .row {display:flex;gap:10px;align-items:center;}
+#date-tools .row>* {min-width:0;flex:1;}
+#date-tools .actions {display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;}
+#date-tools .check {display:flex;gap:8px;align-items:center;font-weight:400;}
+#date-tools .output {border:1px solid var(--line);border-radius:10px;background:#f4f8f4;padding:18px;min-height:180px;}
+#date-tools .result {white-space:pre-wrap;overflow-wrap:anywhere;font-size:18px;margin:0 0 16px;line-height:1.9;}
+#date-tools .error {color:#9a2d25;}
+#date-tools .result.placeholder {font-size:16px;color:var(--muted);}
+#date-tools .copy-status {font-size:13px;color:var(--muted);margin:8px 0 0;}
+#date-tools .copy-fallback {margin-top:10px;height:110px;resize:vertical;}
+#date-tools .table-wrap {max-width:100%;overflow-x:auto;}
+#date-tools table {width:100%;border-collapse:collapse;font-size:15px;margin-top:20px;}
+#date-tools th,#date-tools td {border-bottom:1px solid var(--line);padding:10px 9px;text-align:left;vertical-align:top;overflow-wrap:anywhere;}
+#date-tools th {background:#f2f6f0;}
+#date-tools caption {text-align:left;font-weight:700;margin-bottom:10px;}
+#date-tools .table-panel .output {margin-top:20px;min-height:100px;}
+#date-tools .inline-inputs {display:flex;gap:14px;flex-wrap:wrap;}
+#date-tools .inline-inputs .field {flex:1;min-width:130px;}
+#date-tools .range {background:#fff9e9;border:1px solid #ecdcb0;border-radius:8px;padding:10px 14px;font-size:14px;margin:20px 0 0;}
+@media(max-width:850px){#date-tools {grid-template-columns:1fr;gap:16px;}#date-tools nav {grid-template-columns:repeat(3,minmax(0,1fr));}#date-tools nav button {text-align:center;padding:8px;font-size:15px;}}
+@media(max-width:650px){#date-tools .workspace {grid-template-columns:1fr;gap:20px;}#date-tools nav {grid-template-columns:repeat(2,minmax(0,1fr));}#date-tools nav button:last-child {grid-column:1/-1;}#date-tools section {padding:18px 14px;}#date-tools .actions button {flex:1;padding:8px 10px;}#date-tools .output {min-height:140px;}#date-tools th,#date-tools td {padding:8px 6px;font-size:14px;}}
+
+.date-tools-shell > .page-heading {padding:24px 0 12px;}
+.date-tools-shell .back-link {margin-bottom:12px;}
+.date-tools-shell > .ad-slot {margin-block:24px;}

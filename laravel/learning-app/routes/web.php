@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'tools.index')->name('tools.index');
 Route::view('/text-tools', 'tools.text-tools')->name('text.tools');
+Route::view('/date-tools', 'tools.date-tools')->name('date.tools');
 Route::get('/calendar', CalendarController::class)->name('calendar');
 Route::view('/password-generator', 'tools.password-guide')->name('password.guide');
 

@@ -1,7 +1,7 @@
 # Laravel Learning App
 
 Laravelで小さな画面と入力処理を学ぶサンプルアプリです。
-Hello World、名前を入力するフォーム、共通メニュー、サーバー版・ブラウザー版のパスワード生成、年間カレンダー、テキスト便利ツール集を含みます。
+Hello World、名前を入力するフォーム、共通メニュー、サーバー版・ブラウザー版のパスワード生成、年間カレンダー、テキスト便利ツール集、日付・元号ツールを含みます。
 
 ## 必要なもの
 
@@ -51,6 +51,7 @@ php artisan serve --host=127.0.0.1 --port=8000
 | ブラウザー版パスワードの使い方 | `/password-generator-browser/guide` | 生成条件と使い方を確認できる |
 | ブラウザー版パスワード生成・コピー | `/password-generator-browser` | ブラウザー内で複数件を生成し、コピーできる |
 | テキスト便利ツール集 | `/text-tools` | 整形・置換・行整理・正規表現を使い、結果をコピー・保存できる |
+| 日付・元号ツール | `/date-tools` | 西暦と元号の変換・対応表、日数・年齢計算ができる |
 | 年間カレンダー | `/calendar?year=2026` | 12か月・祝日・六曜と年切替・今日への移動 |
 | ルートの直接応答 | `/hello` | Hello World!と表示される |
 | Bladeの画面表示 | `/hello/view` | BladeでHello World!を表示する |
@@ -196,3 +197,18 @@ npm run test:browser:text-tools
 ## ブラウザー版生成画面の広告
 
 説明・注意書き後と生成ツール全体の後に各1枠。生成・コピー処理自身に送信処理は追加せず、解析も追加しません。ただし第三者スクリプトを同じページで実行するため、ページ全体の非通信や生成値の隔離を保証しません。広告有効時に厳しいscript/connect制限を解除する条件をテストし、無効/不正設定時は元のCSPを維持します。
+
+## 日付・元号ツール
+
+`/date-tools`で西暦⇔元号、元号対応表、日数差・何日後/前、年齢を調べられます。1873〜2100年に対応し、表は一度に50年分まで表示します。年だけの改元年は両方の元号と期間を表示し、未来年は現在の令和が続く場合の換算と明示します。
+
+計算はブラウザー内で行い、アプリは入力・結果をサーバーやWeb Storageへ送信・保存しません。広告を有効にすると第三者コードの通信が発生するため、ページ全体の非通信とは区別してください。初期設定の広告は無効、解析の追加はありません。
+
+```bash
+npm run test:js
+php artisan test --compact --filter=DateTools
+# アプリ起動後、別ターミナルで実行
+npm run test:browser:date-tools
+```
+
+計算は`resources/js/date-tools-engine.js`、画面操作は`resources/js/date-tools.js`、表示は`resources/views/tools/date-tools.blade.php`です。元号の改元日は[国立天文台の資料](https://eco.mtk.nao.ac.jp/koyomi/wiki/CEF2BBCB2FB8B5B9E6.html)、太陽暦の開始は[国立国会図書館の解説](https://www.ndl.go.jp/koyomi/chapter1/s2.html)を参照しています。

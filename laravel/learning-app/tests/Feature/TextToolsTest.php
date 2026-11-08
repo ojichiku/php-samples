@@ -14,7 +14,7 @@ class TextToolsTest extends TestCase
         }
         $response->assertDontSee('このツールを消去')->assertSee('入力と結果をクリア')->assertSee('テキストファイルを保存')->assertSee('貼り付け')->assertSee('コードポイント数')->assertSee('正規表現の書き方');
         $response->assertSee('機密情報は入力しないでください')->assertSee('サンプル生成');
-        $this->get('/')->assertSee(route('text.tools'))->assertSee('4つのツール');
+        $this->get('/')->assertSee(route('text.tools'))->assertSee('5つのツール');
         $this->post('/text-tools', ['text' => 'private'])->assertStatus(405);
     }
 

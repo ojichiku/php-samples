@@ -16,10 +16,10 @@ class AdvertisingTest extends TestCase
     public function test_live_ads_only_appear_on_public_content_pages(): void
     {
         $this->enableAds('production');
-        foreach (['/', '/calendar', '/password-generator', '/password-generator-browser/guide', '/password-generator-browser'] as $path) {
+        foreach (['/', '/calendar', '/password-generator', '/password-generator-browser/guide', '/password-generator-browser', '/date-tools'] as $path) {
             $html = $this->get($path)->assertOk()->assertSee('data-ad-slot="1234567890"', false)->getContent();
             $this->assertSame(1, substr_count($html, 'pagead2.googlesyndication.com'));
-            $this->assertSame(in_array($path, ['/', '/password-generator-browser'], true) ? 2 : 1, substr_count($html, 'data-ad-slot='));
+            $this->assertSame(in_array($path, ['/', '/password-generator-browser', '/date-tools'], true) ? 2 : 1, substr_count($html, 'data-ad-slot='));
         }
         foreach (['/password-generator/generate', '/hello/view', '/missing-page'] as $path) {
             $this->get($path)->assertDontSee('adsbygoogle')->assertDontSee('ad-preview');

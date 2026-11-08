@@ -1,3 +1,4 @@
+@import "./date-tools.css";
 @import "./text-tools.css";
 @import 'tailwindcss';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';

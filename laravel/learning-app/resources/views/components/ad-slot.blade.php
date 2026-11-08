@@ -1,5 +1,5 @@
 @php
-    $allowed = request()->routeIs('tools.index', 'text.tools', 'password.guide', 'password.browser.guide', 'password.browser', 'calendar');
+    $allowed = request()->routeIs('tools.index', 'date.tools', 'text.tools', 'password.guide', 'password.browser.guide', 'password.browser', 'calendar');
     $client = (string) config('advertising.client');
     $slotId = (string) config('advertising.slot');
     $live = $allowed && app()->environment('production') && config('advertising.enabled')
