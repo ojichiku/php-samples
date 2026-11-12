@@ -23,6 +23,8 @@ async function noOverflow(page) {
             page.on('request', request => {
                 if (new URL(request.url()).origin !== new URL(base).origin) external.push(new URL(request.url()).origin);
             });
+            assert.equal((await page.goto(base + '/password-generator')).status(), 200);
+            assert.equal(page.url(), base + '/password-generator/generate');
             assert.equal((await page.goto(base)).status(), 200);
             await noOverflow(page);
             if (width === 768) {

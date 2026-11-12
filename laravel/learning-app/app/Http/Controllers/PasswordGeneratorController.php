@@ -5,9 +5,20 @@ namespace App\Http\Controllers;
 use App\Http\Requests\GeneratePasswordRequest;
 use App\Services\PasswordGenerator;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class PasswordGeneratorController extends Controller
 {
+    public function guide(): RedirectResponse
+    {
+        return to_route('password.form');
+    }
+
+    public function browserGuide(): RedirectResponse
+    {
+        return to_route('password.browser');
+    }
+
     public function form(): View
     {
         $length = old('length', 16);

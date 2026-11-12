@@ -17,8 +17,9 @@ const {chromium} = require('playwright');
             const requests = [];
             page.on('pageerror', error => errors.push(error.message));
             await page.route('**/*', route => new URL(route.request().url()).origin === new URL(base).origin ? route.continue() : route.abort());
-            const response = await page.goto(`${base}/password-generator-browser`, {waitUntil: 'networkidle'});
+            const response = await page.goto(`${base}/password-generator-browser/guide`, {waitUntil: 'networkidle'});
             assert.equal(response.status(), 200);
+            assert.equal(page.url(), `${base}/password-generator-browser`);
             assert.ok(response.headers()['cache-control'].includes('no-store'));
             assert.equal(await page.getByRole('heading', {name: 'パスワード生成（JavaScript版）', exact: true}).count(), 1);
             assert.ok(await page.evaluate(() => {

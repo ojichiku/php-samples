@@ -11,9 +11,9 @@ Route::view('/', 'tools.index')->name('tools.index');
 Route::view('/text-tools', 'tools.text-tools')->name('text.tools');
 Route::view('/date-tools', 'tools.date-tools')->name('date.tools');
 Route::get('/calendar', CalendarController::class)->name('calendar');
-Route::redirect('/password-generator', '/password-generator/generate')->name('password.guide');
+Route::get('/password-generator', [PasswordGeneratorController::class, 'guide'])->name('password.guide');
 
-Route::redirect('/password-generator-browser/guide', '/password-generator-browser')->name('password.browser.guide');
+Route::get('/password-generator-browser/guide', [PasswordGeneratorController::class, 'browserGuide'])->name('password.browser.guide');
 
 Route::middleware(PreventSensitiveResponseCaching::class)->group(function (): void {
     Route::view('/password-generator-browser', 'tools.password-browser')->name('password.browser')
