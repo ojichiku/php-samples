@@ -192,3 +192,7 @@ body:has(#browser-password-tool) .ad-slot { min-height: 150px; }
     .text-tool-body fieldset > label:has(input[type=radio]), .text-tool-body fieldset > label:has(input[data-target]) { display: inline-flex; margin-right: 24px; }
 }
 .text-tool-body input:disabled { background: #eef0e9; }
+
+/* Password tools keep instructions, controls and results on the same page. */
+.password-shell { max-width: 760px; }
+.password-shell .generator-grid { grid-template-columns: minmax(0, 1fr); }

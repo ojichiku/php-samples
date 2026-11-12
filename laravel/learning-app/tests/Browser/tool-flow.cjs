@@ -25,26 +25,30 @@ async function noOverflow(page) {
             });
             assert.equal((await page.goto(base)).status(), 200);
             await noOverflow(page);
-            if ([375, 1280].includes(width)) await page.screenshot({ path: path.join(output, `menu-${width}.png`), fullPage: true });
             if (width === 768) {
-                await page.getByRole('link', { name: '使い方を見る' }).focus();
+                await page.locator('.tool-card').filter({has: page.getByRole('heading', {name: 'パスワード生成', exact: true})}).getByRole('link', {name: '開く', exact: true}).focus();
                 await page.keyboard.press('Enter');
             } else {
-                await page.getByRole('link', { name: '使い方を見る' }).click();
+                await page.locator('.tool-card').filter({has: page.getByRole('heading', {name: 'パスワード生成', exact: true})}).getByRole('link', {name: '開く', exact: true}).click();
             }
-            await page.waitForURL('**/password-generator');
-            await noOverflow(page);
-            await page.getByRole('link', { name: 'パスワードを生成する' }).click();
             await page.waitForURL('**/password-generator/generate');
             await noOverflow(page);
+            assert.equal(await page.locator('.ad-preview').count(), 2);
+            assert.ok(await page.evaluate(() => {
+                const settings = document.querySelector('[aria-labelledby="settings-heading"]').getBoundingClientRect();
+                const result = document.querySelector('.result-panel').getBoundingClientRect();
+                const ads = [...document.querySelectorAll('.ad-slot')].map(el => el.getBoundingClientRect());
+                const tool = document.querySelector('#server-password-tool').getBoundingClientRect();
+                return settings.bottom <= result.top && Math.abs(settings.width - result.width) < 1
+                    && ads[0].bottom <= tool.top && tool.bottom <= ads[1].top;
+            }), 'single column with ads outside the tool');
             assert.equal(await page.locator('#generated-password').inputValue(), '');
             assert.ok(await page.getByRole('button', { name: 'コピーする' }).isDisabled());
-            if (width === 375) await page.screenshot({ path: path.join(output, 'password-form-375.png'), fullPage: true });
             await page.getByLabel('文字数', { exact: true }).fill('64');
             await page.locator('input[value=symbols]').check();
             const [response] = await Promise.all([
                 page.waitForNavigation({ waitUntil: 'domcontentloaded' }),
-                page.getByRole('button', { name: '生成する', exact: true }).click(),
+                page.getByRole('button', { name: 'パスワードを生成', exact: true }).click(),
             ]);
             assert.equal(response.status(), 200);
             assert.ok(response.headers()['cache-control'].includes('no-store'));
@@ -62,7 +66,7 @@ async function noOverflow(page) {
             await page.getByText('自動でコピーできませんでした。選択した生成値を手動でコピーしてください。', { exact: true }).waitFor();
             assert.ok(await page.locator('#generated-password').evaluate(element => element.selectionStart === 0 && element.selectionEnd === element.value.length));
             for (const box of await page.locator('input[type=checkbox]').all()) await box.uncheck();
-            await Promise.all([page.waitForNavigation({ waitUntil: 'domcontentloaded' }), page.getByRole('button', { name: '生成する', exact: true }).click()]);
+            await Promise.all([page.waitForNavigation({ waitUntil: 'domcontentloaded' }), page.getByRole('button', { name: 'パスワードを生成', exact: true }).click()]);
             await page.getByRole('alert').waitFor();
             assert.ok(await page.getByRole('alert').evaluate(element => document.activeElement === element), 'validation error should receive keyboard focus');
             assert.ok(await page.getByRole('alert').innerText().then(text => text.includes('1つ以上')));

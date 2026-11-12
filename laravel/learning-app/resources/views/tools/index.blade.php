@@ -12,7 +12,7 @@
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">Aa</span><span class="badge">利用できます</span></div>
                 <h3>パスワード生成</h3>
                 <p>文字数と使う文字を選んで、パスワードを生成します。生成した値をコピーできます。</p>
-                <a class="button" href="{{ route('password.guide') }}">使い方を見る <span aria-hidden="true">→</span></a>
+                <a class="button" href="{{ route('password.form') }}">開く <span aria-hidden="true">→</span></a>
             </article>
             <article class="tool-card available">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">31</span><span class="badge">利用できます</span></div>
@@ -22,9 +22,9 @@
             </article>
             <article class="tool-card available">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">Aa+</span><span class="badge">利用できます</span></div>
-                <h3>ブラウザーでパスワード生成</h3>
+                <h3>パスワード生成（JavaScript版）</h3>
                 <p>この端末で複数のパスワードを生成します。利用できる記号の直接入力やプリセットを選べます。</p>
-                <a class="button" href="{{ route('password.browser.guide') }}">ブラウザー版の使い方 <span aria-hidden="true">→</span></a>
+                <a class="button" href="{{ route('password.browser') }}">開く <span aria-hidden="true">→</span></a>
             </article>
             <article class="tool-card available">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">T</span><span class="badge">利用できます</span></div>

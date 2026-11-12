@@ -24,7 +24,7 @@ const {chromium} = require('playwright');
             for (const [name, url] of [['index', '/'], ['guide', '/password-generator'], ['browser-guide', '/password-generator-browser/guide'], ['calendar', '/calendar']]) {
                 assert.equal((await page.goto(base + url)).status(), 200);
                 await page.locator('.ad-preview').first().waitFor();
-                assert.equal(await page.locator('.ad-slot').count(), name === 'index' ? 2 : 1);
+                assert.equal(await page.locator('.ad-slot').count(), name === 'calendar' ? 1 : 2);
                 if (name === 'index') {
                     assert.ok(await page.evaluate(() => {
                         const ads = document.querySelectorAll('.ad-slot');
@@ -38,22 +38,25 @@ const {chromium} = require('playwright');
                 if (name === 'calendar') {
                     assert.ok(await page.evaluate(() => document.querySelector('.year-grid').getBoundingClientRect().bottom <= document.querySelector('.ad-slot').getBoundingClientRect().top));
                 }
-                await page.screenshot({path: path.join(output, `${name}-${width}.png`), fullPage: true});
                 await page.emulateMedia({media: 'print'});
                 assert.equal(await page.locator('.ad-slot').first().evaluate(el => getComputedStyle(el).display), 'none');
                 await page.emulateMedia({media: 'screen'});
             }
             await page.goto(base + '/password-generator-browser/guide');
-            await page.getByRole('link', {name: 'ブラウザーで生成する'}).click();
             assert.equal(new URL(page.url()).pathname, new URL(base + '/password-generator-browser').pathname);
             assert.equal(await page.locator('.ad-slot').count(), 2);
             assert.equal(await page.locator('.ad-preview').count(), 2);
             assert.ok(await page.evaluate(() => document.querySelector('.ad-slot').getBoundingClientRect().bottom <= document.querySelector('#browser-password-tool').getBoundingClientRect().top));
             await page.goto(base + '/password-generator/generate');
-            assert.equal(await page.locator('.ad-slot, .adsbygoogle').count(), 0);
+            assert.equal(await page.locator('.ad-preview').count(), 2);
+            assert.ok(await page.evaluate(() => {
+                const tool = document.querySelector('#server-password-tool').getBoundingClientRect();
+                const ads = document.querySelectorAll('.ad-slot');
+                return ads[0].getBoundingClientRect().bottom <= tool.top && tool.bottom <= ads[1].getBoundingClientRect().top;
+            }));
             assert.deepEqual(external, []);
             assert.deepEqual(errors, []);
-            results.push({width, pages: 4, noOverflow: true, noExternalRequests: true, printHidden: true, browserGeneratorAdSlots: 2, serverGeneratorExcluded: true});
+            results.push({width, pages: 4, noOverflow: true, noExternalRequests: true, printHidden: true, browserGeneratorAdSlots: 2, serverGeneratorAdSlots: 2});
             await page.close();
         }
         fs.writeFileSync(path.join(output, 'browser-results.json'), JSON.stringify(results, null, 2));

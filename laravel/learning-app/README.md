@@ -212,3 +212,7 @@ npm run test:browser:date-tools
 ```
 
 計算は`resources/js/date-tools-engine.js`、画面操作は`resources/js/date-tools.js`、表示は`resources/views/tools/date-tools.blade.php`です。元号の改元日は[国立天文台の資料](https://eco.mtk.nao.ac.jp/koyomi/wiki/CEF2BBCB2FB8B5B9E6.html)、太陽暦の開始は[国立国会図書館の解説](https://www.ndl.go.jp/koyomi/chapter1/s2.html)を参照しています。
+
+## パスワード生成の画面構成
+
+通常版は `/password-generator/generate`、JavaScript版は `/password-generator-browser` で、説明・条件・結果をそれぞれ1ページにまとめています。メニューは「パスワード生成」と「パスワード生成（JS版）」です。旧説明URLは各入力URLへ302転送します。PC・スマートフォンとも最大760pxの縦1列で、両版の操作/使い方領域の前後に広告2枠を配置。通常版は生成POSTの応答にも広告コードを出せます。生成方式や保存機能は変更していません。同じページの第三者スクリプトから生成値を隔離する構成ではありません。ローカル確認は `ADSENSE_PREVIEW=true` を指定し、実広告を取得しない仮枠を使用できます。

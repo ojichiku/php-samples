@@ -10,16 +10,17 @@ class ToolNavigationTest extends TestCase
     {
         $this->get(route('tools.index'))->assertOk()
             ->assertSee('サンプルツール集')
-            ->assertSee(route('password.guide'))
+            ->assertSee(route('password.form'))
             ->assertSee(route('calendar'))
             ->assertDontSee('href="'.url('/login').'"', false);
     }
 
-    public function test_guide_links_to_generator_and_common_menu(): void
+    public function test_generator_includes_instructions_and_common_menu(): void
     {
-        $this->get(route('password.guide'))->assertOk()
-            ->assertSee(route('password.form'))->assertSee(route('tools.index'))
-            ->assertSee('サーバーで行い');
+        $this->get(route('password.guide'))->assertRedirect(route('password.form'));
+        $this->get(route('password.form'))->assertOk()
+            ->assertSee('使い方と注意点')->assertSee(route('tools.index'))
+            ->assertSee('サーバーで行い')->assertSee('第三者スクリプト');
     }
 
     public function test_generator_starts_empty_with_documented_defaults(): void

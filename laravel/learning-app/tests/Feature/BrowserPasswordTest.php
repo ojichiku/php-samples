@@ -11,7 +11,7 @@ class BrowserPasswordTest extends TestCase
     {
         $this->mock(PasswordGenerator::class)->shouldNotReceive('generate');
         $response = $this->get(route('password.browser'));
-        $response->assertOk()->assertSee('ブラウザーでパスワード生成')
+        $response->assertOk()->assertSee('パスワード生成（JavaScript版）')
             ->assertSee('発行数')->assertSee('利用できる記号を直接入力')
             ->assertDontSee('<form', false)
             ->assertDontSee('name="password"', false)
@@ -39,8 +39,8 @@ class BrowserPasswordTest extends TestCase
 
     public function test_original_password_routes_remain_and_menu_links_to_both_tools(): void
     {
-        $this->get(route('password.guide'))->assertOk()->assertSee(route('password.form'));
+        $this->get(route('password.guide'))->assertRedirect(route('password.form'));
         $this->get(route('password.form'))->assertOk()->assertSee(route('password.generate'));
-        $this->get(route('tools.index'))->assertOk()->assertSee(route('password.guide'))->assertSee(route('password.browser'));
+        $this->get(route('tools.index'))->assertOk()->assertSee(route('password.form'))->assertSee(route('password.browser'));
     }
 }
