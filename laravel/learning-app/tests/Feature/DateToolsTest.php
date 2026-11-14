@@ -12,7 +12,7 @@ class DateToolsTest extends TestCase
             ->assertSee('西暦から元号')->assertSee('元号から西暦')->assertSee('元号対応表')
             ->assertSee('日付計算')->assertSee('年齢')->assertSee('1873年1月1日')
             ->assertSee('data-date-inputs disabled', false)->assertSee('JavaScriptが必要');
-        $this->get('/')->assertOk()->assertSee(route('date.tools'))->assertSee('5つのツール');
+        $this->get('/')->assertOk()->assertSee(route('date.tools'))->assertSee('6つのツール');
         $this->get('/calendar')->assertOk()->assertSee(route('date.tools'));
         $this->post('/date-tools', ['birthday' => '2000-02-29'])->assertStatus(405);
     }

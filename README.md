@@ -7,7 +7,7 @@ PHPの学習・動作確認に使うサンプルコード集です。
 
 | 分類 | サンプル | 内容 |
 | --- | --- | --- |
-| Laravel | [learning-app](laravel/learning-app/README.md) | 共通メニュー、サーバー/ブラウザー別のパスワード生成、年間カレンダー、Hello World、入力フォーム |
+| Laravel | [learning-app](laravel/learning-app/README.md) | 共通メニュー、サーバー/ブラウザー別のパスワード生成、年間カレンダー、日付・元号、テキストツール、単位換算、Hello World、入力フォーム |
 
 ## フォルダー構成
 

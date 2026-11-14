@@ -6,7 +6,7 @@
     </section>
     <x-ad-slot />
     <section aria-labelledby="tools-heading">
-        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">5つのツールが利用できます</span></div>
+        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">6つのツールが利用できます</span></div>
         <div class="tool-grid">
             <article class="tool-card available">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">Aa</span><span class="badge">利用できます</span></div>
@@ -37,6 +37,12 @@
                 <h3>日付・元号ツール</h3>
                 <p>西暦と元号の変換・対応表、日数や年齢の計算ができます。</p>
                 <a class="button" href="{{ route('date.tools') }}">日付・元号を調べる <span aria-hidden="true">→</span></a>
+            </article>
+            <article class="tool-card available">
+                <div class="card-top"><span class="tool-icon" aria-hidden="true">↔</span><span class="badge">利用できます</span></div>
+                <h3>単位換算ツール</h3>
+                <p>長さ・重さ・容量・面積・温度・速さ・時間・エネルギーを換算し、単位の早見表を確認できます。</p>
+                <a class="button" href="{{ route('unit.converter') }}">単位を換算する <span aria-hidden="true">→</span></a>
             </article>
             <article class="tool-card upcoming">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">◎</span><span class="badge neutral">準備中</span></div>

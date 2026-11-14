@@ -22,11 +22,12 @@
                 <a href="{{ route('calendar') }}" @if($active === 'calendar') aria-current="page" @endif>年間カレンダー</a>
                 <a href="{{ route('password.browser') }}" @if($active === 'password-browser') aria-current="page" @endif>パスワード生成（JS版）</a>
                 <a href="{{ route('date.tools') }}" @if($active === 'date-tools') aria-current="page" @endif>日付・元号</a>
+                <a href="{{ route('unit.converter') }}" @if($active === 'unit-converter') aria-current="page" @endif>単位換算</a>
                 <a href="{{ route('text.tools') }}" @if($active === 'text-tools') aria-current="page" @endif>テキストツール</a>
             </nav>
         </div>
     </header>
-    <main @class(['shell', 'calendar-shell' => $active === 'calendar', 'text-tools-shell' => $active === 'text-tools', 'date-tools-shell' => $active === 'date-tools', 'password-shell' => in_array($active, ['password', 'password-browser'], true)]) id="main">
+    <main @class(['shell', 'calendar-shell' => $active === 'calendar', 'text-tools-shell' => $active === 'text-tools', 'date-tools-shell' => $active === 'date-tools', 'unit-converter-shell' => $active === 'unit-converter', 'password-shell' => in_array($active, ['password', 'password-browser'], true)]) id="main">
         {{ $slot }}
     </main>
     <footer class="shell site-footer">

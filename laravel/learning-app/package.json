@@ -10,12 +10,13 @@
         "test:browser:check": "node tests/Browser/check-environment.cjs",
         "test:browser:learning": "node tests/Browser/learning-flow.cjs",
         "test:browser:tools": "node tests/Browser/tool-flow.cjs",
-        "test:browser": "npm run test:browser:learning && npm run test:browser:tools && npm run test:browser:calendar && npm run test:browser:password-browser && npm run test:browser:text-tools && npm run test:browser:date-tools",
+        "test:browser": "npm run test:browser:learning && npm run test:browser:tools && npm run test:browser:calendar && npm run test:browser:password-browser && npm run test:browser:text-tools && npm run test:browser:date-tools && npm run test:browser:unit-converter",
         "test:browser:calendar": "node tests/Browser/calendar-flow.cjs",
         "test:js": "node --test tests/Unit/*.test.mjs",
         "test:browser:password-browser": "node tests/Browser/browser-password-flow.cjs",
         "test:browser:text-tools": "node tests/Browser/text-tools-flow.cjs",
-        "test:browser:date-tools": "node tests/Browser/date-tools-flow.cjs"
+        "test:browser:date-tools": "node tests/Browser/date-tools-flow.cjs",
+        "test:browser:unit-converter": "node tests/Browser/unit-converter-flow.cjs"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
