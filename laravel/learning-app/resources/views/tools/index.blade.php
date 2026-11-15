@@ -1,3 +1,4 @@
+{{-- 作成済み6ツールへのリンクを並べる共通入口。Route名を使ってURLを作る。 --}}
 <x-layout title="ツール一覧">
     <section class="hero">
         <p class="eyebrow">日々の作業を、少し手軽に。</p>

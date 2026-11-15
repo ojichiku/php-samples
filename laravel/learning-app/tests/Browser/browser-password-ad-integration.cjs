@@ -1,3 +1,4 @@
+/** @file 明示許可されたリモートの広告読込みを確認するCLI。TEST_BASE_URLとALLOW_REMOTE_TESTS=1が必須。生成値は作らず、広告スクリプトのHTTP状態と配置を検査する。TEST_RESULT_FILE指定時だけJSONも保存する。 */
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const {chromium} = require('playwright');
@@ -12,7 +13,7 @@ const {chromium} = require('playwright');
         const response = await page.goto(process.env.TEST_BASE_URL + '/password-generator-browser', {waitUntil: 'domcontentloaded'});
         await page.locator('#browser-generate:enabled').waitFor();
         await page.waitForTimeout(4500);
-        // Do not generate passwords while third-party scripts are active in this integration check.
+        // この検証では第三者スクリプトを動かすため、生成操作は行わず空の結果を維持する。
         assert.equal(await page.locator('#browser-all-results').inputValue(), '');
         assert.equal(await page.locator('.ad-slot').count(), 2);
         assert.equal(await page.locator('[data-text-analytics]').count(), 0);

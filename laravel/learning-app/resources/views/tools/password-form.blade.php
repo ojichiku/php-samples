@@ -1,3 +1,4 @@
+{{-- Controllerからlength（文字数）/groups（文字種）/password（nullまたは生成値）を受け取る。 --}}
 <x-layout title="パスワード生成" active="password">
     <section class="page-heading compact">
         <a class="back-link" href="{{ route('tools.index') }}">← ツール一覧</a>
@@ -12,12 +13,14 @@
         <div class="generator-grid">
             <section class="panel" aria-labelledby="settings-heading">
                 <h2 id="settings-heading">生成する条件</h2>
+                {{-- 検証エラーはリストで表示する。内容はBladeのエスケープ付き出力を使う。 --}}
                 @if ($errors->any())
                     <div class="error-box" role="alert" tabindex="-1">
                         <p>入力内容を確認してください。</p>
                         <ul>@foreach ($errors->all() as $message)<li>{{ $message }}</li>@endforeach</ul>
                     </div>
                 @endif
+                {{-- 条件だけをPOSTする。CSRFを検証し、生成値をhidden入力やセッションへ戻さない。 --}}
                 <form method="POST" action="{{ route('password.generate') }}">
                     @csrf
                     <div class="form-field">
@@ -41,6 +44,7 @@
             <section class="panel result-panel" aria-labelledby="result-heading">
                 <h2 id="result-heading">生成したパスワード</h2>
                 <label class="field-help" for="generated-password">生成結果</label>
+                {{-- 生成値はエスケープして表示する。初回/検証失敗後はpasswordがnullで結果は空になる。 --}}
                 <textarea id="generated-password" rows="3" readonly autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="生成すると、ここに表示します。">{{ $password }}</textarea>
                 <button class="button secondary full-width" id="copy-password" type="button" @disabled($password === null)>コピーする</button>
                 <p class="copy-status" id="copy-status" role="status" aria-live="polite"></p>

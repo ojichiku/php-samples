@@ -119,3 +119,7 @@ Before relying on a package's API, confirm its installed version:
 - Run `vendor/bin/phpunit` to call the test runner directly. It accepts the same file path and `--filter=testName` arguments.
 
 </laravel-boost-guidelines>
+
+## PHPDoc・JSDocのコメント
+
+PHPはPHPDoc、JavaScriptはJSDocへ統一し、引数・戻り値の型、意味、書式、単位と例外条件を記載する。学習用に主要処理の理由を短い行内コメントで補う。[記述規約](CODING_RULES.md)に従う。

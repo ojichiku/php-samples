@@ -8,19 +8,21 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
+ * テスト/初期データ用のUserを組み立てる。定義しただけではDBへ保存せず、create時に保存する。
+ *
  * @extends Factory<User>
  */
 class UserFactory extends Factory
 {
     /**
-     * The current password being used by the factory.
+     * 複数ユーザー生成時に共用する、テスト用パスワードのハッシュ。
      */
     protected static ?string $password;
 
     /**
-     * Define the model's default state.
+     * ダミー名/重複しないメール/検証日時/ハッシュ済みパスワード/トークンの既定値を返す。
      *
-     * @return array<string, mixed>
+     * @return array<string, mixed> Userの初期属性。日時はCarbon、passwordはハッシュ文字列。
      */
     public function definition(): array
     {
@@ -34,7 +36,9 @@ class UserFactory extends Factory
     }
 
     /**
-     * Indicate that the model's email address should be unverified.
+     * メール未検証の属性を追加したFactoryを返す。
+     *
+     * @return static email_verified_atをnullへ設定するFactory。
      */
     public function unverified(): static
     {

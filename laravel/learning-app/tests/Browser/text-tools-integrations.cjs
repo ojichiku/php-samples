@@ -1,3 +1,8 @@
+/**
+ * @file 旧テキストUI向けの広告/解析統合検証CLI。現行UIとの互換性は未確認。
+ * 明示したTEST_BASE_URL/ALLOW_REMOTE_TESTS=1が必要。外部広告/解析を読み、テスト入力が要求/解析キューにないか観測する。
+ * TEST_ARTIFACT_DIRへ観測結果JSONを書く。将来の第三者コードの挙動や管理画面への到達は保証しない。
+ */
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
@@ -21,6 +26,10 @@ const {chromium}=require('playwright');
   await page.locator('#text-match [data-run]').click();
   await page.waitForFunction(()=>document.querySelector('#text-match [data-status]').textContent.includes('1件一致'));
   await page.waitForTimeout(4500);
+  /**
+   * @param {string} value 送信URLまたは本文。
+   * @returns {string} 最大3回URLデコードした文字列。不正なエンコードで中止する。
+   */
   const decode=value=>{for(let i=0;i<3;i++){try{value=decodeURIComponent(value)}catch{break;}}return value;};
   assert.ok(requests.every(r=>!decode(r.url+r.body).includes(sentinel)));
   const queue=await page.evaluate(()=>Array.from(window.dataLayer||[],item=>Array.from(item)));

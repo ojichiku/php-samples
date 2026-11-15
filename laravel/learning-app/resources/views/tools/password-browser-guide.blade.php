@@ -1,3 +1,4 @@
+{{-- 旧ブラウザー生成の説明Blade。現在の説明Routeは入力画面へ転送するため通常は使用しない。 --}}
 <x-layout title="ブラウザー版パスワード生成の使い方" active="password-browser">
     <section class="page-heading">
         <a class="back-link" href="{{ route('tools.index') }}">← ツール一覧</a>

@@ -1,3 +1,4 @@
+/** @file 仮広告を使うローカル配置の検証CLI。TEST_BASE_URLへ接続し、広告の対象/枠数/印刷時の非表示を確認、アプリ内のtest-results/browser/advertisingへJSONを書く。 */
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');

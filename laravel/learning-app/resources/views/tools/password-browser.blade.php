@@ -1,3 +1,4 @@
+{{-- ブラウザー生成画面。PHPから生成値を受け取らず、browser-password.jsが入力と結果を操作する。 --}}
 <x-layout title="パスワード生成（JavaScript版）" active="password-browser">
     <section class="page-heading compact">
         <a class="back-link" href="{{ route('tools.index') }}">← ツール一覧</a>
@@ -18,6 +19,7 @@
                     <div class="form-field"><label for="browser-length">文字数</label><div class="length-row"><input id="browser-length" type="number" value="16" min="8" max="128" step="1" autocomplete="off"><span>文字</span></div><p class="field-help">8〜128文字</p></div>
                     <div class="form-field"><label for="browser-count">発行数</label><div class="length-row"><input id="browser-count" type="number" value="1" min="1" max="100" step="1" autocomplete="off"><span>件</span></div><p class="field-help">1〜100件</p></div>
                 </div>
+                {{-- data-character-groupの値を生成エンジンの文字種キーと対応させる。 --}}
                 <fieldset class="form-field"><legend>使用する文字種</legend><p class="field-help">選んだ文字種を、それぞれ最低1文字含めます。</p>
                     <div class="character-options">
                         <label><input type="checkbox" data-character-group value="lowercase" checked><span>英小文字<small>a〜z</small></span></label>
@@ -31,11 +33,13 @@
                     <div id="browser-custom-field" hidden><label for="browser-custom-symbols">利用できる記号</label><input id="browser-custom-symbols" type="text" value="!@#" maxlength="128" autocomplete="off" autocapitalize="off" spellcheck="false" disabled><p class="field-help">半角記号のみ。重複した記号は1つとして扱います。</p></div>
                     <p class="field-help browser-symbol-preview" id="browser-symbol-preview"></p>
                 </div>
+                {{-- JSと乱数源を確認するまで生成ボタンを無効にする。フォーム送信は使わない。 --}}
                 <button class="button full-width" id="browser-generate" type="button" disabled>パスワードを生成</button>
             </section>
             <section class="panel" aria-labelledby="browser-result-heading">
                 <h2 id="browser-result-heading">生成したパスワード</h2>
                 <p class="field-help" id="browser-password-empty">条件を選び、「パスワードを生成」を押してください。</p>
+                {{-- 生成値はtextareaのvalueへ入れる。コピー/条件変更/離脱時の消去はJSが担当する。 --}}
                 <textarea id="browser-all-results" aria-label="全件のパスワード" readonly autocomplete="off" autocapitalize="off" spellcheck="false" rows="4" hidden></textarea>
                 <div class="browser-result-actions"><button class="button secondary" type="button" id="browser-copy-all" disabled>全件コピー</button><button class="button secondary" type="button" id="browser-clear" disabled>結果を消す</button></div>
                 <p class="copy-status" id="browser-password-status" role="status" aria-live="polite"></p>

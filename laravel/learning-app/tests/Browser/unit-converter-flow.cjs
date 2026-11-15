@@ -1,3 +1,7 @@
+/**
+ * @file ビルド済みLaravelを4幅のChromiumで操作するCLI。TEST_BASE_URLへHTTP接続する。
+ * TEST_ARTIFACT_DIRへJSONを保存し画像は生成しない。外部要求を遮断し、リモート指定には明示フラグが必要。
+ */
 const {chromium}=require('playwright');
 const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');
 const origin=process.env.TEST_BASE_URL||'http://127.0.0.1:8000';
@@ -17,8 +21,26 @@ await page.waitForFunction(()=>document.getElementById('unit-inputs')&&!document
 assert.equal(await page.locator('.site-header nav a[aria-current="page"]').innerText(),'単位換算');
 assert.equal(await page.locator('.ad-slot').count(),2);
 assert.ok(await page.evaluate(()=>{const ads=document.querySelectorAll('.ad-slot'),tool=document.getElementById('unit-converter');return ads[0].getBoundingClientRect().bottom<=tool.getBoundingClientRect().top&&tool.getBoundingClientRect().bottom<=ads[1].getBoundingClientRect().top;}));
+// 初期読込後の通信だけを記録し、計算/コピー操作で要求が発生しないことを確認する。
 const operations=[];page.on('request',r=>operations.push(r.url()));
+/**
+ * 分類を選択する。
+ *
+ * @param {string} g 分類ID。
+ * @returns {Promise<void>} 分類ボタンの操作完了。
+ */
 const group=async g=>page.locator(`[data-group="${g}"]`).click();
+/**
+ * 入力と換算先を指定して、表示値と読み取り専用の結果欄を確認する。
+ *
+ * @param {string} g 分類ID。
+ * @param {string} from 変換元の単位ID。
+ * @param {string} to 変換先の単位ID。
+ * @param {string} value 入力数値。
+ * @param {string} expected 単位/丸め記号を含む期待表示。
+ * @returns {Promise<void>} 操作とアサーションの完了。
+ * @throws {Error} 操作失敗または期待値の不一致（Promiseの拒否）。
+ */
 const calc=async (g,from,to,value,expected)=>{await group(g);await page.locator('#from').selectOption(from);await page.locator('#to').selectOption(to);await page.locator('#value').fill(value);await page.locator('button.primary').click();assert.equal(await page.locator('#result').textContent(),expected);if(!await page.locator('#copy').isDisabled()){assert.ok((await page.locator('#converted').inputValue()).length>0);assert.equal(await page.locator('#converted').getAttribute('readonly'),'');}};
 await calc('length','yd','m','1','0.9144 m');await calc('length','mi','km','1','1.609344 km');
 await calc('mass','lb','g','1','453.59237 g');await calc('mass','oz','g','1','28.349523125 g');
@@ -35,7 +57,11 @@ for(const value of ['', '1,000','abc','1e3','0.0000000001','1000000000001','1234
 await calc('temperature','c','k','-273.150000001','絶対零度（−273.15 °C / −459.67 °F / 0 K）以上を入力してください。');
 for(const g of ['length','mass','volume','area','temperature','speed','time','energy']){await group(g);assert.equal(await page.locator('#value').inputValue(),'');assert.ok(await page.locator('#rows tr').count()>=3);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`${width}:${g}`);}
 const widths=await page.evaluate(()=>['#page-title','#page-description','.selection','#form','#reference','.ad-slot'].map(s=>{const r=document.querySelector(s).getBoundingClientRect();return {left:r.left,width:r.width};}));for(const bounds of widths)assert.deepEqual(bounds,widths[0]);
-const layout=await page.evaluate(()=>{const r=id=>document.getElementById(id).getBoundingClientRect();return {source:r('source-row').bottom,target:r('target-row').top,targetBottom:r('target-row').bottom,actions:document.querySelector('.actions').getBoundingClientRect().top,number:r('value').top,unit:r('from').top,out:r('converted').top,to:r('to').top};});assert.ok(layout.source<layout.target);assert.ok(layout.targetBottom<=layout.actions);assert.equal(layout.number,layout.unit);assert.equal(layout.out,layout.to);
+const layout=await page.evaluate(()=>{/**
+ * @param {string} id 配置を確認する固定要素ID。
+ * @returns {DOMRect} 要素の表示領域（座標と大きさ、単位：CSSピクセル）。
+ */
+const r=id=>document.getElementById(id).getBoundingClientRect();return {source:r('source-row').bottom,target:r('target-row').top,targetBottom:r('target-row').bottom,actions:document.querySelector('.actions').getBoundingClientRect().top,number:r('value').top,unit:r('from').top,out:r('converted').top,to:r('to').top};});assert.ok(layout.source<layout.target);assert.ok(layout.targetBottom<=layout.actions);assert.equal(layout.number,layout.unit);assert.equal(layout.out,layout.to);
 await group('volume');await page.locator('#value').focus();await page.keyboard.type('1');await page.keyboard.press('Enter');assert.equal(await page.locator('#copy').isDisabled(),false);
 await calc('volume','dl','ml','1','100 mL');
 await page.evaluate(()=>{navigator.clipboard.writeText=()=>new Promise((resolve,reject)=>{window.rejectUnitCopy=reject;});});await page.locator('#copy').click();await page.waitForFunction(()=>typeof window.rejectUnitCopy==='function');await page.locator('#value').fill('2');await page.evaluate(()=>window.rejectUnitCopy(new Error('late clipboard failure')));await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(resolve)));assert.equal(await page.locator('#copy-fallback').isVisible(),false);assert.equal(await page.locator('#copy-status').innerText(),'');

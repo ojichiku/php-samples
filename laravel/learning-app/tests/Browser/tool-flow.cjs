@@ -1,3 +1,4 @@
+/** @file サーバー生成を4幅で操作し、コピー/検証/CSRF/メニューを確認するCLI。広告仮枠付きの起動済みLaravelが必要。TEST_BASE_URLへGET/POSTし、TEST_ARTIFACT_DIRへ結果JSONだけを保存する。 */
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -5,6 +6,12 @@ const { chromium } = require('playwright');
 const base = process.env.TEST_BASE_URL || 'http://127.0.0.1:8000';
 const output = process.env.TEST_ARTIFACT_DIR || path.resolve(__dirname, '../../test-results/browser/tools');
 
+/**
+ * 横はみ出しがないことを確認する。
+ * @param {import("playwright").Page} page 検証するページ。
+ * @returns {Promise<void>} 幅の確認完了。
+ * @throws {Error} はみ出しまたはブラウザー操作の失敗（Promiseの拒否）。
+ */
 async function noOverflow(page) {
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), 'unexpected horizontal scrolling');
 }

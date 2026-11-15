@@ -1,5 +1,7 @@
 <?php
 
+/** Storage APIが使うディスク定義。private/publicのルートと外部保存先を分ける。 */
+
 return [
 
     /*
@@ -13,6 +15,7 @@ return [
     |
     */
 
+    // 既定のディスク名。
     'default' => env('FILESYSTEM_DISK', 'local'),
 
     /*
@@ -28,6 +31,7 @@ return [
     |
     */
 
+    // localは非公開領域、publicは公開領域。s3は環境変数で外部接続を設定する。
     'disks' => [
 
         'local' => [
@@ -73,6 +77,7 @@ return [
     |
     */
 
+    // storage:linkで作る公開リンクと実データ先の対応。
     'links' => [
         public_path('storage') => storage_path('app/public'),
     ],

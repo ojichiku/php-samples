@@ -1,3 +1,4 @@
+{{-- 旧説明画面のBlade。現在の説明Routeは入力画面へ転送するため、通常の導線からは使用しない。 --}}
 <x-layout title="パスワード生成の使い方" active="password">
     <section class="page-heading">
         <a class="back-link" href="{{ route('tools.index') }}">← ツール一覧</a>

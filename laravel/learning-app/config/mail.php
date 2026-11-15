@@ -1,5 +1,7 @@
 <?php
 
+/** メール送信方式と差出人の標準設定。ツールの通常操作はこの設定だけでメールを送らない。 */
+
 return [
 
     /*
@@ -14,6 +16,7 @@ return [
     |
     */
 
+    // 既定メーラー。未指定なら実送信ではなくlog。
     'default' => env('MAIL_MAILER', 'log'),
 
     /*
@@ -35,6 +38,7 @@ return [
     |
     */
 
+    // SMTP/外部サービス/ログ/代替送信の定義。retry_afterの単位は秒。
     'mailers' => [
 
         'smtp' => [
@@ -110,6 +114,7 @@ return [
     |
     */
 
+    // 既定の差出人アドレスと表示名。
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),

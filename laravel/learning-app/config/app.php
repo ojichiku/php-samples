@@ -1,5 +1,7 @@
 <?php
 
+/** Laravelの名前/環境/暗号/言語/保守モードの共通設定。環境変数と既定値を組み合わせる。 */
+
 return [
 
     /*
@@ -13,6 +15,7 @@ return [
     |
     */
 
+    // 表示や各種既定識別名に使うアプリ名。
     'name' => env('APP_NAME', 'Laravel'),
 
     /*
@@ -26,6 +29,7 @@ return [
     |
     */
 
+    // 動作環境。本番限定の広告/解析の判定にも使う。
     'env' => env('APP_ENV', 'production'),
 
     /*
@@ -39,6 +43,7 @@ return [
     |
     */
 
+    // 詳細エラーの表示設定。
     'debug' => (bool) env('APP_DEBUG', false),
 
     /*
@@ -52,6 +57,7 @@ return [
     |
     */
 
+    // CLI等がURLを生成するときの基準URL。
     'url' => env('APP_URL', 'http://localhost'),
 
     /*
@@ -65,6 +71,7 @@ return [
     |
     */
 
+    // 全体の既定はUTC。各日付/カレンダー機能は必要な箇所でAsia/Tokyoを明示する。
     'timezone' => 'UTC',
 
     /*
@@ -78,6 +85,7 @@ return [
     |
     */
 
+    // 表示言語、fallback_localeは翻訳の代替言語、faker_localeはダミーデータの言語。
     'locale' => env('APP_LOCALE', 'en'),
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
@@ -95,6 +103,7 @@ return [
     |
     */
 
+    // 暗号方式。keyは暗号鍵、previous_keysは鍵切替時に復号に使う旧鍵一覧。
     'cipher' => 'AES-256-CBC',
 
     'key' => env('APP_KEY'),
@@ -118,6 +127,7 @@ return [
     |
     */
 
+    // 保守モードの状態を置く方式と保存先。
     'maintenance' => [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),

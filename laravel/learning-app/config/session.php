@@ -1,5 +1,7 @@
 <?php
 
+/** セッション保存とCookieの共通設定。生成値の永続化先として使うものではない。 */
+
 use Illuminate\Support\Str;
 
 return [
@@ -18,6 +20,7 @@ return [
     |
     */
 
+    // 保存方式。未指定ならDB。
     'driver' => env('SESSION_DRIVER', 'database'),
 
     /*
@@ -32,6 +35,7 @@ return [
     |
     */
 
+    // セッションの有効期間（分）。expire_on_closeはブラウザー終了時の期限設定。
     'lifetime' => (int) env('SESSION_LIFETIME', 120),
 
     'expire_on_close' => env('SESSION_EXPIRE_ON_CLOSE', false),
@@ -47,6 +51,7 @@ return [
     |
     */
 
+    // 保存するセッション内容の暗号化設定。
     'encrypt' => env('SESSION_ENCRYPT', false),
 
     /*
@@ -60,6 +65,7 @@ return [
     |
     */
 
+    // file方式での保存先。
     'files' => storage_path('framework/sessions'),
 
     /*
@@ -73,6 +79,7 @@ return [
     |
     */
 
+    // DB/Redis方式で使う接続名。
     'connection' => env('SESSION_CONNECTION'),
 
     /*
@@ -86,6 +93,7 @@ return [
     |
     */
 
+    // DB方式の保存表。
     'table' => env('SESSION_TABLE', 'sessions'),
 
     /*
@@ -101,6 +109,7 @@ return [
     |
     */
 
+    // キャッシュ方式で使うストア。
     'store' => env('SESSION_STORE'),
 
     /*
@@ -114,6 +123,7 @@ return [
     |
     */
 
+    // 古いセッションの掃除を行う確率（2/100）。
     'lottery' => [2, 100],
 
     /*
@@ -127,6 +137,7 @@ return [
     |
     */
 
+    // アプリごとに区別するCookie名。
     'cookie' => env(
         'SESSION_COOKIE',
         Str::slug((string) env('APP_NAME', 'laravel')).'-session'
@@ -143,6 +154,7 @@ return [
     |
     */
 
+    // Cookieを送るURLパス。
     'path' => env('SESSION_PATH', '/'),
 
     /*
@@ -156,6 +168,7 @@ return [
     |
     */
 
+    // Cookieの対象ドメイン。
     'domain' => env('SESSION_DOMAIN'),
 
     /*
@@ -169,6 +182,7 @@ return [
     |
     */
 
+    // HTTPS接続だけでCookieを送るか。
     'secure' => env('SESSION_SECURE_COOKIE'),
 
     /*
@@ -182,6 +196,7 @@ return [
     |
     */
 
+    // JavaScriptからCookieを読めなくするか。
     'http_only' => env('SESSION_HTTP_ONLY', true),
 
     /*
@@ -199,6 +214,7 @@ return [
     |
     */
 
+    // 別サイトからの要求でCookieを送る条件。
     'same_site' => env('SESSION_SAME_SITE', 'lax'),
 
     /*
@@ -212,6 +228,7 @@ return [
     |
     */
 
+    // 分割Cookieを利用するか。
     'partitioned' => env('SESSION_PARTITIONED_COOKIE', false),
 
     /*
@@ -228,6 +245,7 @@ return [
     |
     */
 
+    // セッション値のシリアライズ形式。
     'serialization' => 'json',
 
 ];

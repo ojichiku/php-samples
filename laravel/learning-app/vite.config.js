@@ -1,3 +1,4 @@
+/** @file CSS/JSのViteビルド設定。Blade更新を再読込し、生成済みBladeは監視対象から外す。 */
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import tailwindcss from '@tailwindcss/vite';

@@ -1,3 +1,19 @@
+/**
+ * @file 単位定義と換算計算。UIから呼び出し、通信やDOM操作は行わない。
+ * 小数をBigIntの分数に変換し、中間計算を丸めず、表示時だけ有効数字12桁へ丸める。
+ */
+/**
+ * @typedef {[bigint, bigint]} Rational 分子・正の分母の組。数値の単位は呼出し元の換算段階に従う。
+ */
+/**
+ * @typedef {Object} UnitDefinition
+ * @property {string} id 分類内の単位ID。
+ * @property {string} name 日本語の単位名。
+ * @property {string} symbol 表示用の記号。
+ * @property {string|string[]} factor 基準単位への係数。小数文字列、または分子/分母の文字列ペア。温度では使用しない。
+ * @property {string} note 表記に関する補足。
+ */
+// baseは各分類の基準単位。温度は係数ではなくオフセットを含む専用式を使う。
 export const UNIT_GROUPS = {
     "length": {
         "name": "長さ",
@@ -364,8 +380,23 @@ export const UNIT_GROUPS = {
     }
 };
 
-// Decimal inputs and unit definitions stay rational until the final display rounding.
+// 入力値と係数を分数で保持し、表示の直前まで丸めない。
+/**
+ * 絶対値の約分に使う最大公約数を再帰で求める。
+ *
+ * @param {bigint} a 非負の整数。
+ * @param {bigint} b 非負の整数。
+ * @returns {bigint} 最大公約数。
+ */
 const gcd = (a, b) => b ? gcd(b, a % b) : a;
+/**
+ * 分母の符号を正にそろえ、約分した分数を返す。
+ *
+ * @param {bigint} numerator 分子。
+ * @param {bigint} [denominator=1n] 0でない分母。
+ * @returns {Rational} 約分した分子/分母。
+ * @throws {RangeError} 0除算になる不正な内部入力の場合。
+ */
 function rational(numerator, denominator = 1n) {
     if (denominator < 0n) {
         numerator = -numerator;
@@ -374,19 +405,67 @@ function rational(numerator, denominator = 1n) {
     const divisor = gcd(numerator < 0n ? -numerator : numerator, denominator);
     return [numerator / divisor, denominator / divisor];
 }
+/**
+ * 検証済みの小数表記を、10のべき乗を分母とした分数へ変換する。
+ *
+ * @param {string|number} value 指数表記を使わない小数。入力検証は呼出し元で行う。
+ * @returns {Rational} 元の小数と等しい分数。
+ * @throws {SyntaxError} 分子をBigIntに変換できない文字列の場合。
+ */
 function decimal(value) {
     const input = String(value);
     const [integer, fraction = ''] = input.replace(/^[+-]/, '').split('.');
     const numerator = BigInt((integer || '0') + fraction) * (input.startsWith('-') ? -1n : 1n);
     return rational(numerator, 10n ** BigInt(fraction.length));
 }
+/**
+ * 2つの分数を掛ける。
+ *
+ * @param {Rational} a 左の分数。
+ * @param {Rational} b 右の分数。
+ * @returns {Rational} 積を約分した分数。
+ */
 const multiply = (a, b) => rational(a[0] * b[0], a[1] * b[1]);
+/**
+ * 2つの分数を割る。
+ *
+ * @param {Rational} a 割られる分数。
+ * @param {Rational} b 分子が0でない割る分数。
+ * @returns {Rational} 商を約分した分数。
+ * @throws {RangeError} 0で割った場合。
+ */
 const divide = (a, b) => rational(a[0] * b[1], a[1] * b[0]);
+/**
+ * 2つの分数を通分して足す。
+ *
+ * @param {Rational} a 左の分数。
+ * @param {Rational} b 右の分数。
+ * @returns {Rational} 和を約分した分数。
+ */
 const add = (a, b) => rational(a[0] * b[1] + b[0] * a[1], a[1] * b[1]);
+/**
+ * 右の分数の符号を反転して引く。
+ *
+ * @param {Rational} a 引かれる分数。
+ * @param {Rational} b 引く分数。
+ * @returns {Rational} 差を約分した分数。
+ */
 const subtract = (a, b) => add(a, [-b[0], b[1]]);
+/**
+ * 単位定義の係数を分数へ変換する。
+ *
+ * @param {UnitDefinition} unit 係数が小数または分数ペアで定義された単位。
+ * @returns {Rational} この単位1に対応する基準単位の量。
+ */
 const factor = unit => Array.isArray(unit.factor)
     ? divide(decimal(unit.factor[0]), decimal(unit.factor[1])) : decimal(unit.factor);
 
+/**
+ * 分数を最大12桁の有効数字で表示用に丸める。
+ *
+ * @param {Rational} value 表示する量。
+ * @returns {{text: string, rounded: boolean}} 数値文字列と、捨てた余りがあったか。単位記号は含まない。
+ */
 function display(value) {
     if (value[0] === 0n) return { text: '0', rounded: false };
     const negative = value[0] < 0n;
@@ -398,7 +477,7 @@ function display(value) {
         : numerator * 10n ** BigInt(-exponent) < denominator;
     if (belowPower) exponent--;
 
-    // Scale the leading twelve digits into an integer, then round the remainder once.
+    // 先頭12桁を整数へ拡大し、余りを使って一度だけ四捨五入する。
     const shift = 11 - exponent;
     const scaledNumerator = shift >= 0 ? numerator * 10n ** BigInt(shift) : numerator;
     const scaledDenominator = shift >= 0 ? denominator : denominator * 10n ** BigInt(-shift);
@@ -423,6 +502,13 @@ function display(value) {
     return { text: (negative ? '-' : '') + text, rounded: remainder !== 0n };
 }
 
+/**
+ * 半角の整数/小数を入力制限で検証し、分数として返す。
+ *
+ * @param {string|number} raw 入力数値。小数9桁、有効数字15桁、絶対値1兆以下、前後空白は除去。
+ * @returns {Rational} 入力と等しい分数。単位はまだ適用しない。
+ * @throws {Error} 64文字超、不正な書式、桁数超過、または絶対値の上限超過の場合。
+ */
 export function parseInput(raw) {
     const input = String(raw).trim();
     if (input.length > 64 || !/^[+-]?(?:\d+(?:\.\d{1,9})?|\.\d{1,9})$/.test(input)) {
@@ -438,6 +524,16 @@ export function parseInput(raw) {
     return value;
 }
 
+/**
+ * 指定分類内で単位を換算し、正確な分数と表示用の値を返す。
+ *
+ * @param {string} category UNIT_GROUPSの分類キー。
+ * @param {string} fromId 変換元の単位ID。
+ * @param {string} toId 変換先の単位ID。
+ * @param {string|number} raw 変換元の単位での入力数値。
+ * @returns {{text: string, rounded: boolean, value: Rational, from: UnitDefinition, to: UnitDefinition}} 変換先単位の数値表示/丸め有無/分数と、元/先の単位定義。
+ * @throws {Error} 単位や入力が不正、温度が絶対零度未満、または温度以外で負の場合。
+ */
 export function convertUnits(category, fromId, toId, raw) {
     const group = UNIT_GROUPS[category];
     const from = group?.units?.find(unit => unit.id === fromId);
@@ -445,6 +541,7 @@ export function convertUnits(category, fromId, toId, raw) {
     if (!from || !to) throw new Error('分類と単位を選び直してください。');
     const value = parseInput(raw);
     let converted;
+    // 温度はまずKへ統一して絶対零度を判定し、変換先へ戻す。温度差の換算ではない。
     if (category === 'temperature') {
         const kelvin = from.id === 'k' ? value : from.id === 'c'
             ? add(value, decimal('273.15')) : multiply(add(value, decimal('459.67')), rational(5n, 9n));
@@ -460,6 +557,13 @@ export function convertUnits(category, fromId, toId, raw) {
     return { ...display(converted), value: converted, from, to };
 }
 
+/**
+ * 早見表向けに基準単位との関係または温度の式を返す。
+ *
+ * @param {string} category 有効な分類キー。
+ * @param {UnitDefinition} unit 同じ分類の単位定義。
+ * @returns {string} 単位記号を含む関係式。係数を丸めた場合は≈を含む。
+ */
 export function referenceRelation(category, unit) {
     if (category === 'temperature') {
         return unit.id === 'c' ? 'K = °C + 273.15'

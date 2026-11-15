@@ -1,3 +1,4 @@
+{{-- text.toolsのGET画面。入力はPHPに渡さず、text-tools.jsとWorkerが処理する。共有レイアウトと広告/解析は別に設定する。 --}}
 <x-layout title="テキスト便利ツール集" active="text-tools">
 <section class="page-heading compact">
     <a class="back-link" href="{{ route('tools.index') }}">← ツール一覧</a>
@@ -9,11 +10,14 @@
 <p class="error-box">このツールにはJavaScriptが必要です。</p>
 </noscript>
 <x-ad-slot /><div id="text-tools" class="text-workbench">
+{{-- data-tab/data-regexをJSの用途/モードへ対応させ、入力/設定は用途ごとに保持する。 --}}
 <nav class="tabs" aria-label="用途を選ぶ"><button type="button" data-tab="format" aria-pressed="true">テキスト整形</button><button type="button" data-tab="replace" aria-pressed="false">置換・文字変換</button><button type="button" data-tab="lines" aria-pressed="false">行の整理</button><button type="button" data-tab="regex" aria-pressed="false">正規表現</button></nav>
 <section class="panel" aria-labelledby="tool-title"><div class="heading"><div><h2 id="tool-title">テキスト整形</h2><p id="tool-description" class="sub">空白や空行をまとめて整理します。</p></div></div>
 <div class="modebar" id="regex-modes" aria-label="正規表現の操作" hidden><button type="button" data-regex="build" aria-pressed="true">入力例から作る</button><button type="button" data-regex="match" aria-pressed="false">一致を確認</button><button type="button" data-regex="generate" aria-pressed="false">サンプル生成</button></div>
+{{-- optionsは固定の画面定義からJSで描画する。利用者の入力はvalue/textContentで設定する。 --}}
 <div class="workspace"><div class="column"><label for="input" class="label" id="input-label">入力テキスト</label><button type="button" id="paste" class="small-button">貼り付け</button><p class="hint">PC：入力欄を右クリック→貼り付け／スマホ：入力欄を長押し→貼り付け</p><p class="hint" id="input-limit"></p><textarea id="input" spellcheck="false" placeholder="ここにテキストを入力"></textarea><div class="meta"><span id="count">0文字・0行</span><button id="clear" type="button" class="small-button">入力と結果をクリア</button></div><div class="options" id="options"></div><p class="order" id="order" hidden></p><div class="actions"><button type="button" id="run" class="primary">整形する</button><button type="button" id="cancel" hidden>中止</button></div><p id="status" class="status" role="status" aria-live="polite"></p></div>
 <div class="column"><label for="output" class="label" id="output-label">結果</label><textarea id="output" readonly placeholder="実行するとここに結果が表示されます"></textarea><p class="hint" id="output-stats">結果：0文字／UTF-8：0バイト（最大100万文字）</p><p class="hint">元の入力は上書きしません。設定を変えて再実行できます。</p><div class="output-actions"><button type="button" id="copy" disabled>結果をコピー</button><button type="button" id="download" disabled>テキストファイルを保存</button><button type="button" id="use-regex" hidden disabled>一致確認で使う</button></div><section id="match-results" hidden><h3>一致箇所</h3><div id="highlight" class="text-highlight"></div><details><summary>一致一覧・グループ</summary><div class="text-table-wrap"><table><thead><tr><th>番号</th><th>一致文字列</th><th>位置</th><th>取り出した部分</th></tr></thead><tbody id="matches"></tbody></table></div><button type="button" id="copy-list" disabled>一致一覧をコピー</button></details></section><div id="result-details" class="results" aria-live="polite"></div></div></div>
 </section><div class="foot"><span id="retention">用途を切り替えても、それぞれの入力と設定を保持します。</span><a href="#help">正規表現の書き方</a></div>
+{{-- 上限の単位と処理の対応範囲を利用者向けに説明する。内部の実行記録はここへ表示しない。 --}}
 <details class="panel" id="help"><summary>正規表現の書き方・制限</summary><p>正規表現は探す文字の条件です。[0-9]+ は1文字以上の数字、[A-Z]{3} は英大文字3文字に一致します。([0-9]{4})-([0-9]{2}) は「2026-11」からグループ1に「2026」、グループ2に「11」を取り出します。置換で $1/$2 とすると「2026/11」になります。</p><p>JavaScriptの正規表現を使います。前後の / は不要。文字変換の対象は半角英字と全角・半角の英数字・記号・スペースです。処理は1秒で中止します。</p><p>入力は最大10万文字、検索語・置換語・正規表現・候補作成の入力と検証例は各1,000文字、結果は最大100万文字。超過時は切り捨てず中止し、入力を残します。結果が10万文字を超える場合は、別の用途の入力上限に注意してください。</p><p>文字数は改行を含むUnicodeコードポイント数です。絵文字は見た目の1文字と異なる場合があります。UTF-8サイズはBOMなし、改行LFでの保存サイズです。</p><p>保存はブラウザー内でUTF-8の.txtファイルを作ります。結果をサーバーへ送信・保存しません。保存先と操作は端末・ブラウザーによって異なります。保存したファイルは端末で削除してください。入力は画面内にだけ保持し、ページを離れると失われます。</p></details>
 </div><x-ad-slot /><x-text-analytics /></x-layout>

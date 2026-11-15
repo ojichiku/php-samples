@@ -1,3 +1,8 @@
+/**
+ * @file 日付・元号をChromiumの4画面幅で操作する検証CLI。Laravelの起動とビルド済み資材が必要。
+ * TEST_BASE_URLへHTTP接続し、結果JSONと375/1280pxの画面画像をTEST_ARTIFACT_DIRへ書く。
+ * 外部URLの検証は明示のALLOW_REMOTE_TESTS=1が必要で、ページの外部要求は遮断する。
+ */
 const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -27,11 +32,32 @@ if(remote && process.env.ALLOW_REMOTE_TESTS!=='1') throw new Error('Remote verif
    const ads=document.querySelectorAll('.ad-slot'), tool=document.getElementById('date-tools');
    return ads[0].getBoundingClientRect().bottom<=tool.getBoundingClientRect().top && tool.getBoundingClientRect().bottom<=ads[1].getBoundingClientRect().top;
   }));
+ // 画面の初期読込後から要求を記録し、計算/コピーが通信を発生させないことを確認する。
   const operationRequests=[];
   page.on('request',request=>operationRequests.push({method:request.method(),url:request.url()}));
+  /**
+   * @param {string} id 表示するパネルID。
+   * @returns {Promise<void>} パネルが一つだけ表示されることの確認完了。
+   * @throws {Error} 操作・検証・保存が失敗した場合（Promiseの拒否）。
+   */
   const select=async id=>{await page.locator(`[data-panel="${id}"]`).click();assert.equal(await page.locator(`#date-tools section:not([hidden])`).count(),1);};
+  /**
+   * @param {string} id 計算するフォームのパネルID。
+   * @returns {Promise<void>} 計算ボタンのクリック完了。
+   * @throws {Error} 操作・検証・保存が失敗した場合（Promiseの拒否）。
+   */
   const submit=async id=>{await page.locator(`[data-form="${id}"] button.primary`).click();};
+  /**
+   * @param {string} id 結果を読むパネルID。
+   * @returns {Promise<string>} 結果欄の表示文字列。
+   * @throws {Error} 操作・検証・保存が失敗した場合（Promiseの拒否）。
+   */
   const result=async id=>page.locator(`#${id}-result`).innerText();
+  /**
+   * @param {string} name 画像ファイル名に使う検証場面名。
+   * @returns {Promise<void>} 375/1280pxなら画像保存完了。それ以外の幅は保存しない。
+   * @throws {Error} 操作・検証・保存が失敗した場合（Promiseの拒否）。
+   */
   const shot=async name=>{if([375,1280].includes(width))await page.screenshot({path:`${output}/${name}-${width}.png`,fullPage:true});};
   for(const [date,label] of [['1873-01-01','明治6年1月1日'],['1912-07-29','明治45年7月29日'],['1912-07-30','大正元年7月30日'],['1926-12-24','大正15年12月24日'],['1926-12-25','昭和元年12月25日'],['1989-01-07','昭和64年1月7日'],['1989-01-08','平成元年1月8日'],['2019-04-30','平成31年4月30日'],['2019-05-01','令和元年5月1日']]){
    await page.locator('#western-date').fill(date);await submit('western');assert.ok((await result('western')).includes(label),date);
@@ -50,6 +76,7 @@ if(remote && process.env.ALLOW_REMOTE_TESTS!=='1') throw new Error('Remote verif
   await select('age');await page.locator('#age-reference').fill('2025-02-28');await submit('age');assert.match(await result('age'),/^満24歳/);
   await page.locator('#age details').evaluate(el=>el.open=true);await page.locator('#leap-policy').selectOption('february');await submit('age');assert.match(await result('age'),/^満25歳/);await shot('age');
   await page.locator('[data-copy="age"]').click();await page.waitForFunction(()=>document.getElementById('age-copy-status').textContent.includes('コピーしました'));assert.match(await page.locator('#age-copy-status').innerText(),/コピーしました/);assert.match(await page.evaluate(()=>navigator.clipboard.readText()),/満25歳/);
+ // コピーAPIの失敗を注入し、手動コピー欄へ切り替わることを確認する。
   await page.evaluate(()=>navigator.clipboard.writeText=()=>Promise.reject(new Error('denied')));await page.locator('[data-copy="age"]').click();await page.waitForFunction(()=>!document.getElementById('age-copy-fallback').hidden);assert.equal(await page.locator('#age-copy-fallback').isVisible(),true);
   await page.locator('#age-reference').fill('2025-03-01');assert.equal(await page.locator('[data-copy="age"]').isVisible(),false);
   await select('western');assert.equal(await page.locator('#western-year').inputValue(),'2019');await page.locator('[data-clear="western"]').click();assert.equal(await page.locator('#western-year').inputValue(),'');assert.equal(await page.locator('#western-mode').inputValue(),'year');
@@ -61,6 +88,7 @@ if(remote && process.env.ALLOW_REMOTE_TESTS!=='1') throw new Error('Remote verif
   assert.match(await result('western'),/現在の令和が続く/);
   await page.locator('#western-year').focus();await page.keyboard.press('Enter');
   assert.match(await result('western'),/令和82年/);
+ // pagehideを発火させ、履歴キャッシュへ退避する場合も入力を消すことを確認する。
   await page.evaluate(()=>window.dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true})));
   assert.equal(await page.locator('#birth-date').inputValue(),'');
   assert.equal(await page.locator('#western-year').inputValue(),'');
@@ -77,6 +105,7 @@ if(remote && process.env.ALLOW_REMOTE_TESTS!=='1') throw new Error('Remote verif
   report.push({width,eraBoundaries:9,yearOnly:true,invalidEra:true,tableLimit:true,leapDay:true,inclusiveDays:true,dateRange:true,ageLeapPolicy:true,copyAndFallback:true,inputRetained:true,staleResultCleared:true,adPositions:true,operationRequests:operationRequests.length,keyboardSubmit:true,leaveClearsInput:true,horizontalOverflow:false,javascriptErrors:errors,externalRequests:external});
   await context.close();
  }
+ // JSが使えない場合は説明が見え、計算フォームを送信できないことを確認する。
  const noJs=await browser.newContext({javaScriptEnabled:false,viewport:{width:375,height:900}});
  const noJsPage=await noJs.newPage();await noJsPage.goto(origin+'/date-tools');
  assert.ok(await noJsPage.locator('noscript').isVisible());

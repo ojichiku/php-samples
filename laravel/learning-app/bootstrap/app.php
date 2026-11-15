@@ -7,6 +7,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/** HTTP/CLIの起動設定。Route、ヘルスチェック、機密画面の例外応答ヘッダーとJSON判定を組み立てる。 */
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -17,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        // 正常応答だけでなく、サーバー生成の422/419/429等の例外応答も保存抑止の対象にする。
         $exceptions->respond(function (Response $response): Response {
             if (request()->routeIs('password.form', 'password.generate')) {
                 return PreventSensitiveResponseCaching::applyHeaders($response);
@@ -25,6 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
             return $response;
         });
 
+        // API経路またはJSONを求める要求は、HTMLではなくJSON形式のエラー応答にする。
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );

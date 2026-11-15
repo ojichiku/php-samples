@@ -1,3 +1,4 @@
+{{-- CalendarController/YearCalendarの年・月週セル・日本時間の今日・収録状態を表示する。日付はサーバーで組み立てる。 --}}
 <x-layout title="年間カレンダー" active="calendar">
     <section class="page-heading compact calendar-heading">
         <a class="back-link" href="{{ route('tools.index') }}">← ツール一覧</a>
@@ -11,6 +12,7 @@
         </div>
         <div class="calendar-controls">
             @if($year > $minYear)<a class="button secondary" href="{{ route('calendar', ['year' => $year - 1]) }}">← 前年</a>@endif
+    {{-- yearクエリーで再表示する。今日のリンクは今年のページと該当日のアンカーを組み合わせる。 --}}
             <form method="GET" action="{{ route('calendar') }}">
                 <label for="calendar-year">西暦</label>
                 <input id="calendar-year" name="year" type="number" min="{{ $minYear }}" max="{{ $maxYear }}" value="{{ $year }}" required>
@@ -20,12 +22,14 @@
             <a class="button secondary" href="{{ route('calendar') }}#day-{{ $today }}">今日</a>
         </div>
     </section>
+    {{-- データ未収録と祝日/六曜がない日を区別し、未収録の年を推測で埋めない。 --}}
     <div class="calendar-notices">
         <p><span class="calendar-legend holiday-text">日曜・祝日</span> <span class="calendar-legend saturday-text">土曜</span> <span class="calendar-legend">「今日」の文字と枠が目印</span></p>
         @unless($holidayCovered)<p class="calendar-warning" role="status">{{ $year }}年の祝日データは未収録です。祝日がないという意味ではありません。</p>@endunless
         @unless($rokuyoCovered)<p class="calendar-warning">この年の六曜は一部または全部が未収録です。収録されている日だけ表示します。</p>@endunless
     </div>
     <section class="year-grid" aria-label="{{ $year }}年の12か月">
+    {{-- 各月のweeksは6週×7列。nullのセルは月外、日セルはエスケープ付きで表示する。 --}}
         @foreach($months as $month)
             <article class="month-card" id="month-{{ $month['number'] }}">
                 <h2>{{ $month['number'] }}<span>月</span></h2>
@@ -51,6 +55,7 @@
         @endforeach
     </section>
     <x-ad-slot />
+    {{-- 指定年の祝日辞書を一覧化し、各月へ移動するアンカーを作る。 --}}
     <section class="panel holiday-list" aria-labelledby="holiday-heading">
         <h2 id="holiday-heading">{{ $year }}年の祝日・休日一覧</h2>
         @if($holidayCovered)

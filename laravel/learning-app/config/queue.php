@@ -1,5 +1,7 @@
 <?php
 
+/** 非同期ジョブの接続先、バッチ管理、失敗履歴の設定。画面の文字処理Workerとは別の仕組み。 */
+
 return [
 
     /*
@@ -13,6 +15,7 @@ return [
     |
     */
 
+    // 既定のキュー接続。
     'default' => env('QUEUE_CONNECTION', 'database'),
 
     /*
@@ -29,6 +32,7 @@ return [
     |
     */
 
+    // DB/Redis等の実行方式。retry_afterは再試行までの秒数、after_commitはDB確定後の投入設定。
     'connections' => [
 
         'sync' => [
@@ -102,6 +106,7 @@ return [
     |
     */
 
+    // バッチの状態を置くDBと表。
     'batching' => [
         'database' => env('DB_CONNECTION', 'sqlite'),
         'table' => 'job_batches',
@@ -120,6 +125,7 @@ return [
     |
     */
 
+    // 失敗ジョブの識別/保存方式とDB表。
     'failed' => [
         'driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'),
         'database' => env('DB_CONNECTION', 'sqlite'),

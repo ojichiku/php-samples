@@ -1,3 +1,4 @@
+/** @file ブラウザー生成を4画面幅で操作するCLI。起動済みLaravelのTEST_BASE_URLへHTTP接続し、TEST_ARTIFACT_DIRへ結果JSONのみを保存する。生成/コピー中の通信や保存を検査し、生成値をログへ出さない。 */
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');

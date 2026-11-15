@@ -1,3 +1,4 @@
+{{-- Routeから受け取ったmessageをエスケープ付きで表示する学習用Blade。 --}}
 <!DOCTYPE html>
 <html lang="ja">
 <head>

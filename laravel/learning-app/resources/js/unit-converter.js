@@ -1,11 +1,26 @@
+/**
+ * @file 単位換算画面の分類/入力/結果表示。app.jsから読み込み、該当画面だけ初期化する。
+ */
 import { UNIT_GROUPS, convertUnits, referenceRelation } from './unit-converter-engine.js';
 
 const root = document.getElementById('unit-converter');
 if (root) {
+    /**
+     * 画面内の固定IDを検索する。
+     *
+     * @param {string} id 要素ID。
+     * @returns {HTMLElement|null} 対応する要素。
+     */
     const $ = id => root.querySelector(`#${id}`);
     let active = 'length';
+    // 結果更新の世代番号。遅れて完了したコピーが新しい入力へ案内を出すのを防ぐ。
     let generation = 0;
     let copyText = '';
+    /**
+     * 入力変更時に結果とコピー状態を消し、未完了のコピー応答も無効にする。
+     *
+     * @returns {void}
+     */
     function clearResult() {
         generation++;
         copyText = '';
@@ -18,6 +33,12 @@ if (root) {
         $('copy-fallback').hidden = true;
         $('fallback').value = '';
     }
+    /**
+     * 分類ボタン・単位候補・早見表を更新し、入力と結果を初期化する。
+     *
+     * @param {string} category UNIT_GROUPSの分類キー。
+     * @returns {void}
+     */
     function selectGroup(category) {
         active = category;
         const group = UNIT_GROUPS[category];
@@ -45,6 +66,7 @@ if (root) {
             ? '代表値：0 °C = 32 °F = 273.15 K。記号を式の数値として読むための早見式です。'
             : `${group.hint} 表示は最大12桁の有効数字。≈は丸めた値です。`;
     }
+    // BigIntが使えなければ入力を無効のまま残し、未対応の案内を出す。
     if (typeof BigInt !== 'function') {
         document.getElementById('unit-unsupported').hidden = false;
     } else {
@@ -57,6 +79,7 @@ if (root) {
             button.addEventListener('click', () => selectGroup(category));
             $('categories').append(button);
         }
+        // 通常のフォーム送信を止め、ブラウザー内で計算し、例外を結果欄へ表示する。
         $('form').addEventListener('submit', event => {
             event.preventDefault();
             clearResult();
@@ -77,6 +100,7 @@ if (root) {
         for (const id of ['value', 'from', 'to']) {
             $(id).addEventListener(id === 'value' ? 'input' : 'change', clearResult);
         }
+        // 単位だけを交換し、数値は維持する。換算結果は再計算まで消す。
         $('swap').addEventListener('click', () => {
             const from = $('from').value;
             $('from').value = $('to').value;
@@ -88,6 +112,7 @@ if (root) {
             clearResult();
             $('value').focus();
         });
+        // コピー失敗時は手動選択へ切り替える。結果が変わった後の完了/失敗は画面へ反映しない。
         $('copy').addEventListener('click', async () => {
             const text = copyText, token = generation;
             if (!text) return;
@@ -106,6 +131,7 @@ if (root) {
         });
         selectGroup('length');
         $('unit-inputs').disabled = false;
+        // 画面離脱時は初期分類へ戻して入力と結果を消す。
         window.addEventListener('pagehide', () => selectGroup('length'));
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+/** Laravel標準の認証設定。設定があることは所有者ログイン機能の実装完了を意味しない。 */
+
 use App\Models\User;
 
 return [
@@ -15,6 +17,7 @@ return [
     |
     */
 
+    // 既定の認証ガードとパスワード再設定ブローカー。
     'defaults' => [
         'guard' => env('AUTH_GUARD', 'web'),
         'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
@@ -37,6 +40,7 @@ return [
     |
     */
 
+    // webガードはセッションとusersプロバイダーを使う。
     'guards' => [
         'web' => [
             'driver' => 'session',
@@ -61,6 +65,7 @@ return [
     |
     */
 
+    // ユーザーの読込元。既定はEloquentのUserモデル。
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
@@ -92,6 +97,7 @@ return [
     |
     */
 
+    // 再設定トークンの表と有効期間（expireは分）、再発行間隔（throttleは秒）。
     'passwords' => [
         'users' => [
             'provider' => 'users',
@@ -112,6 +118,7 @@ return [
     |
     */
 
+    // 再確認したパスワードを有効とみなす時間（単位：秒）。
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
 ];

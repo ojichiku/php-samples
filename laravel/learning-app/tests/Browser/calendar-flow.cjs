@@ -1,3 +1,8 @@
+/**
+ * @file 起動済みLaravelの年間カレンダーをChromiumの4幅で検証するCLI。
+ * TEST_BASE_URLへGETし、TEST_ARTIFACT_DIRへJSONと各幅のPNGを保存する。
+ * 年の移動、うるう年、収録外、今日のアンカーを確認する。リモートは明示フラグが必要。
+ */
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');

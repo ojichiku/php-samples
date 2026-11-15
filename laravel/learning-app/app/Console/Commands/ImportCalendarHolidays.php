@@ -6,12 +6,18 @@ use DateTimeImmutable;
 use Illuminate\Console\Command;
 use RuntimeException;
 
+/** 取得済みの祝日CSVを検証し、カレンダー用CSVとメタ情報へ変換するローカルCLI。 */
 class ImportCalendarHolidays extends Command
 {
     protected $signature = 'calendar:import-holidays {file : 内閣府CSVのローカルファイル} {--checked-on= : 確認日（YYYY-MM-DD）}';
 
     protected $description = '取得済みの内閣府CSVを検証しUTF-8祝日テキストへ変換（外部通信なし）';
 
+    /**
+     * file引数とchecked-onオプションを検証して、ローカルの祝日データを更新する。
+     *
+     * @return int 成功ならSUCCESS、不正データや処理例外は案内してFAILURE。入力はローカルCSV/実際の確認日で、外部通信はしない。
+     */
     public function handle(): int
     {
         try {
@@ -25,6 +31,7 @@ class ImportCalendarHolidays extends Command
                 throw new RuntimeException('読み取れるローカルCSVを指定してください。');
             }
             $source = file_get_contents($path);
+            // UTF-8でない入力は内閣府CSVで使うSJIS-winとして読み、内部形式をUTF-8へそろえる。
             $encoding = mb_check_encoding($source, 'UTF-8') ? 'UTF-8' : 'SJIS-win';
             $text = mb_convert_encoding($source, 'UTF-8', $encoding);
             $stream = fopen('php://temp', 'w+');
@@ -57,6 +64,7 @@ class ImportCalendarHolidays extends Command
             if ($firstYear !== $existing['first_year'] || $lastYear < $existing['last_year']) {
                 throw new RuntimeException('収録年が縮小します。取得内容を確認してください。');
             }
+            // 既存の収録範囲を縮めず、年ごとの代表的な祝日と最低件数で欠落を検査する。
             for ($year = $firstYear; $year <= $lastYear; $year++) {
                 $entries = array_filter($dates, fn (string $key): bool => str_starts_with($key, $year.'-'), ARRAY_FILTER_USE_KEY);
                 if (count($entries) < 9 || ! isset($entries[$year.'-01-01']) || ! isset($entries[$year.'-11-23'])) {
@@ -76,6 +84,7 @@ class ImportCalendarHolidays extends Command
                 'checked_on' => $checkedOn, 'first_year' => $firstYear, 'last_year' => $lastYear,
                 'source_sha256' => hash('sha256', $source),
             ];
+            // 検証をすべて通った後にCSVとメタ情報を順に書く。2ファイルの同時原子的更新ではない。
             file_put_contents(resource_path('calendar/holidays.csv'), $csv, LOCK_EX);
             file_put_contents(resource_path('calendar/holidays-meta.json'), json_encode($metadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)."\n", LOCK_EX);
             $this->info(count($dates).'件を変換しました（'.$firstYear.'〜'.$lastYear.'年）。差分を確認してから配置してください。');

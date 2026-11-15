@@ -1,5 +1,7 @@
 <?php
 
+/** キャッシュ保存先とロック方式。実際に使うのはdefaultで選んだストア。 */
+
 use Illuminate\Support\Str;
 
 return [
@@ -15,6 +17,7 @@ return [
     |
     */
 
+    // 既定ストア。回数制限などのキャッシュも設定に従う。
     'default' => env('CACHE_STORE', 'database'),
 
     /*
@@ -32,6 +35,7 @@ return [
     |
     */
 
+    // ストア名ごとの接続/ファイル/ロック設定。全方式へ同時接続するわけではない。
     'stores' => [
 
         'array' => [
@@ -118,6 +122,7 @@ return [
     |
     */
 
+    // 他アプリのキャッシュキーとの衝突を避ける接頭辞。
     'prefix' => env('CACHE_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-cache-'),
 
     /*
@@ -131,6 +136,7 @@ return [
     |
     */
 
+    // シリアライズされたオブジェクトの復元で許すクラスの設定。
     'serializable_classes' => false,
 
 ];

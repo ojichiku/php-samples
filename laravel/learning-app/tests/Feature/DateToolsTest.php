@@ -4,8 +4,14 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 
+/** 日付ツールのGET入口、送信不可、広告と解析除外をLaravel内のリクエストで確認する。 */
 class DateToolsTest extends TestCase
 {
+    /**
+     * 独立ページとメニュー導線、JS不在時の無効化、POST拒否を確認する。
+     *
+     * @return void HTTP応答とHTMLの期待値をアサートする。
+     */
     public function test_independent_tool_is_available_from_navigation_and_index(): void
     {
         $this->get('/date-tools')->assertOk()->assertSee('日付・元号ツール')
@@ -17,6 +23,11 @@ class DateToolsTest extends TestCase
         $this->post('/date-tools', ['birthday' => '2000-02-29'])->assertStatus(405);
     }
 
+    /**
+     * 本番設定で広告2枠/スクリプト1回と解析除外、ローカル仮枠の切替を確認する。
+     *
+     * @return void HTTP応答とHTMLの期待値をアサートする。
+     */
     public function test_two_advertisements_do_not_enable_analytics(): void
     {
         config(['advertising.enabled' => true, 'advertising.client' => 'ca-pub-0000000000000000',

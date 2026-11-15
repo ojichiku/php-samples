@@ -1,5 +1,7 @@
 <?php
 
+/** DB接続とマイグレーション/Redisの設定。接続情報の実値は環境変数で与える。 */
+
 use Illuminate\Support\Str;
 use Pdo\Mysql;
 
@@ -17,6 +19,7 @@ return [
     |
     */
 
+    // 既定の接続名。未指定ならSQLite。
     'default' => env('DB_CONNECTION', 'sqlite'),
 
     /*
@@ -30,6 +33,7 @@ return [
     |
     */
 
+    // SQLiteと各DB製品の接続定義。使う方式の拡張/サービスは別途必要。
     'connections' => [
 
         'sqlite' => [
@@ -127,6 +131,7 @@ return [
     |
     */
 
+    // 実行済みマイグレーションを記録する表の設定。
     'migrations' => [
         'table' => 'migrations',
         'update_date_on_publish' => true,
@@ -143,6 +148,7 @@ return [
     |
     */
 
+    // 通常用/キャッシュ用のRedis接続と接頭辞。接続クライアントもここで選ぶ。
     'redis' => [
 
         'client' => env('REDIS_CLIENT', 'phpredis'),

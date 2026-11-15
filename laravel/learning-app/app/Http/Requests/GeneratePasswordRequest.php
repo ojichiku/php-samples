@@ -6,14 +6,24 @@ use App\Services\PasswordGenerator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+/** 生成前にPOST条件を検証するFormRequest。検証失敗時はControllerの生成処理へ進まない。 */
 class GeneratePasswordRequest extends FormRequest
 {
+    /**
+     * この公開ツールの生成要求を許可する。
+     *
+     * @return bool 常にtrue。入力検証と回数制限は別の仕組みで行う。
+     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /** @return array<string, array<mixed>> */
+    /**
+     * 文字数と重複のない有効な文字種を要求する。
+     *
+     * @return array<string, array<mixed>> 入力キーごとの検証ルール。lengthの単位は文字。
+     */
     public function rules(): array
     {
         return [
@@ -23,7 +33,11 @@ class GeneratePasswordRequest extends FormRequest
         ];
     }
 
-    /** @return array<string, string> */
+    /**
+     * 検証エラーを日本語の案内へ対応させる。
+     *
+     * @return array<string, string> ルール名をキー、表示文を値とする配列。
+     */
     public function messages(): array
     {
         return [

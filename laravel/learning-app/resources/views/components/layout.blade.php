@@ -1,3 +1,4 @@
+{{-- title/activeとslotを受け取る共通レイアウト。メニューの現在位置とViteのCSS/JS読込みをまとめる。 --}}
 @props(['title', 'active' => 'tools'])
 <!DOCTYPE html>
 <html lang="ja">

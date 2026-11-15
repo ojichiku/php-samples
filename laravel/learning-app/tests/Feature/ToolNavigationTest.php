@@ -4,8 +4,14 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 
+/** 共通メニューとサーバー生成の初期画面を確認する。 */
 class ToolNavigationTest extends TestCase
 {
+    /**
+     * 利用可能な画面にリンクし、未実装の所有者ログインへリンクしない。
+     *
+     * @return void 応答/表示の期待値をアサートする。
+     */
     public function test_menu_links_to_available_tools_and_keeps_owner_menu_unlinked(): void
     {
         $this->get(route('tools.index'))->assertOk()
@@ -15,6 +21,11 @@ class ToolNavigationTest extends TestCase
             ->assertDontSee('href="'.url('/login').'"', false);
     }
 
+    /**
+     * 生成画面に使い方と共通導線、サーバー生成/第三者コードの説明を表示する。
+     *
+     * @return void 応答/表示の期待値をアサートする。
+     */
     public function test_generator_includes_instructions_and_common_menu(): void
     {
         $this->get(route('password.guide'))->assertRedirect(route('password.form'));
@@ -23,6 +34,11 @@ class ToolNavigationTest extends TestCase
             ->assertSee('サーバーで行い')->assertSee('第三者スクリプト');
     }
 
+    /**
+     * 初期文字数16と英数3種を設定し、生成値は空で機密応答ヘッダーを付ける。
+     *
+     * @return void 応答/表示の期待値をアサートする。
+     */
     public function test_generator_starts_empty_with_documented_defaults(): void
     {
         $this->get(route('password.form'))->assertOk()
@@ -34,6 +50,11 @@ class ToolNavigationTest extends TestCase
             ->assertHeader('X-Robots-Tag', 'noindex, nofollow');
     }
 
+    /**
+     * 年間カレンダーのGET入口が応答する。
+     *
+     * @return void 応答/表示の期待値をアサートする。
+     */
     public function test_calendar_is_available(): void
     {
         $this->get('/calendar')->assertOk()->assertSee('年間カレンダー');

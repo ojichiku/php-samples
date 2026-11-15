@@ -1,5 +1,7 @@
 <?php
 
+/** ログ出力先とレベルの設定。複数候補の定義があっても採用したチャンネルだけが使われる。 */
+
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -18,6 +20,7 @@ return [
     |
     */
 
+    // 既定のログチャンネル。
     'default' => env('LOG_CHANNEL', 'stack'),
 
     /*
@@ -31,6 +34,7 @@ return [
     |
     */
 
+    // 非推奨機能の警告を送るチャンネルとトレース有無。
     'deprecations' => [
         'channel' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
         'trace' => env('LOG_DEPRECATIONS_TRACE', false),
@@ -50,6 +54,7 @@ return [
     |
     */
 
+    // ファイル/標準エラー/外部等の出力定義。dailyのmax_filesは保持ファイル数。
     'channels' => [
 
         'stack' => [

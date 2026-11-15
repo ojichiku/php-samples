@@ -1,3 +1,4 @@
+/** @file Playwright/Chromiumのローカル起動確認CLI。ブラウザーを開閉し、版と起動結果を標準出力へ出す。ページへのアクセスや依存取得は行わない。 */
 const { chromium } = require('playwright');
 
 (async () => {

@@ -1,5 +1,7 @@
 <?php
 
+/** Webサーバーが呼ぶ標準HTTP入口。保守モードを確認し、autoloadとbootstrapでアプリを起動して応答する。 */
+
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 

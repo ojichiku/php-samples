@@ -4,10 +4,13 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/** ユーザー/パスワード再設定トークン/セッションのテーブルを作成/削除する標準マイグレーション。 */
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * ユーザー/パスワード再設定トークン/セッションのテーブルと必要な索引を作る。
+     *
+     * @return void DBのスキーマを変更する。
      */
     public function up(): void
     {
@@ -38,7 +41,9 @@ return new class extends Migration
     }
 
     /**
-     * Reverse the migrations.
+     * 作成したテーブルを存在する場合に削除する。
+     *
+     * @return void テーブル内のデータも削除される。
      */
     public function down(): void
     {

@@ -1,3 +1,4 @@
+/** @file Viteの共通入口。各ツールを読み込み、サーバー生成画面のコピーと離脱時の結果消去も行う。 */
 import './unit-converter.js';
 import './date-tools.js';
 import './text-tools.js';
@@ -8,6 +9,7 @@ const copyButton = document.querySelector('#copy-password');
 const status = document.querySelector('#copy-status');
 
 if (result && copyButton && status) {
+    // コピーAPIが使えない場合は結果欄を選択して手動コピーへ案内する。
     copyButton.addEventListener('click', async () => {
         if (!result.value) return;
         try {
@@ -21,6 +23,7 @@ if (result && copyButton && status) {
         }
     });
 
+    // 履歴キャッシュへの退避でも生成値を消す。クリップボードの値はここでは消去できない。
     window.addEventListener('pagehide', () => {
         result.value = '';
         copyButton.disabled = true;

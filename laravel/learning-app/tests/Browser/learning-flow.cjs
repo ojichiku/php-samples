@@ -1,3 +1,4 @@
+/** @file 起動済みLaravelの学習例を375/1280pxで操作するCLI。TEST_BASE_URLへGET/POSTし、TEST_ARTIFACT_DIRへ結果JSONとPNGを保存する。挨拶/検証/HTML解釈防止/CSRFを確認する。 */
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');

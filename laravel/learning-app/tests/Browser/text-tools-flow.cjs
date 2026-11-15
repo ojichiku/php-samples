@@ -1,3 +1,8 @@
+/**
+ * @file 起動済みLaravelのテキストツールをChromiumの4幅で操作するCLI。
+ * TEST_BASE_URLへ接続し外部要求を遮断、TEST_ARTIFACT_DIRへ結果JSONと用途ごとのPNGを保存する。
+ * Workerの停止、100万文字の結果、UTF-8ダウンロードと一時Blob URL解放も確認する。
+ */
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -23,9 +28,24 @@ const { chromium } = require('playwright');
                 URL.createObjectURL = blob => { const url = create(blob); window.testBlobUrls.add(url); return url; };
                 URL.revokeObjectURL = url => { window.testBlobUrls.delete(url); revoke(url); };
             });
+            /**
+             * 用途タブを選ぶ。
+             * @param {string} name format/replace/lines/regexの用途。
+             * @returns {Promise<void>} タブ操作完了。
+             */
             const tab = name => page.locator(`[data-tab="${name}"]`).click();
+            /**
+             * 正規表現の操作モードを選ぶ。
+             * @param {string} name build/match/generateのモード。
+             * @returns {Promise<void>} モード操作完了。
+             */
             const mode = name => page.locator(`[data-regex="${name}"]`).click();
             const input = page.locator('#input'), out = page.locator('#output'), status = page.locator('#status');
+            /**
+             * 処理を実行し、Workerの完了またはエラー/中止の案内を待つ。
+             * @returns {Promise<void>} 処理後の表示確認完了。
+             * @throws {Error} ブラウザー操作失敗や待機タイムアウト（Promiseの拒否）。
+             */
             const run = async () => {
                 await page.locator('#run').click();
                 await page.waitForFunction(() => document.querySelector('#cancel').hidden && document.querySelector('#status').textContent !== '');
@@ -61,7 +81,7 @@ const { chromium } = require('playwright');
             await tab('format'); assert.equal(await input.inputValue(), 'あ😀\n'); assert.equal(await out.inputValue(), 'あ😀\n');
             await tab('lines'); await input.fill('りんご\nみかん\nりんご'); await page.locator('[name=sort][value=asc]').check(); await run();
             assert.equal(await out.inputValue(), 'みかん\nりんご');
-            // Clipboard denial must leave the input intact and explain menu-based paste.
+            // Clipboardの拒否時は入力を維持し、右クリック/長押しによる貼り付けを案内する。
             await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { value: { readText: async () => { throw new Error(); }, writeText: async () => { throw new Error(); } }, configurable: true }));
             await page.locator('#paste').click(); assert.match(await status.innerText(), /右クリック.*長押し/);
             assert.equal(await input.inputValue(), 'りんご\nみかん\nりんご');

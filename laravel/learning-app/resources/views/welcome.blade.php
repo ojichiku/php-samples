@@ -1,3 +1,4 @@
+{{-- Laravel標準の初期画面テンプレート。現在のトップRouteはtools.indexを表示する。 --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>

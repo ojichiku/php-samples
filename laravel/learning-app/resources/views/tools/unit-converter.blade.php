@@ -1,3 +1,4 @@
+{{-- unit.converterのGET画面。単位候補と結果はunit-converter.jsが作り、PHPへ数値を送信しない。 --}}
 <x-layout title="単位換算ツール" active="unit-converter">
     <section class="page-heading compact">
         <a class="back-link" href="{{ route('tools.index') }}">← ツール一覧</a>
@@ -11,14 +12,17 @@
     <x-ad-slot />
     <div id="unit-converter">
 <section class="selection" aria-labelledby="category-heading"><h2 id="category-heading">何を換算しますか？</h2><div id="categories" role="group" aria-label="換算する分類"></div><p id="hint" class="muted"></p></section>
+{{-- JS/BigIntが使えることを確認するまでfieldsetを無効にする。検証は計算エンジンに統一する。 --}}
 <div id="workspace" class="workspace"><form id="form" class="card" novalidate><fieldset id="unit-inputs" disabled><h2>数値と単位を選ぶ</h2>
 <div class="conversion-row" id="source-row"><div><label for="value">変換元の数値</label><input id="value" type="text" maxlength="64" inputmode="decimal" placeholder="例：1.5" aria-describedby="input-help" autocomplete="off"></div><div><label for="from">単位</label><select id="from" aria-label="変換元の単位"></select></div></div>
 <small id="input-help">半角数字・小数9桁まで。カンマは付けずに入力してください。</small>
+{{-- 変換先の数値は読み取り専用。表示丸めの注記はresult-noteと合わせて伝える。 --}}
 <div class="conversion-row" id="target-row"><div><label for="converted">変換後の数値</label><input id="converted" type="text" readonly placeholder="換算結果" aria-describedby="result-note result"></div><div><label for="to">単位</label><select id="to" aria-label="変換後の単位"></select></div></div>
 <div class="actions"><button class="primary" type="submit">換算</button><button id="swap" type="button">単位の入れ替え</button></div>
 <p id="result" role="status" aria-live="polite"></p><p id="result-note" class="muted"></p>
 <div class="actions secondary"><button id="copy" type="button" disabled>結果をコピー</button><button id="reset" type="button">数値をクリア</button></div><p id="copy-status" role="status"></p><div id="copy-fallback" hidden><label for="fallback">コピーする結果</label><textarea id="fallback" readonly></textarea></div>
 <small>変換後の数値は換算すると表示されます。最大12桁の有効数字で、≈は丸めた値です。</small></fieldset></form></div>
+{{-- 分類を選ぶと基準単位への係数や温度の式をJSが表へ挿入する。 --}}
 <section id="reference" class="card" aria-labelledby="table-heading"><h2 id="table-heading"></h2><p>単位名・記号と、基準となる単位との関係を確認できます。</p><table><caption class="sr-only">選択した分類の単位早見表</caption><thead><tr><th scope="col">単位名</th><th scope="col">記号</th><th scope="col">基準単位との関係</th></tr></thead><tbody id="rows"></tbody></table><p id="table-note" class="muted"></p></section>
     </div>
     <x-ad-slot />

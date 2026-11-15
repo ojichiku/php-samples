@@ -4,8 +4,15 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 
+/** 広告対象Routeと環境/ID設定を変えた表示条件を検証する。 */
 class AdvertisingTest extends TestCase
 {
+    /**
+     * テスト用IDで広告/仮枠の両スイッチを有効にする。
+     *
+     * @param  string  $environment  テスト内の環境名（production/local）。
+     * @return void テスト用アプリ設定を更新する。外部通信はしない。
+     */
     private function enableAds(string $environment): void
     {
         $this->app->instance('env', $environment);
@@ -13,6 +20,11 @@ class AdvertisingTest extends TestCase
             'advertising.client' => 'ca-pub-0000000000000000', 'advertising.slot' => '1234567890']);
     }
 
+    /**
+     * 許可したページ/生成POST結果に広告を出し、ローダーは1回だけ読み込む。
+     *
+     * @return void 応答/表示の期待値をアサートする。
+     */
     public function test_live_ads_appear_on_allowed_pages_and_password_post_results(): void
     {
         $this->enableAds('production');
@@ -32,6 +44,11 @@ class AdvertisingTest extends TestCase
         $this->assertStringContainsString('no-store', $response->headers->get('Cache-Control'));
     }
 
+    /**
+     * ローカルでは仮枠だけを表示し、実広告を読み込まない。
+     *
+     * @return void 応答/表示の期待値をアサートする。
+     */
     public function test_development_preview_never_loads_live_ads(): void
     {
         $this->enableAds('local');
@@ -40,6 +57,11 @@ class AdvertisingTest extends TestCase
         $this->get('/password-generator/generate')->assertOk()->assertSee('ad-preview')->assertDontSee('adsbygoogle');
     }
 
+    /**
+     * 無効設定/不正IDでは本番でも実広告を出さない。
+     *
+     * @return void 応答/表示の期待値をアサートする。
+     */
     public function test_disabled_or_invalid_configuration_does_not_load_ads(): void
     {
         $this->enableAds('production');
@@ -49,6 +71,11 @@ class AdvertisingTest extends TestCase
         $this->get('/')->assertDontSee('adsbygoogle');
     }
 
+    /**
+     * 旧説明URLが現在の1画面構成へ転送される。
+     *
+     * @return void 応答/表示の期待値をアサートする。
+     */
     public function test_old_guides_redirect_to_the_single_page_tools(): void
     {
         $this->get('/password-generator')->assertRedirect(route('password.form'));

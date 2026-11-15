@@ -4,8 +4,14 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 
+/** テキスト画面の用途、GET専用入口、本番限定の広告/解析条件を検証する。 */
 class TextToolsTest extends TestCase
 {
+    /**
+     * 用途4種と操作ボタン、入力の扱いを表示し、POSTは受け付けない。
+     *
+     * @return void HTTP応答とHTMLの条件をアサートする。
+     */
     public function test_editing_and_regex_sections_are_available(): void
     {
         $response = $this->get('/text-tools')->assertOk();
@@ -18,6 +24,11 @@ class TextToolsTest extends TestCase
         $this->post('/text-tools', ['text' => 'private'])->assertStatus(405);
     }
 
+    /**
+     * 本番の広告/解析設定とローカル非表示を確認し、他ツールへ解析が広がらないようにする。
+     *
+     * @return void HTTP応答とHTMLの条件をアサートする。
+     */
     public function test_advertising_and_analytics_are_production_only_and_do_not_change_password_policy(): void
     {
         config(['advertising.enabled' => true, 'advertising.client' => 'ca-pub-0000000000000000',
@@ -33,6 +44,11 @@ class TextToolsTest extends TestCase
         $this->get('/text-tools')->assertDontSee('data-text-analytics')->assertDontSee('adsbygoogle');
     }
 
+    /**
+     * 不正な解析IDをHTMLへ出さず、設定値からのHTML挿入を防ぐ。
+     *
+     * @return void HTTP応答とHTMLの条件をアサートする。
+     */
     public function test_invalid_analytics_identifier_is_not_rendered(): void
     {
         $this->app->instance('env', 'production');
