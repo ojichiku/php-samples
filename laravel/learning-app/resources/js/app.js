@@ -1,4 +1,5 @@
 /** @file Viteの共通入口。各ツールを読み込み、サーバー生成画面のコピーと離脱時の結果消去も行う。 */
+import './time-tools.js';
 import './unit-converter.js';
 import './date-tools.js';
 import './text-tools.js';

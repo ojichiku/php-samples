@@ -1,4 +1,4 @@
-{{-- 作成済み6ツールへのリンクを並べる共通入口。Route名を使ってURLを作る。 --}}
+{{-- 作成済み7ツールへのリンクを並べる共通入口。Route名を使ってURLを作る。 --}}
 <x-layout title="ツール一覧">
     <section class="hero">
         <p class="eyebrow">日々の作業を、少し手軽に。</p>
@@ -7,7 +7,7 @@
     </section>
     <x-ad-slot />
     <section aria-labelledby="tools-heading">
-        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">6つのツールが利用できます</span></div>
+        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">7つのツールが利用できます</span></div>
         <div class="tool-grid">
             <article class="tool-card available">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">Aa</span><span class="badge">利用できます</span></div>
@@ -44,6 +44,12 @@
                 <h3>単位換算ツール</h3>
                 <p>長さ・重さ・容量・面積・温度・速さ・時間・エネルギーを換算し、単位の早見表を確認できます。</p>
                 <a class="button" href="{{ route('unit.converter') }}">単位を換算する <span aria-hidden="true">→</span></a>
+            </article>
+            <article class="tool-card available">
+                <div class="card-top"><span class="tool-icon" aria-hidden="true">時</span><span class="badge">利用できます</span></div>
+                <h3>時間ツール</h3>
+                <p>世界時計・ストップウォッチ・タイマー・日時の差の計算を使えます。</p>
+                <a class="button" href="{{ route('time.tools') }}">時間ツールを開く <span aria-hidden="true">→</span></a>
             </article>
             <article class="tool-card upcoming">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">◎</span><span class="badge neutral">準備中</span></div>

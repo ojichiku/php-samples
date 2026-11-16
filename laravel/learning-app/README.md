@@ -235,3 +235,9 @@ npm run test:browser:unit-converter
 ```
 
 計算処理は `resources/js/unit-converter-engine.js`、操作は `resources/js/unit-converter.js`、画面は `resources/views/tools/unit-converter.blade.php` です。BigIntによる分数で途中計算し、表示時に丸めます。ブラウザーテストは4幅で換算・コピー/失敗時代替・入力エラー・離脱時消去・操作中要求なしを確認し、画像を生成しません。公開先への試験は `ALLOW_REMOTE_TESTS=1` と `TEST_BASE_URL` を明示した場合だけ実行します。
+
+## 時間ツール
+
+`/time-tools` は世界時計・ストップウォッチ・タイマー・日時の差を計算の4タブです。世界時計は50都市＋UTCの検索、アナログ表示切替、主要12都市の時差だけの早見表に対応します。区間名付き計測、1回タイマーと手動の集中/休憩切替、東京の日時差計算も利用できます。入力はブラウザー内で処理し、アプリは送信・保存しません。タブを閉じると状態は失われ、端末スリープ中の通知は保証しません。
+
+`npm run build`、`php artisan test --compact --filter=TimeTools`、ローカルサーバー起動後の `npm run test:browser:time-tools` で確認できます。ブラウザー試験は外部要求を遮断しJSONだけを保存します。
