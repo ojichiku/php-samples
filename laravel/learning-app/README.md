@@ -244,6 +244,6 @@ npm run test:browser:unit-converter
 
 ## 日常計算ツール
 
-`/calculation-tools` で割合・割引・増減率・均等割り勘を計算します。入力はブラウザー内で処理します。
+`/calculation-tools` で割合、割引、増減率、均等割り・支払い単位つき割り勘、2商品の単価比較ができます。入力はブラウザー内で処理します。
 
 `npm run build`、`php artisan test --compact --filter=CalculationTools`、8003番で広告仮枠を有効にしたローカルサーバーを起動して `npm run test:browser:calculation-tools` で確認できます。

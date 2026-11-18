@@ -84,12 +84,38 @@ const { chromium } = require('playwright');
  ok('mode switching preserves input', await page.locator('#change-before').inputValue() === '８００');
  await page.locator('#ratio-tab').focus(); await page.keyboard.press('ArrowRight');
  ok('keyboard tab switch', await page.locator('#discount-tab').getAttribute('aria-selected') === 'true' && await page.locator('#discount-tab').evaluate(node => node === document.activeElement));
+ await page.locator('#split-tab').click();
+ await page.locator('#split-kind').selectOption('unit');
+ await page.locator('#split-unit').selectOption('1000');
+ const unitSplit = await calculate('split', { 'split-total': '10500', 'split-people': '4' });
+ ok('unit split includes remainder payer in headcount', unitSplit.includes('3人は各 2,000円') && unitSplit.includes('4,500円') && unitSplit.includes('10,500円'));
+ ok('single payer pays the entire amount', (await calculate('split', { 'split-total': '10500', 'split-people': '1' })).includes('1人で 10,500円'));
+ ok('exact division shows one amount for everyone', (await calculate('split', { 'split-total': '8000', 'split-people': '4' })).includes('全員が各 2,000円'));
+ ok('large payment unit explains zero base', (await calculate('split', { 'split-total': '2000', 'split-people': '3' })).includes('1人が全額を払います'));
+ await page.locator('#split-kind').selectOption('even');
+ ok('switching split type hides the unit and result', await page.locator('#split-unit').isHidden() && await page.locator('#split-result').isHidden());
+ await page.locator('#compare-tab').click();
+ await page.locator('#compare-unit-b').selectOption('kg');
+ const mass = await calculate('compare', { 'compare-price-a': '498', 'compare-amount-a': '300', 'compare-price-b': '698', 'compare-amount-b': '0.45' });
+ ok('mixed mass units compare against 100g', ['166.00円', '約155.11円', '商品Bが割安', '約10.89円'].every(value => mass.includes(value)));
+ await page.locator('#compare-kind').selectOption('volume');
+ ok('changing kind clears amounts, retains prices and hides result', await page.locator('#compare-amount-a').inputValue() === '' && await page.locator('#compare-price-a').inputValue() === '498' && await page.locator('#compare-result').isHidden());
+ await page.locator('#compare-unit-b').selectOption('L');
+ ok('mixed volume with equal prices', (await calculate('compare', { 'compare-price-a': '500', 'compare-amount-a': '500', 'compare-price-b': '1000', 'compare-amount-b': '1' })).includes('同じ単価'));
+ await page.locator('#compare-kind').selectOption('count');
+ const counts = { 'compare-price-a': '1', 'compare-amount-a': '999999999', 'compare-price-b': '2', 'compare-amount-b': '999999999' };
+ const tiny = await calculate('compare', counts);
+ ok('exact comparison survives identical rounded prices', tiny.includes('商品Aが割安') && tiny.includes('表示精度では同じ'));
+ await calculate('compare', { ...counts, 'compare-amount-a': '0' });
+ ok('zero quantity rejected and focused', (await page.locator('#compare-error').innerText()).includes('0より大きく') && await page.locator('#compare-amount-a').evaluate(node => node === document.activeElement));
+ await calculate('compare', { ...counts, 'compare-amount-a': '1.5' });
+ ok('fractional count rejected', (await page.locator('#compare-error').innerText()).includes('整数'));
  for (const width of [320,375,768,1280]) {
   await page.setViewportSize({ width, height: 900 });
-  for (const mode of ['ratio','discount','change','split']) {
+  for (const mode of ['ratio','discount','change','split','compare']) {
    await page.locator(`#${mode}-tab`).click();
    ok(`${width}px ${mode} no overflow`, await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
-   ok(`${width}px ${mode} minimum controls`, await page.locator(`#${mode}-panel input, #${mode}-panel button`).evaluateAll(nodes => nodes.every(node => node.getBoundingClientRect().height >= 44)));
+   ok(`${width}px ${mode} minimum controls`, await page.locator(`#${mode}-panel input, #${mode}-panel button`).evaluateAll(nodes => nodes.every(node => !node.getClientRects().length || node.getBoundingClientRect().height >= 44)));
   }
  }
  ok('no JavaScript errors', errors.length === 0); ok('no external requests', external.length === 0);
@@ -99,6 +125,6 @@ const { chromium } = require('playwright');
  ok('no JavaScript leaves calculation disabled', await noJs.locator('#ratio-form button').isDisabled());
  const result = { passed: checks.length, checks, errors, external, screenshots: false };
  fs.mkdirSync(path.resolve(__dirname, '../../test-results'), { recursive: true });
- fs.writeFileSync(path.resolve(__dirname, '../../test-results/calculation-tools-verification.json'), JSON.stringify(result, null, 2)+'\n');
+ fs.writeFileSync(path.resolve(__dirname, '../../test-results/calculation-tools-expansion-verification.json'), JSON.stringify(result, null, 2)+'\n');
  await browser.close(); console.log(JSON.stringify({ passed: checks.length, errors, external }));
 })().catch(error => { console.error(error); process.exit(1); });

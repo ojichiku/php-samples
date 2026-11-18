@@ -39,3 +39,58 @@ export function rounded(n, d) {
     const decimal = (value % 10000n).toString().padStart(4, '0').replace(/0+$/, '');
     return `${scaled % d ? '約' : ''}${(value / 10000n).toLocaleString('ja-JP')}${decimal ? `.${decimal}` : ''}`;
 }
+
+/** @typedef {{price: bigint, amount: DecimalValue, multiplier: bigint}} Product 円の整数価格、正の内容量、基準単位への倍率。 */
+
+/**
+ * 2商品の単価を比較し、円を小数2桁で表示する。
+ * @param {Product} a 商品A。
+ * @param {Product} b 商品B。
+ * @param {bigint} scale 比較基準量。g・mLは100、個は1。
+ * @returns {{order: bigint, a: string, b: string, difference: string, sameDisplay: boolean}} 厳密な差の符号と表示用の金額。
+ */
+export function compareUnitPrices(a, b, scale) {
+    const numeratorA = a.price * a.amount.d * scale;
+    const numeratorB = b.price * b.amount.d * scale;
+    const denominatorA = a.amount.n * a.multiplier;
+    const denominatorB = b.amount.n * b.multiplier;
+    // 表示用の丸めより先に交差乗算して割安な商品を判定する。
+    const order = numeratorA * denominatorB - numeratorB * denominatorA;
+    const difference = order < 0n ? -order : order;
+    const denominator = denominatorA * denominatorB;
+    const displayA = unitPriceYen(numeratorA, denominatorA);
+    const displayB = unitPriceYen(numeratorB, denominatorB);
+    return {
+        order,
+        a: displayA,
+        b: displayB,
+        difference: difference > 0n && difference * 100n < denominator ? '0.01円未満' : unitPriceYen(difference, denominator),
+        sameDisplay: displayA.replace('約', '') === displayB.replace('約', ''),
+    };
+}
+
+/**
+ * 円の整数比を小数第2位まで四捨五入する。
+ * @param {bigint} numerator 0以上の分子。
+ * @param {bigint} denominator 正の分母。
+ * @returns {string} 円単位の表示。丸めた場合は「約」を付ける。
+ */
+function unitPriceYen(numerator, denominator) {
+    const scaled = numerator * 100n;
+    const cents = (scaled * 2n + denominator) / (2n * denominator);
+    const fraction = String(cents % 100n).padStart(2, '0');
+    return `${scaled % denominator ? '約' : ''}${(cents / 100n).toLocaleString('ja-JP')}.${fraction}円`;
+}
+
+/**
+ * 指定した支払い単位で基本額を切り下げ、残額を1人の基本額に加える。
+ * @param {bigint} total 合計金額（円）。
+ * @param {bigint} people 残額の負担者を含む正の人数。
+ * @param {bigint} unit 正の支払い単位（円）。
+ * @returns {{each: bigint, rest: bigint, last: bigint}} 基本額、残額、残額を引き受ける1人の支払額（円）。
+ */
+export function splitByUnit(total, people, unit) {
+    const each = total / (people * unit) * unit;
+    const rest = total - each * people;
+    return { each, rest, last: each + rest };
+}

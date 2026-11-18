@@ -54,7 +54,7 @@
             <article class="tool-card available">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">%</span><span class="badge">利用できます</span></div>
                 <h3>日常計算ツール</h3>
-                <p>割合・割引・増減率・割り勘を計算できます。</p>
+                <p>割合・割引・増減率・割り勘・単価比較ができます。</p>
                 <a class="button" href="{{ route('calculation.tools') }}">日常計算ツールを開く <span aria-hidden="true">→</span></a>
             </article>
             <article class="tool-card upcoming">

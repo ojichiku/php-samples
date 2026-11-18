@@ -1,12 +1,17 @@
 /**
  * @file 日常計算のGET画面を操作する。入力は保存/送信せず、10進数を整数比で計算する。
  */
-import { parseDecimal, rounded } from './calculation-tools-engine.js';
+import { parseDecimal, rounded, compareUnitPrices, splitByUnit } from './calculation-tools-engine.js';
 import '../css/calculation-tools.css';
 
 (() => {
 'use strict';
-const modes = ['ratio', 'discount', 'change', 'split'];
+const modes = ['ratio', 'discount', 'change', 'split', 'compare'];
+const comparisonKinds = {
+    mass: { units: ['g', 'kg'], basis: '100g', scale: 100n },
+    volume: { units: ['mL', 'L'], basis: '100mL', scale: 100n },
+    count: { units: ['個'], basis: '1個', scale: 1n },
+};
 /** @typedef {{n: bigint, d: bigint, text: string}} DecimalValue 10進入力の整数分子、正の分母、表示文字列。 */
 /**
  * 固定IDの要素を返す。
@@ -88,8 +93,44 @@ function calculate(mode) {
         const difference = after.n * before.d - before.n * after.d;
         const magnitude = difference < 0n ? -difference : difference;
         show(mode, '変更前を基準にした増減率', `${rounded(magnitude * 100n, after.d * before.n)}%${difference > 0n ? ' 増' : difference < 0n ? ' 減' : '（増減なし）'}`, [`(${after.text} − ${before.text}) ÷ ${before.text} × 100`, '小数4桁で四捨五入。丸めた結果には「約」を付けています。']);
+    } else if (mode === 'compare') {
+        const kind = el('compare-kind').value;
+        const { basis, scale } = comparisonKinds[kind];
+        const [a, b] = ['a', 'b'].map(key => {
+            const label = `商品${key.toUpperCase()}`;
+            const id = `compare-amount-${key}`;
+            const price = read(`compare-price-${key}`, `${label}の税込価格`, 0).n;
+            const amount = read(id, `${label}の内容量`, kind === 'count' ? 0 : 3);
+            if (amount.n === 0n || amount.n > 999999999n * amount.d) {
+                throw Object.assign(new Error(`${label}の内容量は0より大きく999,999,999以下にしてください。`), { inputId: id });
+            }
+            const unit = el(`compare-unit-${key}`).value;
+            return { price, amount, multiplier: ['kg', 'L'].includes(unit) ? 1000n : 1n };
+        });
+        const result = compareUnitPrices(a, b, scale);
+        const cheaper = `商品${result.order < 0n ? 'A' : 'B'}`;
+        const verdict = result.order === 0n ? '同じ単価です。' : `${cheaper}が割安です。`;
+        const details = [`商品A：${result.a}`, `商品B：${result.b}`];
+        if (result.order !== 0n) {
+            details.push(result.sameDisplay ? '表示精度では同じ金額です。' : `${basis}あたりの差：${result.difference}`);
+        }
+        show(mode, `${basis}あたりの単価`, verdict, details);
     } else {
         const total = read('split-total', '合計金額', 0), people = read('split-people', '人数', 0, 999n, true);
+        if (el('split-kind').value === 'unit') {
+            const { each, rest, last } = splitByUnit(total.n, people.n, BigInt(el('split-unit').value));
+            const yen = value => `${value.toLocaleString('ja-JP')}円`;
+            const details = [`支払額の合計：${yen(total.n)}`];
+            let payment = `1人で ${yen(total.n)}`;
+            if (people.n > 1n) {
+                payment = rest === 0n ? `全員が各 ${yen(each)}` : `${people.n - 1n}人は各 ${yen(each)}`;
+                if (rest > 0n) details.unshift(`残りを引き受ける1人：${yen(last)}（基本額${yen(each)}＋残額${yen(rest)}）`);
+                if (each === 0n && rest > 0n) details.push('この支払い単位では1人が全額を払います。小さい単位も試せます。');
+            }
+            if (rest === 0n) details.push('残額：0円');
+            show(mode, '支払い単位での割り勘', payment, details);
+            return;
+        }
         const each = total.n / people.n, rest = total.n % people.n;
         show(mode, '1人あたり', `${each.toLocaleString('ja-JP')}円`, [`残り：${rest.toLocaleString('ja-JP')}円（未配分）`, `${each.toLocaleString('ja-JP')}円 × ${people.n}人 ＋ ${rest.toLocaleString('ja-JP')}円 ＝ ${total.n.toLocaleString('ja-JP')}円`, rest ? '残りの金額を誰が負担するかは、別途決めてください。' : '全額を均等に分けられます。']);
     }
@@ -123,5 +164,17 @@ el('ratio-kind').onchange = () => {
     el('ratio-note').textContent = percent ? '0以上、小数4桁まで。全体の何%かを調べるとき、全体は0より大きい値。' : '全体は0〜999,999,999.9999、割合は0〜1,000,000%。小数4桁まで。';
     // 同じ欄が「値」と「率」で意味を変えるため、この欄だけ空へ戻して取り違えを防ぐ。
     el('ratio-part').value = ''; invalidate('ratio');
+};
+el('split-kind').onchange = () => {
+    el('split-unit-fields').hidden = el('split-kind').value !== 'unit';
+};
+el('compare-kind').onchange = () => {
+    const kind = el('compare-kind').value;
+    for (const key of ['a', 'b']) {
+        const amount = el(`compare-amount-${key}`);
+        amount.value = '';
+        amount.inputMode = kind === 'count' ? 'numeric' : 'decimal';
+        el(`compare-unit-${key}`).replaceChildren(...comparisonKinds[kind].units.map(unit => new Option(unit, unit)));
+    }
 };
 })();
