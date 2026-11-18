@@ -25,6 +25,7 @@
                 <a href="{{ route('date.tools') }}" @if($active === 'date-tools') aria-current="page" @endif>日付・元号</a>
                 <a href="{{ route('unit.converter') }}" @if($active === 'unit-converter') aria-current="page" @endif>単位換算</a>
                 <a href="{{ route('time.tools') }}" @if($active === 'time-tools') aria-current="page" @endif>時間ツール</a>
+                <a href="{{ route('calculation.tools') }}" @if($active === 'calculation-tools') aria-current="page" @endif>日常計算</a>
                 <a href="{{ route('text.tools') }}" @if($active === 'text-tools') aria-current="page" @endif>テキストツール</a>
             </nav>
         </div>

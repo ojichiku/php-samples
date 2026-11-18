@@ -22,6 +22,21 @@ class CalculationToolsTest extends TestCase
     }
 
     /**
+     * 共通メニューとツール一覧の両方から日常計算に移動できる。
+     *
+     * @return void メニュー内のリンクと一覧カードをそれぞれ確認する。
+     */
+    public function test_calculation_tools_are_discoverable_from_menu_and_catalog(): void
+    {
+        $href = 'href="'.route('calculation.tools').'"';
+        $this->get('/calendar')->assertOk()
+            ->assertSeeInOrder(['<nav aria-label="共通メニュー">', $href, '>日常計算</a>', '</nav>'], false);
+        $this->get('/')->assertOk()
+            ->assertSeeInOrder(['<h3>日常計算ツール</h3>', $href, '日常計算ツールを開く'], false)
+            ->assertSee('8つのツール');
+    }
+
+    /**
      * 上下2枠に限定し、計算入力と結果の間へ広告を置かない。
      *
      * @return void 本番設定でのローダー1回・広告2枠と位置を確認する。

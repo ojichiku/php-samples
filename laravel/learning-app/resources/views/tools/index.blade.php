@@ -7,7 +7,7 @@
     </section>
     <x-ad-slot />
     <section aria-labelledby="tools-heading">
-        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">7つのツールが利用できます</span></div>
+        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">8つのツールが利用できます</span></div>
         <div class="tool-grid">
             <article class="tool-card available">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">Aa</span><span class="badge">利用できます</span></div>
@@ -50,6 +50,12 @@
                 <h3>時間ツール</h3>
                 <p>世界時計・ストップウォッチ・タイマー・日時の差の計算を使えます。</p>
                 <a class="button" href="{{ route('time.tools') }}">時間ツールを開く <span aria-hidden="true">→</span></a>
+            </article>
+            <article class="tool-card available">
+                <div class="card-top"><span class="tool-icon" aria-hidden="true">%</span><span class="badge">利用できます</span></div>
+                <h3>日常計算ツール</h3>
+                <p>割合・割引・増減率・割り勘を計算できます。</p>
+                <a class="button" href="{{ route('calculation.tools') }}">日常計算ツールを開く <span aria-hidden="true">→</span></a>
             </article>
             <article class="tool-card upcoming">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">◎</span><span class="badge neutral">準備中</span></div>
