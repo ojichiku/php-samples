@@ -241,3 +241,9 @@ npm run test:browser:unit-converter
 `/time-tools` は世界時計・ストップウォッチ・タイマー・日時の差を計算の4タブです。世界時計は50都市＋UTCの検索、アナログ表示切替、主要12都市の時差だけの早見表に対応します。区間名付き計測、1回タイマーと手動の集中/休憩切替、東京の日時差計算も利用できます。入力はブラウザー内で処理し、アプリは送信・保存しません。タブを閉じると状態は失われ、端末スリープ中の通知は保証しません。
 
 `npm run build`、`php artisan test --compact --filter=TimeTools`、ローカルサーバー起動後の `npm run test:browser:time-tools` で確認できます。ブラウザー試験は外部要求を遮断しJSONだけを保存します。
+
+## 日常計算ツール
+
+`/calculation-tools` で割合・割引・増減率・均等割り勘を計算します。入力はブラウザー内で処理します。
+
+`npm run build`、`php artisan test --compact --filter=CalculationTools`、8003番で広告仮枠を有効にしたローカルサーバーを起動して `npm run test:browser:calculation-tools` で確認できます。
