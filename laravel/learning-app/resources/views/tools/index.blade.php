@@ -1,4 +1,4 @@
-{{-- 作成済み7ツールへのリンクを並べる共通入口。Route名を使ってURLを作る。 --}}
+{{-- 公開ツールへのリンクを並べる共通入口。Route名を使ってURLを作る。 --}}
 <x-layout title="ツール一覧">
     <section class="hero">
         <p class="eyebrow">日々の作業を、少し手軽に。</p>
@@ -7,7 +7,7 @@
     </section>
     <x-ad-slot />
     <section aria-labelledby="tools-heading">
-        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">8つのツールが利用できます</span></div>
+        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">9つのツールが利用できます</span></div>
         <div class="tool-grid">
             <article class="tool-card available">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">Aa</span><span class="badge">利用できます</span></div>
@@ -56,6 +56,12 @@
                 <h3>日常計算ツール</h3>
                 <p>割合・割引・増減率・割り勘・単価比較ができます。</p>
                 <a class="button" href="{{ route('calculation.tools') }}">日常計算ツールを開く <span aria-hidden="true">→</span></a>
+            </article>
+            <article class="tool-card available">
+                <div class="card-top"><span class="tool-icon" aria-hidden="true">表</span><span class="badge">利用できます</span></div>
+                <h3>表データコンバーター</h3>
+                <p>CSV・TSVの列や文字を点検して、Excel・OpenOffice Calc用のファイルに変換できます。</p>
+                <a class="button" href="{{ route('tabular.converter') }}">表データを変換する <span aria-hidden="true">→</span></a>
             </article>
             <article class="tool-card upcoming">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">◎</span><span class="badge neutral">準備中</span></div>

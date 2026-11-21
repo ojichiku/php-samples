@@ -247,3 +247,14 @@ npm run test:browser:unit-converter
 `/calculation-tools` で割合、割引、増減率、均等割り・支払い単位つき割り勘、2商品の単価比較ができます。入力はブラウザー内で処理します。
 
 `npm run build`、`php artisan test --compact --filter=CalculationTools`、8003番で広告仮枠を有効にしたローカルサーバーを起動して `npm run test:browser:calculation-tools` で確認できます。
+
+## 表データコンバーター
+
+共通メニューの「表データ変換」またはツール一覧から `/tabular-data-converter` を開きます。
+CSV・TSVを選び、入力形式と文字コードを確認して「ファイルをチェック」を押します。
+正常なら先頭100データ行をプレビューし、Excel（.xlsx）またはOpenOffice Calc（.ods）形式でダウンロードできます。
+ファイルはブラウザー内で処理します。商品コードの先頭ゼロや日付に見える値も文字列として保存します。
+
+入力は最大5,000データ行、100列、5 MiBです。
+LaravelのルートとBladeが画面を表示し、`resources/js/tabular-data-parser.js` が解析・点検を、`resources/js/tabular-data-spreadsheet.js` が出力を担当します。
+`npm run build`、`npm run test:js`、`php artisan test --compact` で確認できます。

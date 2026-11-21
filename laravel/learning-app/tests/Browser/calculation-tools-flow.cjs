@@ -2,6 +2,10 @@
 
 const path = require('node:path');
 const fs = require('node:fs');
+const os = require('node:os');
+
+const base = process.env.TEST_BASE_URL || 'http://127.0.0.1:8003';
+const artifactDir = process.env.TEST_ARTIFACT_DIR || os.tmpdir();
 
 const { chromium } = require('playwright');
 (async () => {
@@ -34,7 +38,7 @@ const { chromium } = require('playwright');
   await page.locator(`#${mode}-form button[type=submit]`).click();
   return page.locator(`#${mode}-result`).innerText();
  }
- await page.goto(new URL('/calculation-tools', process.env.TEST_BASE_URL ?? 'http://127.0.0.1:8003').href);
+ await page.goto(new URL('/calculation-tools', base).href);
  ok('initial inputs empty', await page.locator('input').evaluateAll(nodes => nodes.every(node => node.value === '')));
  ok('ratio 800 and 200', (await calculate('ratio', { 'ratio-whole': '800', 'ratio-part': '200' })).includes('25%'));
  await page.locator('#ratio-part').fill('100');
@@ -124,7 +128,7 @@ const { chromium } = require('playwright');
  const noJs = await browser.newPage({ javaScriptEnabled: false }); await noJs.goto(page.url());
  ok('no JavaScript leaves calculation disabled', await noJs.locator('#ratio-form button').isDisabled());
  const result = { passed: checks.length, checks, errors, external, screenshots: false };
- fs.mkdirSync(path.resolve(__dirname, '../../test-results'), { recursive: true });
- fs.writeFileSync(path.resolve(__dirname, '../../test-results/calculation-tools-expansion-verification.json'), JSON.stringify(result, null, 2)+'\n');
+ fs.mkdirSync(artifactDir, { recursive: true });
+ fs.writeFileSync(path.join(artifactDir, 'calculation-tools-expansion-verification.json'), JSON.stringify(result, null, 2)+'\n');
  await browser.close(); console.log(JSON.stringify({ passed: checks.length, errors, external }));
 })().catch(error => { console.error(error); process.exit(1); });

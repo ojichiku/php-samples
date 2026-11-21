@@ -19,7 +19,7 @@ class UnitConverterTest extends TestCase
             ->assertSee('id="converted" type="text" readonly', false)
             ->assertSee('id="unit-inputs" disabled', false)
             ->assertSee('JavaScriptが必要')->assertSee('id="reference"', false);
-        $this->get('/')->assertOk()->assertSee(route('unit.converter'))->assertSee('8つのツール');
+        $this->get('/')->assertOk()->assertSee(route('unit.converter'))->assertSee('9つのツール');
         $this->get('/calendar')->assertOk()->assertSee(route('unit.converter'));
         $this->post('/unit-converter', ['value' => '12.34'])->assertStatus(405);
     }
