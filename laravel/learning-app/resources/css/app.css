@@ -14,9 +14,10 @@ button, input, textarea { font: inherit; }
 a, button, input, textarea { -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: 3px solid #b76722; outline-offset: 4px; }
 .shell { width: min(1120px, calc(100% - 48px)); margin-inline: auto; }
-.site-header { border-bottom: 1px solid var(--line); background: #fffdf8; }
+.site-header, .site-footer { background: #fffdf8; }
+.site-header { border-bottom: 1px solid var(--line); }
 .header-inner { display: flex; justify-content: space-between; align-items: center; gap: 24px; min-height: 90px; }
-.brand { display: inline-flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; font-weight: 750; font-size: 1.05rem; }
+.brand { display: inline-flex; flex-shrink: 0; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; font-weight: 750; font-size: 1.05rem; }
 .brand-mark { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: var(--accent); color: white; font-size: .8rem; }
 nav { display: flex; flex-wrap: wrap; gap: 6px; }
 nav a { padding: 10px 14px; text-decoration: none; font-size: .88rem; border-radius: 10px; }
@@ -46,11 +47,13 @@ h3 { font-size: 1.3rem; font-weight: 750; margin: 20px 0 12px; }
 .button.secondary:disabled { background: #edf0e9; color: #687263; border-color: #d7ded1; }
 .full-width { width: 100%; }
 .tool-card .card-note { margin: auto 0 0; padding-top: 16px; border-top: 1px solid var(--line); font-size: .8rem; }
-.site-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; padding: 28px 0; margin-top: 64px; border-top: 1px solid var(--line); color: var(--muted); font-size: .8rem; }
+.site-footer { margin-top: 64px; border-top: 1px solid var(--line); color: var(--muted); font-size: .8rem; }
+.footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; padding-block: 28px; }
 .page-heading { padding: 40px 0; }
 .page-heading .lead { margin-bottom: 24px; }
 .back-link { display: inline-block; margin-bottom: 28px; font-size: .85rem; }
-.compact h1 { font-size: clamp(1.75rem, 3vw, 2.7rem); }
+.compact h1, .tool-title { font-size: clamp(1.75rem, 3vw, 2.7rem); }
+.tool-title { color: var(--ink); }
 .panel { padding: 32px; background: #fffdf8; border: 1px solid var(--line); border-radius: 20px; min-width: 0; }
 .prose { max-width: 850px; }
 .prose p { margin: 0 0 24px; }
@@ -102,6 +105,7 @@ textarea { width: 100%; resize: vertical; background: #f3f5ef; border: 1px solid
 .holiday-text { color: #a03830; }
 .saturday-text { color: #285e97; }
 .calendar-warning { padding: 12px 16px; border-left: 3px solid #a66d24; background: #fff3dc; color: #70491c; }
+.calendar-month-navigation { display: none; }
 .year-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
 .month-card { background: #fffdf8; border: 1px solid var(--line); border-radius: 16px; padding: 16px 12px; min-width: 0; scroll-margin-top: 20px; }
 .month-card h2 { font-size: 1.7rem; margin: 0 0 12px 8px; line-height: 1.4; }
@@ -126,7 +130,21 @@ textarea { width: 100%; resize: vertical; background: #f3f5ef; border: 1px solid
 .calendar-sources { margin-top: 28px; font-size: .8rem; color: var(--muted); }
 .calendar-sources h2 { font-size: 1rem; margin-bottom: 8px; }
 .calendar-sources p { margin-bottom: 12px; }
-@media (max-width: 1000px) { .year-grid { grid-template-columns: 1fr; } .month-card { padding: 20px 12px; } .holiday-list dl { grid-template-columns: 1fr; } .calendar-toolbar { padding: 18px; } .calendar-controls { width: 100%; } }
+@media (max-width: 1000px) {
+    .year-grid { grid-template-columns: 1fr; }
+    .month-card { padding: 20px 12px; }
+    .month-card:not(.is-selected-month), .month-card > h2 { display: none; }
+    .holiday-list dl { grid-template-columns: 1fr; }
+    .calendar-toolbar { padding: 18px; }
+    .calendar-controls { width: 100%; }
+    .calendar-month-navigation { display: block; margin-bottom: 16px; scroll-margin-top: 20px; }
+    .calendar-month-controls { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; gap: 8px; }
+    .calendar-month-controls h2 { grid-column: 2; grid-row: 1; margin: 0; text-align: center; }
+    .calendar-month-controls .button { grid-column: 1; grid-row: 1; min-height: 44px; padding: 0; font-size: 1.5rem; }
+    .calendar-month-controls .button[aria-label="次の月"] { grid-column: 3; }
+    .calendar-month-picker { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; }
+    .calendar-month-picker select, .calendar-month-picker .button { min-height: 44px; }
+}
 
 .calendar-today-label { margin: 0 0 8px; font-size: .85rem; color: var(--accent); font-weight: 650; }
 .today-mark { display: block; width: fit-content; margin: 1px auto; padding: 0 3px; border-radius: 3px; background: var(--accent); color: white; font-size: .8rem; line-height: 1.5; }

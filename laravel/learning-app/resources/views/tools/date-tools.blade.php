@@ -1,8 +1,8 @@
 {{-- date.toolsのGETで表示する静的な入力画面。計算と結果のDOM更新はdate-tools.jsが担当する。 --}}
 <x-layout title="日付・元号ツール" active="date-tools">
     <section class="page-heading compact">
-        <a class="back-link" href="{{ route('tools.index') }}">← ツール一覧</a>
-        <h1>日付・元号ツール</h1>
+        <x-tool-back-link />
+        <h1 class="tool-title">日付・元号ツール</h1>
         <p class="lead">西暦と元号の変換、日付や年齢を調べる</p>
         <p class="date-tool-privacy">計算はブラウザー内で行い、アプリは入力・結果を送信・保存しません。このページでは広告を利用します。機密情報は入力しないでください。</p>
     </section>

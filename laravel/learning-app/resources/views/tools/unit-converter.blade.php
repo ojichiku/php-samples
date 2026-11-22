@@ -1,9 +1,9 @@
 {{-- unit.converterのGET画面。単位候補と結果はunit-converter.jsが作り、PHPへ数値を送信しない。 --}}
 <x-layout title="単位換算ツール" active="unit-converter">
     <section class="page-heading compact">
-        <a class="back-link" href="{{ route('tools.index') }}">← ツール一覧</a>
+        <x-tool-back-link />
         <span class="badge">8分類の換算と早見表</span>
-        <h1 id="page-title">単位換算ツール</h1>
+        <h1 class="tool-title" id="page-title">単位換算ツール</h1>
         <p id="page-description">ヤードやポンド、デシリットルからジュールまで。単位を選んで換算し、早見表で意味や関係も確認できます。</p>
         <p class="unit-privacy">計算はブラウザー内で行い、アプリは入力・結果を送信・保存しません。このページでは広告を利用します。</p>
     </section>

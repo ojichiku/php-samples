@@ -1,9 +1,9 @@
 {{-- Controllerからlength（文字数）/groups（文字種）/password（nullまたは生成値）を受け取る。 --}}
 <x-layout title="パスワード生成" active="password">
     <section class="page-heading compact">
-        <a class="back-link" href="{{ route('tools.index') }}">← ツール一覧</a>
+        <x-tool-back-link />
         <p class="eyebrow">PASSWORD GENERATOR</p>
-        <h1>パスワード生成</h1>
+        <h1 class="tool-title">パスワード生成</h1>
         <p class="lead">8〜64文字の範囲で、文字数と使う文字を選んで生成できます。</p>
     </section>
     <p class="field-help">生成処理はサーバーで行い、結果をこのページに表示します。生成値をアプリのデータベースや履歴に保存する機能はありません。</p>

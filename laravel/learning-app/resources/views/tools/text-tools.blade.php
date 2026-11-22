@@ -1,8 +1,8 @@
 {{-- text.toolsのGET画面。入力はPHPに渡さず、text-tools.jsとWorkerが処理する。共有レイアウトと広告/解析は別に設定する。 --}}
 <x-layout title="テキスト便利ツール集" active="text-tools">
 <section class="page-heading compact">
-    <a class="back-link" href="{{ route('tools.index') }}">← ツール一覧</a>
-    <h1>テキスト便利ツール集</h1>
+    <x-tool-back-link />
+    <h1 class="tool-title">テキスト便利ツール集</h1>
     <p class="lead">文字数の確認から整形・置換・正規表現まで。使いたいツールを選んでください。</p>
     <p class="text-privacy">文字処理はブラウザー内で実行します。このページは広告・アクセス解析を利用します。機密情報は入力しないでください。入力内容をアプリのサーバーへ保存する機能はありません。</p>
 </section>

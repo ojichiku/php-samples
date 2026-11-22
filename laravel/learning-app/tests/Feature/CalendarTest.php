@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Services\YearCalendar;
+use Carbon\CarbonImmutable;
 use Tests\TestCase;
 
 /** 年間画面の表示、欠損データの案内、年検証とローカル取込の拒否を確認する。 */
@@ -16,7 +17,7 @@ class CalendarTest extends TestCase
     public function test_annual_calendar_displays_all_months_and_holidays(): void
     {
         $this->get('/calendar?year=2026')->assertOk()
-            ->assertSee('2026年')->assertSee('令和8年')
+            ->assertSee('2026年')->assertSee('令和8年')->assertSee('午（うま）年')
             ->assertSee('2026-09-22')->assertSee('元日')->assertDontSee('犬の日')->assertDontSee('day-details')->assertDontSee('の記念日')
             ->assertSee('大安')->assertSee('仏滅')
             ->assertViewHas('months', fn ($months) => count($months) === 12)
@@ -30,10 +31,30 @@ class CalendarTest extends TestCase
      */
     public function test_outside_data_years_explicitly_disclose_missing_data(): void
     {
-        foreach ([1900, 2100] as $year) {
+        foreach ([1900 => '子（ね）年', 2100 => '申（さる）年'] as $year => $zodiac) {
             $this->get('/calendar?year='.$year)->assertOk()
-                ->assertSee('祝日データは未収録')->assertViewHas('holidayCovered', false);
+                ->assertSee($zodiac)->assertSee('祝日データは未収録')->assertViewHas('holidayCovered', false);
         }
+    }
+
+    /**
+     * 指定月の表示と不正な月クエリーの拒否を確認する。
+     *
+     * @return void 選択月とHTTPステータスをアサートする。
+     */
+    public function test_calendar_validates_and_selects_month(): void
+    {
+        $this->travelTo(CarbonImmutable::parse('2026-11-22 12:00:00', 'Asia/Tokyo'));
+        $this->get('/calendar')->assertOk()->assertViewHas('selectedMonth', 11);
+        $this->get('/calendar?year=2026')->assertOk()->assertViewHas('selectedMonth', 11);
+        $this->get('/calendar?year=2000&month=02')->assertOk()->assertViewHas('selectedMonth', 2);
+        $this->get('/calendar?year=2000')->assertOk()->assertViewHas('selectedMonth', 1);
+
+        foreach (['0', '13', '1.5', 'abc', '', '1e1'] as $month) {
+            $this->get('/calendar?month='.$month)->assertUnprocessable();
+        }
+
+        $this->get('/calendar?month%5B%5D=1')->assertUnprocessable();
     }
 
     /**

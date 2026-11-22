@@ -1,9 +1,13 @@
 {{-- time.toolsのGET画面。都市選択・計測・日時差はtime-tools.jsがブラウザー内だけで処理する。 --}}
 <x-layout title="時間ツール" active="time-tools">
+    <section class="page-heading compact">
+        <x-tool-back-link />
+        <h1 class="tool-title">時間ツール</h1>
+        <p class="lead">時刻を比べる・時間を測る・差を計算する。設定・記録は再読み込みやページ終了で消えます。</p>
+    </section>
     <noscript><p class="error-box">このツールにはJavaScriptが必要です。ブラウザーの設定を確認してください。</p></noscript>
     <div id="time-tools" class="time-tools">
 
-<section class="intro"><h1>時間ツール</h1><p>時刻を比べる・時間を測る・差を計算する。<span class="review-note">設定・記録は再読み込みやページ終了で消えます。</span></p></section>
 <fieldset id="time-inputs" disabled><div class="tabs" role="tablist" aria-label="時間ツール">
 <button id="world-tab" role="tab" aria-controls="world-panel" aria-selected="false" tabindex="-1">世界時計</button>
 <button id="watch-tab" role="tab" aria-controls="watch-panel" aria-selected="false" tabindex="-1">ストップウォッチ</button>

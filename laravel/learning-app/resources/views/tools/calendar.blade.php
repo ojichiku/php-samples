@@ -1,13 +1,13 @@
 {{-- CalendarController/YearCalendarの年・月週セル・日本時間の今日・収録状態を表示する。日付はサーバーで組み立てる。 --}}
 <x-layout title="年間カレンダー" active="calendar">
     <section class="page-heading compact calendar-heading">
-        <a class="back-link" href="{{ route('tools.index') }}">← ツール一覧</a>
+        <x-tool-back-link />
         <p class="eyebrow">一年を、ひと目で。</p>
-        <h1>年間カレンダー</h1>
+        <h1 class="tool-title">年間カレンダー</h1>
         <p class="lead">祝日・六曜を、一年分まとめて確認できます。</p>
     </section>
     <section class="calendar-toolbar panel" aria-label="表示年の選択">
-        <div class="calendar-year"><p class="calendar-today-label">今日：<time datetime="{{ $today }}">{{ $todayLabel }}</time>（日本時間）</p><h2>{{ $year }}年 <span>{{ $era }}</span></h2>
+        <div class="calendar-year"><p class="calendar-today-label">今日：<time datetime="{{ $today }}">{{ $todayLabel }}</time>（日本時間）</p><h2>{{ $year }}年 <span>{{ $era }}</span> <span>{{ $zodiac }}年</span></h2>
             @if($year > $currentYear)<p class="field-help">元号は現行の令和で換算しています。将来の改元は反映していません。</p>@endif
         </div>
         <div class="calendar-controls">
@@ -28,10 +28,31 @@
         @unless($holidayCovered)<p class="calendar-warning" role="status">{{ $year }}年の祝日データは未収録です。祝日がないという意味ではありません。</p>@endunless
         @unless($rokuyoCovered)<p class="calendar-warning">この年の六曜は一部または全部が未収録です。収録されている日だけ表示します。</p>@endunless
     </div>
-    <section class="year-grid" aria-label="{{ $year }}年の12か月">
+    <section id="calendar-month" class="calendar-month-navigation" aria-label="表示月の切り替え">
+        <div class="calendar-month-controls">
+            @if($previousMonth->year >= $minYear)
+                <a class="button secondary" aria-label="前の月" href="{{ route('calendar', ['year' => $previousMonth->year, 'month' => $previousMonth->month]) }}#calendar-month">‹</a>
+            @endif
+            <h2>{{ $year }}年{{ $selectedMonth }}月</h2>
+            @if($nextMonth->year <= $maxYear)
+                <a class="button secondary" aria-label="次の月" href="{{ route('calendar', ['year' => $nextMonth->year, 'month' => $nextMonth->month]) }}#calendar-month">›</a>
+            @endif
+        </div>
+        <form class="calendar-month-picker" method="GET" action="{{ route('calendar') }}#calendar-month">
+            <input type="hidden" name="year" value="{{ $year }}">
+            <label for="calendar-month-select">月を選択</label>
+            <select id="calendar-month-select" name="month">
+                @foreach($months as $month)
+                    <option value="{{ $month['number'] }}" @selected($month['number'] === $selectedMonth)>{{ $month['number'] }}月</option>
+                @endforeach
+            </select>
+            <button class="button secondary" type="submit">月を表示</button>
+        </form>
+    </section>
+    <section class="year-grid" aria-label="カレンダー">
     {{-- 各月のweeksは6週×7列。nullのセルは月外、日セルはエスケープ付きで表示する。 --}}
         @foreach($months as $month)
-            <article class="month-card" id="month-{{ $month['number'] }}">
+            <article @class(['month-card', 'is-selected-month' => $month['number'] === $selectedMonth]) id="month-{{ $month['number'] }}">
                 <h2>{{ $month['number'] }}<span>月</span></h2>
                 <table class="month-table">
                     <caption class="sr-only">{{ $year }}年{{ $month['number'] }}月</caption>
@@ -55,11 +76,11 @@
         @endforeach
     </section>
     <x-ad-slot />
-    {{-- 指定年の祝日辞書を一覧化し、各月へ移動するアンカーを作る。 --}}
+    {{-- 祝日の月を指定してから日付に移動する。狭い画面で非表示の月にも移動できる。 --}}
     <section class="panel holiday-list" aria-labelledby="holiday-heading">
         <h2 id="holiday-heading">{{ $year }}年の祝日・休日一覧</h2>
         @if($holidayCovered)
-            <dl>@foreach($holidays as $date => $name)<div><dt><a href="#month-{{ (int) substr($date, 5, 2) }}">{{ (int) substr($date, 5, 2) }}月{{ (int) substr($date, 8, 2) }}日</a></dt><dd>{{ $name }}</dd></div>@endforeach</dl>
+            <dl>@foreach($holidays as $date => $name)<div><dt><a href="{{ route('calendar', ['year' => $year, 'month' => (int) substr($date, 5, 2)]) }}#day-{{ $date }}">{{ (int) substr($date, 5, 2) }}月{{ (int) substr($date, 8, 2) }}日</a></dt><dd>{{ $name }}</dd></div>@endforeach</dl>
         @else<p>この年の祝日データは未収録です。</p>@endif
     </section>
     <section class="calendar-sources" aria-labelledby="calendar-sources-heading">

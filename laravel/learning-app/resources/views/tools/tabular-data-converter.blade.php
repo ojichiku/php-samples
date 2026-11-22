@@ -1,15 +1,12 @@
 {{-- 合意済みの順序で入力、出力形式、チェック結果を表示する。ファイル処理はJavaScriptが担当する。 --}}
-<!doctype html>
-<html lang="ja">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>表データコンバーター | サンプルツール集</title>
-    @vite('resources/js/tabular-data-converter.js')
-</head>
-<body>
-    <main>
-        <h1>表データコンバーター</h1>
+<x-layout title="表データコンバーター" active="tabular-data-converter">
+    <x-slot:head>
+        @vite('resources/js/tabular-data-converter.js')
+    </x-slot:head>
+
+    <div class="tabular-data-converter">
+        <x-tool-back-link />
+        <h1 class="tool-title">表データコンバーター</h1>
         <p>CSV・TSVを確認して、Excel・OpenOffice用のファイルに変換します。</p>
         <p class="notice">ファイルの確認と変換はブラウザー内で行います。ファイルはサーバーに送信されません。</p>
         <section aria-labelledby="input-title">
@@ -67,7 +64,6 @@
                 </div>
             </div>
         </section>
-        <a href="{{ route('tools.index') }}">ツール一覧に戻る</a>
-    </main>
-</body>
-</html>
+    </div>
+    <x-ad-slot />
+</x-layout>

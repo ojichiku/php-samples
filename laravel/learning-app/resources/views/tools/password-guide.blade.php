@@ -1,9 +1,9 @@
 {{-- 旧説明画面のBlade。現在の説明Routeは入力画面へ転送するため、通常の導線からは使用しない。 --}}
 <x-layout title="パスワード生成の使い方" active="password">
     <section class="page-heading">
-        <a class="back-link" href="{{ route('tools.index') }}">← ツール一覧</a>
+        <x-tool-back-link />
         <p class="eyebrow">PASSWORD GENERATOR</p>
-        <h1>使う文字を選んで、<br>パスワードを生成。</h1>
+        <h1 class="tool-title">使う文字を選んで、<br>パスワードを生成。</h1>
         <p class="lead">8～64文字の範囲で、小文字・大文字・数字・記号を組み合わせられます。</p>
         <a class="button" href="{{ route('password.form') }}">パスワードを生成する <span aria-hidden="true">→</span></a>
     </section>

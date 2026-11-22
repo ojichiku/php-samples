@@ -1,9 +1,9 @@
 {{-- 旧ブラウザー生成の説明Blade。現在の説明Routeは入力画面へ転送するため通常は使用しない。 --}}
 <x-layout title="ブラウザー版パスワード生成の使い方" active="password-browser">
     <section class="page-heading">
-        <a class="back-link" href="{{ route('tools.index') }}">← ツール一覧</a>
+        <x-tool-back-link />
         <p class="eyebrow">BROWSER PASSWORD GENERATOR</p>
-        <h1>この端末で、<br>まとめて生成。</h1>
+        <h1 class="tool-title">この端末で、<br>まとめて生成。</h1>
         <p class="lead">8〜128文字のパスワードを、1回に1〜100件生成できます。</p>
         <a class="button" href="{{ route('password.browser') }}">ブラウザーで生成する <span aria-hidden="true">→</span></a>
     </section>

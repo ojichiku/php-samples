@@ -1,8 +1,16 @@
 {{-- 合意済みUIの独立GET画面。入力はcalculation-tools.jsがブラウザー内で処理する。 --}}
-<!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>日常計算ツール</title>@vite('resources/js/calculation-tools.js')</head>
-<body><header><div class="wrap top"><span>小さなツール</span></div></header>
-<main class="wrap"><h1>日常計算ツール</h1><p class="lead">割合・割引・増減率・割り勘・単価比較を、必要な値だけで。</p><x-ad-slot />
+<x-layout title="日常計算ツール" active="calculation-tools">
+    <x-slot:head>
+        @vite('resources/js/calculation-tools.js')
+    </x-slot:head>
+
+    <div class="calculation-tools">
+        <section class="page-heading compact">
+            <x-tool-back-link />
+            <h1 class="tool-title">日常計算ツール</h1>
+            <p class="lead">割合・割引・増減率・割り勘・単価比較を、必要な値だけで。</p>
+        </section>
+        <x-ad-slot />
 <nav class="tabs" role="tablist" aria-label="計算の目的"><button id="ratio-tab" role="tab" aria-selected="true" aria-controls="ratio-panel">割合</button><button id="discount-tab" role="tab" aria-selected="false" aria-controls="discount-panel" tabindex="-1">割引</button><button id="change-tab" role="tab" aria-selected="false" aria-controls="change-panel" tabindex="-1">増減率</button><button id="split-tab" role="tab" aria-selected="false" aria-controls="split-panel" tabindex="-1">割り勘</button><button id="compare-tab" role="tab" aria-selected="false" aria-controls="compare-panel" tabindex="-1">単価比較</button></nav>
 <noscript><p class="error">計算にはJavaScriptを有効にしてください。</p></noscript>
 <section id="ratio-panel" class="card" role="tabpanel" aria-labelledby="ratio-tab"><h2>割合を計算</h2><form id="ratio-form" novalidate><fieldset disabled><label class="purpose">調べたいこと<select id="ratio-kind"><option value="percent">全体の何%か</option><option value="amount">何%分はいくつか</option></select></label><p class="hint" id="ratio-example">例：全体800のうち200は何%か。</p><div class="fields"><label><span>全体の値</span><input id="ratio-whole" type="text" inputmode="decimal" autocomplete="off" aria-describedby="ratio-note"></label><label><span id="ratio-part-label">一部の値</span><input id="ratio-part" type="text" inputmode="decimal" autocomplete="off" aria-describedby="ratio-note"></label></div><p class="hint" id="ratio-note">0以上、小数4桁まで。全体の何%かを調べるとき、全体は0より大きい値。</p><p id="ratio-error" class="error" role="alert"></p><button class="primary" type="submit">割合を計算</button></fieldset><div id="ratio-result" class="result" role="status" hidden></div></form></section>
@@ -39,4 +47,6 @@
         <div id="compare-result" class="result" role="status" hidden></div>
     </form>
 </section>
-<p class="footnote">入力はこの画面だけで使用します。再読み込みすると消えます。</p><x-ad-slot /></main></body></html>
+<p class="footnote">入力はこの画面だけで使用します。再読み込みすると消えます。</p><x-ad-slot />
+    </div>
+</x-layout>

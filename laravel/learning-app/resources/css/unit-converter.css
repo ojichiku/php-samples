@@ -1,6 +1,6 @@
 .unit-converter-shell {width:min(760px,calc(100% - 40px));margin-inline:auto;color:#203047;}
 .unit-converter-shell > .page-heading {padding:28px 0 0;}
-.unit-converter-shell h1 {font-size:30px;line-height:1.4;margin:10px 0;}
+.unit-converter-shell h1 {margin:10px 0;}
 .unit-converter-shell h2 {font-size:21px;margin:0 0 16px;}
 .unit-converter-shell p {margin:8px 0 16px;}
 .unit-converter-shell .unit-privacy,.unit-converter-shell .unit-sources {font-size:14px;color:#536279;}
@@ -43,7 +43,6 @@
 .unit-converter-shell a {color:#155f73;}
 @media(max-width:640px){
  .unit-converter-shell {width:calc(100% - 24px);}
- .unit-converter-shell h1 {font-size:26px;}
  #unit-converter .card,.unit-converter-shell .unit-notes {padding:18px 14px;}
  #unit-converter #categories {grid-template-columns:repeat(2,minmax(0,1fr));}
  #unit-converter .conversion-row {gap:8px;}

@@ -14,6 +14,12 @@ class YearCalendar
 
     public const MAX_YEAR = 2100;
 
+    // 1900年の子を起点に、西暦年ごとに十二支を並べる。
+    private const ZODIAC_SIGNS = [
+        '子（ね）', '丑（うし）', '寅（とら）', '卯（う）', '辰（たつ）', '巳（み）',
+        '午（うま）', '未（ひつじ）', '申（さる）', '酉（とり）', '戌（いぬ）', '亥（い）',
+    ];
+
     /**
      * 暦データの参照ディレクトリを設定する。
      *
@@ -28,7 +34,7 @@ class YearCalendar
      * 12か月の6週分のセル、収録状態、日本時間の今日を返す。
      *
      * @param  int  $year  表示する西暦年（1900〜2100、単位：年）。
-     * @return array<string, mixed> year/era、months（月番号と6週×7列のweeks）、today/todayLabel、holidays/holidayMetadata、収録状態、現在年と範囲。日セルはdate/day/weekday/holiday/rokuyo/todayを持ち、月外はnull。
+     * @return array<string, mixed> year/era/zodiac（表示年、元号、十二支の字と読み）、months（月番号と6週×7列のweeks）、today/todayLabel、holidays/holidayMetadata、収録状態、現在年と範囲。日セルはdate/day/weekday/holiday/rokuyo/todayを持ち、月外はnull。
      *
      * @throws InvalidArgumentException 年が対応範囲外の場合。
      * @throws \JsonException ローカルの暦JSONを解析できない場合。
@@ -62,7 +68,10 @@ class YearCalendar
         $yearHolidays = array_filter($holidays, fn (string $date): bool => str_starts_with($date, $year.'-'), ARRAY_FILTER_USE_KEY);
 
         return [
-            'year' => $year, 'era' => $this->eraLabel($year), 'months' => $months,
+            'year' => $year,
+            'era' => $this->eraLabel($year),
+            'zodiac' => self::ZODIAC_SIGNS[($year - 1900) % count(self::ZODIAC_SIGNS)],
+            'months' => $months,
             'today' => $today,
             'todayLabel' => (new DateTimeImmutable($today))->format('Y年n月j日').'（'.['日', '月', '火', '水', '木', '金', '土'][(int) (new DateTimeImmutable($today))->format('w')].'）',
             'holidays' => $yearHolidays, 'holidayMetadata' => $metadata,

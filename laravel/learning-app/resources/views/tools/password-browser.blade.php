@@ -1,9 +1,9 @@
 {{-- ブラウザー生成画面。PHPから生成値を受け取らず、browser-password.jsが入力と結果を操作する。 --}}
 <x-layout title="パスワード生成（JavaScript版）" active="password-browser">
     <section class="page-heading compact">
-        <a class="back-link" href="{{ route('tools.index') }}">← ツール一覧</a>
+        <x-tool-back-link />
         <p class="eyebrow">JAVASCRIPT PASSWORD GENERATOR</p>
-        <h1>パスワード生成（JavaScript版）</h1>
+        <h1 class="tool-title">パスワード生成（JavaScript版）</h1>
         <p class="lead">8〜128文字のパスワードを、1回に1〜100件生成できます。</p>
     </section>
     <p class="field-help">JavaScriptを使い、この端末で生成します。生成処理自身は生成値を送信・保存しません。</p>
