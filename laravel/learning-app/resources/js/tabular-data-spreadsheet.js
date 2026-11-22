@@ -8,6 +8,7 @@ const relationNs = 'http://schemas.openxmlformats.org/officeDocument/2006/relati
 const packageNs = 'http://schemas.openxmlformats.org/package/2006';
 const odsMime = 'application/vnd.oasis.opendocument.spreadsheet';
 const odfNs = 'urn:oasis:names:tc:opendocument:xmlns:';
+const sheetName = 'data';
 const excelCellLimit = 32767;
 const xmlText = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
 
@@ -72,7 +73,7 @@ function xlsxFile(records) {
             '</Relationships>',
         'xl/workbook.xml': xmlHeader +
             `<workbook xmlns="${sheetNs}" xmlns:r="${relationNs}">` +
-            '<sheets><sheet name="データ" sheetId="1" r:id="rId1"/></sheets></workbook>',
+            `<sheets><sheet name="${sheetName}" sheetId="1" r:id="rId1"/></sheets></workbook>`,
         'xl/_rels/workbook.xml.rels': xmlHeader +
             `<Relationships xmlns="${packageNs}/relationships">` +
             `<Relationship Id="rId1" Type="${relationNs}/worksheet" Target="worksheets/sheet1.xml"/>` +
@@ -113,7 +114,7 @@ function odsFile(records) {
         'content.xml': xmlHeader +
             `<office:document-content xmlns:office="${odfNs}office:1.0" xmlns:table="${odfNs}table:1.0" xmlns:text="${odfNs}text:1.0" office:version="1.2">` +
             '<office:body><office:spreadsheet>' +
-            `<table:table table:name="データ">${rows}</table:table>` +
+            `<table:table table:name="${sheetName}">${rows}</table:table>` +
             '</office:spreadsheet></office:body></office:document-content>',
         'META-INF/manifest.xml': xmlHeader +
             `<manifest:manifest xmlns:manifest="${odfNs}manifest:1.0" manifest:version="1.2">` +

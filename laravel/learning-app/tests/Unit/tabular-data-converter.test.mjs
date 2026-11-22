@@ -35,3 +35,12 @@ test('表計算形式ごとの上限をチェックし、保存可能な形式�
     assert.equal(createSpreadsheet(records, 'xlsx').type, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     assert.equal(createSpreadsheet(records, 'ods').type, 'application/vnd.oasis.opendocument.spreadsheet');
 });
+
+test('ExcelとODSのシート名をdataで出力する', async () => {
+    const records = [['商品コード'], ['00123']];
+    // 生成したZIPは無圧縮のため、内部XMLのシート名を確認できる。
+    const xlsx = await createSpreadsheet(records, 'xlsx').text();
+    const ods = await createSpreadsheet(records, 'ods').text();
+    assert.match(xlsx, /<sheet name="data" sheetId="1"/);
+    assert.match(ods, /<table:table table:name="data">/);
+});
