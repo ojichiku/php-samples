@@ -44,3 +44,36 @@ test('ExcelとODSのシート名をdataで出力する', async () => {
     assert.match(xlsx, /<sheet name="data" sheetId="1"/);
     assert.match(ods, /<table:table table:name="data">/);
 });
+
+test('UTF-8とCP932を判定し、異なる文字コードと読み取り失敗を案内する', async () => {
+    const utf8 = new File([new TextEncoder().encode('\uFEFF見出し\n値')], 'utf8.csv');
+    const cp932 = new File([Uint8Array.of(0x82, 0xa0)], 'cp932.csv');
+    const invalidCp932 = new File([Uint8Array.of(0x82)], 'invalid.csv');
+    assert.equal(await readTabularFile(utf8, 'utf8'), '見出し\n値');
+    assert.equal(await readTabularFile(cp932, 'cp932'), 'あ');
+    await assert.rejects(readTabularFile(cp932, 'utf8'), /UTF-8として読み込めません/);
+    await assert.rejects(readTabularFile(invalidCp932, 'cp932'), /Shift_JIS（CP932）として読み込めません/);
+    const unreadable = { size: 1, async arrayBuffer() { throw new Error('read failed'); } };
+    await assert.rejects(readTabularFile(unreadable, 'utf8'), /ファイルを読み込めませんでした/);
+});
+
+test('空ファイル、引用符の誤配置、終端の区切り文字を点検する', () => {
+    assert.match(checkTabularData('', ',', true).errors[0], /ファイルが空/);
+    for (const malformed of ['a"b', '"a"b']) {
+        assert.match(checkTabularData('見出し\r' + malformed, ',', true).errors[0], /2行目.*位置/);
+    }
+    assert.deepEqual(checkTabularData('a,b\n"x\ny",', ',', true).records, [['a', 'b'], ['x\ny', '']]);
+    assert.equal(checkTabularData('見出し\n' + '値\n'.repeat(5001), ',', true).dataRows, 5001);
+});
+
+test('ExcelとODSで空白・記号・制御文字の保存条件を検証する', async () => {
+    const cell = '  <&>\t\n';
+    const columns = Array.from({ length: 27 }, () => cell);
+    const xlsx = await createSpreadsheet([columns, ['_x0001_\u0001']], 'xlsx').text();
+    assert.match(xlsx, /r="AA1" t="inlineStr"/);
+    assert.match(xlsx, /&lt;&amp;&gt;/);
+    assert.match(xlsx, /_x005F_x0001__x0001_/);
+    const ods = await createSpreadsheet([[cell]], 'ods').text();
+    assert.match(ods, /<text:s text:c="2"\/>&lt;&amp;&gt;<text:tab\/><text:line-break\/>/);
+    assert.throws(() => createSpreadsheet([['\u0001']], 'ods'), /制御文字/);
+});

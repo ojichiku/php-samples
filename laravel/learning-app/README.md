@@ -85,6 +85,10 @@ PHPやOSのバージョンによる結果は、各自の環境で確認してく
 
 ### ブラウザーテスト（任意）
 
+表データコンバーターのテストは `npm run test:browser:tabular-data-converter` で個別に実行できます。
+[固定のCSV・TSV](tests/fixtures/tabular-data-converter/)で文字コード、入力エラー、Excel・ODSのダウンロードを確認します。
+
+
 初回はPlaywright用Chromiumと、必要に応じてOSの共有ライブラリを用意します。
 ダウンロードやOSへの変更を伴うため、実行内容を確認してから行ってください。
 

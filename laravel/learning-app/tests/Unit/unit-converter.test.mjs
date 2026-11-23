@@ -82,3 +82,12 @@ test('reference tables disclose definitions and temperature uses formulas', () =
     assert.match(UNIT_GROUPS.energy.hint,/熱化学/);
     assert.match(UNIT_GROUPS.volume.hint,/米国と英国/);
 });
+
+test('formats 12-digit integers, temperature relations, and approximate factors', () => {
+    assert.equal(convertUnits('length', 'm', 'm', '123456789012').text, '123456789012');
+    const [, fahrenheit, kelvin] = UNIT_GROUPS.temperature.units;
+    assert.equal(referenceRelation('temperature', fahrenheit), '°C = (°F − 32) × 5 ÷ 9');
+    assert.equal(referenceRelation('temperature', kelvin), '0 K = −273.15 °C');
+    const fractionalUnit = { ...UNIT_GROUPS.length.units[0], factor: ['1', '3'] };
+    assert.match(referenceRelation('length', fractionalUnit), /≈ 0\.333333333333 m$/);
+});

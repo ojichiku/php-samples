@@ -51,6 +51,21 @@ class ToolNavigationTest extends TestCase
     }
 
     /**
+     * 表データコンバーターへのリンクとGET専用入口を確認する。
+     *
+     * @return void 一覧、入力欄、GETとPOSTの応答をアサートする。
+     */
+    public function test_tabular_converter_exposes_only_a_get_page(): void
+    {
+        $url = route('tabular.converter');
+        $this->get(route('tools.index'))->assertOk()->assertSee($url);
+        $this->get($url)->assertOk()
+            ->assertSee('aria-current="page"', false)
+            ->assertSee('id="input-file"', false);
+        $this->post($url)->assertMethodNotAllowed();
+    }
+
+    /**
      * 年間カレンダーのGET入口が応答する。
      *
      * @return void 応答/表示の期待値をアサートする。

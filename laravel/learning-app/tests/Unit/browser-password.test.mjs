@@ -63,3 +63,16 @@ test('candidates missing a required character group are retried, not patched wit
     assert.match(result[0], /[0-9]/);
     assert.match(result[0], /[a-z]/);
 });
+
+test('無効な乱数範囲と規定回数までに条件を満たせない候補を拒否する', () => {
+    const pick = createSecureIndex({ getRandomValues: () => assert.fail('乱数を要求する前に範囲を検査する') });
+    for (const size of [0, 1.5, 2 ** 32 + 1]) {
+        assert.throws(() => pick(size), /抽選範囲/);
+    }
+    let calls = 0;
+    assert.throws(() => generatePasswords({ length: 8, count: 1, groups: ['lowercase', 'numbers'] }, () => {
+        calls += 1;
+        return 0;
+    }), /生成に失敗しました/);
+    assert.equal(calls, 80000);
+});

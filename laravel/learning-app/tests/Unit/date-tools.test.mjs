@@ -4,7 +4,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {MIN_DATE, MAX_DATE, parseCivilDate, validateYear, japanToday, westernToEra, eraToWestern, eraSegments, eraTable, daysBetween, shiftDays, ageAt} from '../../resources/js/date-tools-engine.js';
+import {MIN_DATE, MAX_DATE, parseCivilDate, dateLabel, validateYear, japanToday, westernToEra, eraToWestern, eraSegments, eraTable, daysBetween, shiftDays, ageAt} from '../../resources/js/date-tools-engine.js';
 
 // 改元の前日/当日と対応範囲の両端を固定値で確認する。
 test('era transitions use exact dates, including both supported bounds', () => {
@@ -93,5 +93,13 @@ test('every supported date round-trips through an era with no gaps', () => {
         const segment = eraSegments(Number(date.slice(0, 4))).find(item => item.start <= date && item.end >= date);
         assert.ok(segment, date);
         assert.equal(eraToWestern(segment.name, segment.year, date.slice(5, 7), date.slice(8)).date, date);
+    }
+});
+
+test('日付の表示形式と元号変換の月日入力を検査する', () => {
+    assert.equal(dateLabel('2024-02-29'), '2024年2月29日');
+    assert.throws(() => dateLabel('2023-02-29'));
+    for (const [month, day] of [['五月', '1'], ['5', null]]) {
+        assert.throws(() => eraToWestern('令和', '元', month, day), /月と日を整数/);
     }
 });
