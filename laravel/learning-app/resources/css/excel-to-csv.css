@@ -1,0 +1,44 @@
+.excel-to-csv {
+    display: grid;
+    gap: 16px;
+    max-width: 880px;
+    margin-inline: auto;
+
+    .panel { padding: clamp(16px, 4vw, 26px); }
+    h2 { margin-bottom: 10px; }
+    p { overflow-wrap: anywhere; }
+    p:empty { display: none; }
+    label { display: block; font-weight: 650; }
+    .csv-file-row { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+    .csv-file-row p { flex: 1 1 200px; min-width: 0; margin: 0; }
+    .csv-file-picker { position: relative; display: inline-flex; }
+    .csv-file-picker:focus-within { outline: 3px solid #b76722; outline-offset: 3px; }
+    .csv-file-picker input {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+    @media (max-width: 600px) {
+        .csv-file-row { display: grid; }
+    }
+    select, input[readonly] {
+        min-height: 44px;
+        max-width: 100%;
+        border: 1px solid #7b9586;
+        border-radius: 8px;
+        background: white;
+        padding: 6px 10px;
+        font: inherit;
+    }
+    .csv-settings, .csv-actions { display: flex; flex-wrap: wrap; gap: 10px 16px; }
+    .csv-settings label { flex: 1 1 180px; }
+    .csv-settings :is(select, input) { display: block; width: 100%; margin-top: 4px; }
+    .button:disabled { opacity: .55; cursor: default; }
+    .csv-error { color: #972d25; }
+    .csv-table { overflow: auto; border: 1px solid #dce4dc; border-radius: 8px; }
+    table { border-collapse: collapse; min-width: 100%; }
+    td { padding: 8px 10px; min-width: 100px; border: 1px solid #dce4dc; overflow-wrap: anywhere; white-space: pre-wrap; }
+}

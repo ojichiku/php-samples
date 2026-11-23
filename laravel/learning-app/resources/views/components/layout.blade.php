@@ -28,6 +28,7 @@
                 <a href="{{ route('time.tools') }}" @if($active === 'time-tools') aria-current="page" @endif>時間ツール</a>
                 <a href="{{ route('calculation.tools') }}" @if($active === 'calculation-tools') aria-current="page" @endif>日常計算</a>
                 <a href="{{ route('tabular.converter') }}" @if($active === 'tabular-data-converter') aria-current="page" @endif>表データ変換</a>
+                <a href="{{ route('excel.csv') }}" @if($active === 'excel-to-csv') aria-current="page" @endif>表をCSVに変換</a>
                 <a href="{{ route('text.tools') }}" @if($active === 'text-tools') aria-current="page" @endif>テキストツール</a>
             </nav>
         </div>

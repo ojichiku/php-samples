@@ -262,3 +262,11 @@ CSV・TSVを選び、入力形式と文字コードを確認して「ファイ�
 入力は最大5,000データ行、100列、5 MiBです。
 LaravelのルートとBladeが画面を表示し、`resources/js/tabular-data-parser.js` が解析・点検を、`resources/js/tabular-data-spreadsheet.js` が出力を担当します。
 `npm run build`、`npm run test:js`、`php artisan test --compact` で確認できます。
+
+## Excel・ODSからCSVへ
+
+`/excel-to-csv` は、Excel（.xlsx）またはODS（.ods）1ファイルの各シートをCSVに変換し、ZIPで保存します。ファイル選択から保存までの処理はブラウザー内で行います。
+
+読み取りは [SheetJS CE](https://docs.sheetjs.com/)、Shift_JIS出力は [encoding-japanese](https://github.com/polygonplanet/encoding.js) を使います。数式セルは保存済みの計算結果を使い、それがない場合はシート名とセル位置を示して出力を止めます。
+
+[固定テストデータと確認手順](tests/fixtures/excel-to-csv/確認手順.txt)には正常な120件のExcel、ODS、未計算数式と破損ファイル、比較用CSVがあります。Laravelをローカルで起動してから `npm run test:browser:excel-to-csv` で確認できます。

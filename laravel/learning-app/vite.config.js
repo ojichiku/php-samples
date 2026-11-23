@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js', 'resources/js/calculation-tools.js', 'resources/js/tabular-data-converter.js'],
+            input: ['resources/css/app.css', 'resources/js/app.js', 'resources/js/calculation-tools.js', 'resources/js/tabular-data-converter.js', 'resources/js/excel-to-csv.js'],
             refresh: true,
         }),
         tailwindcss(),

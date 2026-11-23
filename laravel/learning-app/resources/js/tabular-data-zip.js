@@ -12,7 +12,7 @@ const crcTable = Uint32Array.from({ length: 256 }, (_, byte) => {
  * @param {Uint8Array} bytes ZIPエントリーの内容。
  * @returns {number} ZIPのヘッダーに記録する符号なしCRC-32。
  */
-function crc32(bytes) {
+export function crc32(bytes) {
     let crc = 0xffffffff;
     for (const byte of bytes) {
         crc = (crc >>> 8) ^ crcTable[(crc ^ byte) & 0xff];
@@ -32,8 +32,8 @@ function zipHeader(size, signature) {
 }
 
 /**
- * 既定のASCIIファイル名とUTF-8の内容を持つ無圧縮のZIPを生成する。
- * @param {Record<string, string>} entries 内部ファイル名と内容を記載順に並べたオブジェクト。
+ * UTF-8のファイル名と、文字列またはバイト列を持つ無圧縮のZIPを生成する。
+ * @param {Record<string, string|Uint8Array>} entries 内部ファイル名と内容を記載順に並べたオブジェクト。
  * @param {string} mime ダウンロードファイルのMIME型。
  * @returns {Blob} ローカルヘッダー、内容、中央ディレクトリを連結したZIP。
  */
@@ -45,12 +45,14 @@ export function storeZip(entries, mime) {
 
     for (const [name, content] of Object.entries(entries)) {
         const filename = encoder.encode(name);
-        const bytes = encoder.encode(content);
+        const bytes = typeof content === 'string' ? encoder.encode(content) : content;
+        const flags = filename.length === name.length ? 0 : 0x0800;
         const crc = crc32(bytes);
 
         // 内容を圧縮しないため、格納サイズと展開後サイズは等しい。
         const local = zipHeader(30, 0x04034b50);
         local.setUint16(4, 20, true);
+        local.setUint16(6, flags, true);
         local.setUint16(12, 33, true); // DOS日付の最小値は1980-01-01。
         local.setUint32(14, crc, true);
         local.setUint32(18, bytes.length, true);
@@ -60,6 +62,7 @@ export function storeZip(entries, mime) {
         const central = zipHeader(46, 0x02014b50);
         central.setUint16(4, 20, true);
         central.setUint16(6, 20, true);
+        central.setUint16(8, flags, true);
         central.setUint16(14, 33, true);
         central.setUint32(16, crc, true);
         central.setUint32(20, bytes.length, true);

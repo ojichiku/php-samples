@@ -51,18 +51,23 @@ class ToolNavigationTest extends TestCase
     }
 
     /**
-     * 表データコンバーターへのリンクとGET専用入口を確認する。
+     * 変換ツールのリンクと、ブラウザー内処理に使うGET専用入口を確認する。
      *
-     * @return void 一覧、入力欄、GETとPOSTの応答をアサートする。
+     * @return void 各画面のリンク、入力欄、HTTP応答をアサートする。
      */
-    public function test_tabular_converter_exposes_only_a_get_page(): void
+    public function test_file_converter_tools_expose_only_get_pages(): void
     {
-        $url = route('tabular.converter');
-        $this->get(route('tools.index'))->assertOk()->assertSee($url);
-        $this->get($url)->assertOk()
-            ->assertSee('aria-current="page"', false)
-            ->assertSee('id="input-file"', false);
-        $this->post($url)->assertMethodNotAllowed();
+        $this->get(route('tools.index'))->assertOk()
+            ->assertSee(route('tabular.converter'))
+            ->assertSee(route('excel.csv'));
+
+        foreach (['tabular.converter' => 'input-file', 'excel.csv' => 'excel-input'] as $name => $inputId) {
+            $url = route($name);
+            $this->get($url)->assertOk()
+                ->assertSee('aria-current="page"', false)
+                ->assertSee('id="'.$inputId.'"', false);
+            $this->post($url)->assertMethodNotAllowed();
+        }
     }
 
     /**
