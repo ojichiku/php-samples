@@ -19,7 +19,7 @@ class TimeToolsTest extends TestCase
             ->assertSee('タイマー')->assertSee('日時の差を計算')
             ->assertSee('id="time-inputs" disabled', false)
             ->assertSee('JavaScriptが必要')->assertSee('東京の日時で計算');
-        $this->get('/')->assertOk()->assertSee(route('time.tools'))->assertSee('10個のツール');
+        $this->get('/')->assertOk()->assertSee(route('time.tools'))->assertSee('11個のツール');
         $this->get('/calendar')->assertOk()->assertSee(route('time.tools'));
         $this->post('/time-tools', ['seconds' => '10'])->assertStatus(405);
     }

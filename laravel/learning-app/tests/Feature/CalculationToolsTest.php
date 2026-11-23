@@ -33,7 +33,7 @@ class CalculationToolsTest extends TestCase
             ->assertSeeInOrder(['<nav aria-label="共通メニュー">', $href, '>日常計算</a>', '</nav>'], false);
         $this->get('/')->assertOk()
             ->assertSeeInOrder(['<h3>日常計算ツール</h3>', $href, '日常計算ツールを開く'], false)
-            ->assertSee('10個のツール');
+            ->assertSee('11個のツール');
     }
 
     /**

@@ -270,3 +270,9 @@ LaravelのルートとBladeが画面を表示し、`resources/js/tabular-data-pa
 読み取りは [SheetJS CE](https://docs.sheetjs.com/)、Shift_JIS出力は [encoding-japanese](https://github.com/polygonplanet/encoding.js) を使います。数式セルは保存済みの計算結果を使い、それがない場合はシート名とセル位置を示して出力を止めます。
 
 [固定テストデータと確認手順](tests/fixtures/excel-to-csv/確認手順.txt)には正常な120件のExcel、ODS、未計算数式と破損ファイル、比較用CSVがあります。Laravelをローカルで起動してから `npm run test:browser:excel-to-csv` で確認できます。
+
+## JSONチェック・ファイル変換
+
+`/json-tools` はJSONの構文チェック・整形・圧縮、JSON Schema Draft 2020-12のひな形生成・定義チェック・データ照合、JSONL整形、平坦なJSON配列のCSV変換をブラウザー内で実行します。CSVはUTF-8（BOMなし）で、見出しと全項目を二重引用符で囲みます。
+
+[日本語入りのテストファイルと確認手順](tests/fixtures/json-tools/確認手順.txt)を使えます。ローカルサーバー起動後は `npm run test:browser:json-tools` でも動作を確認できます。

@@ -1,0 +1,62 @@
+.json-tools {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 20px;
+}
+
+.json-tools label:not(.button) {
+    display: block;
+    margin-top: 12px;
+    font-weight: 700;
+}
+
+.json-tools textarea,
+.json-tools select {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #94aa9f;
+    border-radius: 10px;
+    background: white;
+    color: var(--ink);
+}
+
+.json-tools .json-file-picker { position: relative; }
+.json-tools .json-file-picker:focus-within { outline: 3px solid #b76722; outline-offset: 4px; }
+.json-tools .json-file-picker input { position: absolute; inset: 0; width: 100%; opacity: 0; cursor: pointer; }
+
+.json-tools textarea {
+    min-height: 8rem;
+    resize: vertical;
+    font-family: ui-monospace, monospace;
+}
+
+.json-tools .json-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.json-tools .json-table {
+    overflow: auto;
+    max-height: 22rem;
+    border: 1px solid var(--line);
+}
+
+.json-tools td,
+.json-tools th {
+    border: 1px solid var(--line);
+    padding: 4px 10px;
+    white-space: pre;
+    text-align: left;
+}
+
+.json-tools th { background: #edf2e9; }
+.json-tools .json-error { color: #932a23; }
+.json-tools p { overflow-wrap: anywhere; white-space: pre-line; }
+
+@media (max-width: 900px) {
+    .json-tools { grid-template-columns: minmax(0, 1fr); }
+}

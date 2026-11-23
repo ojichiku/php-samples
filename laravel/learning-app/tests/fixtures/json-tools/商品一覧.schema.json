@@ -1,0 +1,12 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "商品コード": {"type": "string"},
+      "商品名": {"type": "string"},
+      "在庫数": {"type": "integer"}
+    },
+    "required": ["商品コード", "商品名", "在庫数"]
+  }
+}

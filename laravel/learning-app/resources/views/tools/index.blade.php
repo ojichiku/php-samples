@@ -7,7 +7,7 @@
     </section>
     <x-ad-slot />
     <section aria-labelledby="tools-heading">
-        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">10個のツールが利用できます</span></div>
+        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">11個のツールが利用できます</span></div>
         <div class="tool-grid">
             <article class="tool-card available">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">Aa</span><span class="badge">利用できます</span></div>
@@ -68,6 +68,12 @@
                 <h3>Excel・ODSからCSVへ</h3>
                 <p>シートごとにCSVへ変換し、ZIPでまとめて保存できます。</p>
                 <a class="button" href="{{ route('excel.csv') }}">表をCSVに変換 <span aria-hidden="true">→</span></a>
+            </article>
+            <article class="tool-card available">
+                <div class="card-top"><span class="tool-icon" aria-hidden="true">{ }</span><span class="badge">利用できます</span></div>
+                <h3>JSONチェック・ファイル変換</h3>
+                <p>JSONの点検、整形、スキーマ検証やCSV変換ができます。</p>
+                <a class="button" href="{{ route('json.tools') }}">JSONをチェックする <span aria-hidden="true">→</span></a>
             </article>
             <article class="tool-card upcoming">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">◎</span><span class="badge neutral">準備中</span></div>
