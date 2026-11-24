@@ -60,9 +60,10 @@ class ToolNavigationTest extends TestCase
         $this->get(route('tools.index'))->assertOk()
             ->assertSee(route('tabular.converter'))
             ->assertSee(route('excel.csv'))
-            ->assertSee(route('json.tools'));
+            ->assertSee(route('json.tools'))
+            ->assertSee(route('yaml.tools'));
 
-        foreach (['tabular.converter' => 'input-file', 'excel.csv' => 'excel-input', 'json.tools' => 'json-file'] as $name => $inputId) {
+        foreach (['tabular.converter' => 'input-file', 'excel.csv' => 'excel-input', 'json.tools' => 'json-file', 'yaml.tools' => 'yaml-file'] as $name => $inputId) {
             $url = route($name);
             $this->get($url)->assertOk()
                 ->assertSee('aria-current="page"', false)

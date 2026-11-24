@@ -1,0 +1,12 @@
+# 商品の表示設定
+product:
+    code: "00123" # 商品コード
+    updated: 2026-11-24
+    switch: on
+    enabled: true
+    tags:
+        - 新商品
+        - 入荷予定
+    note: |-
+        先頭のゼロを保つ
+        店頭にも表示する

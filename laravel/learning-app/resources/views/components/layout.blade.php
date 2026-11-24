@@ -30,6 +30,7 @@
                 <a href="{{ route('tabular.converter') }}" @if($active === 'tabular-data-converter') aria-current="page" @endif>表データ変換</a>
                 <a href="{{ route('excel.csv') }}" @if($active === 'excel-to-csv') aria-current="page" @endif>表をCSVに変換</a>
                 <a href="{{ route('json.tools') }}" @if($active === 'json-tools') aria-current="page" @endif>JSONチェック</a>
+                <a href="{{ route('yaml.tools') }}" @if($active === 'yaml-tools') aria-current="page" @endif>YAMLチェック</a>
                 <a href="{{ route('text.tools') }}" @if($active === 'text-tools') aria-current="page" @endif>テキストツール</a>
             </nav>
         </div>

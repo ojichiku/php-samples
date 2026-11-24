@@ -276,3 +276,9 @@ LaravelのルートとBladeが画面を表示し、`resources/js/tabular-data-pa
 `/json-tools` はJSONの構文チェック・整形・圧縮、JSON Schema Draft 2020-12のひな形生成・定義チェック・データ照合、JSONL整形、平坦なJSON配列のCSV変換をブラウザー内で実行します。CSVはUTF-8（BOMなし）で、見出しと全項目を二重引用符で囲みます。
 
 [日本語入りのテストファイルと確認手順](tests/fixtures/json-tools/確認手順.txt)を使えます。ローカルサーバー起動後は `npm run test:browser:json-tools` でも動作を確認できます。
+
+## YAMLチェック・JSON変換
+
+YAMLの構文チェック、コメントを保つ整形、YAMLとJSONの相互変換をブラウザー内で行います。YAML出力では半角スペース2個または4個を選べます。
+
+[手順と確認用ファイル](tests/fixtures/yaml-tools/確認手順.txt)で、正常系と構文・文字コード・精度のエラーを試せます。ローカルサーバー起動後は `npm run test:browser:yaml-tools` でも確認できます。

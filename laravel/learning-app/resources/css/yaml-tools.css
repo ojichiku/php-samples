@@ -1,0 +1,2 @@
+.yaml-tools .json-file-picker { margin-top: 8px; }
+.yaml-tools select:disabled { appearance: none; opacity: 1; background: var(--paper, #f5f7fb); }

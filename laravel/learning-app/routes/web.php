@@ -15,6 +15,7 @@ Route::view('/calculation-tools', 'tools.calculation-tools')->name('calculation.
 Route::view('/tabular-data-converter', 'tools.tabular-data-converter')->name('tabular.converter');
 Route::view('/excel-to-csv', 'tools.excel-to-csv')->name('excel.csv');
 Route::view('/json-tools', 'tools.json-tools')->name('json.tools');
+Route::view('/yaml-tools', 'tools.yaml-tools')->name('yaml.tools');
 Route::view('/time-tools', 'tools.time-tools')->name('time.tools');
 Route::view('/date-tools', 'tools.date-tools')->name('date.tools');
 Route::get('/calendar', CalendarController::class)->name('calendar');

@@ -40,6 +40,7 @@ class AdvertisingTest extends TestCase
             '/tabular-data-converter' => 2,
             '/excel-to-csv' => 2,
             '/json-tools' => 2,
+            '/yaml-tools' => 2,
             '/text-tools' => 2,
         ];
         foreach ($expectedSlots as $path => $count) {

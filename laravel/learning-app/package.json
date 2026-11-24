@@ -10,7 +10,7 @@
         "test:browser:check": "node tests/Browser/check-environment.cjs",
         "test:browser:learning": "node tests/Browser/learning-flow.cjs",
         "test:browser:tools": "node tests/Browser/tool-flow.cjs",
-        "test:browser": "npm run test:browser:learning && npm run test:browser:tools && npm run test:browser:calendar && npm run test:browser:password-browser && npm run test:browser:text-tools && npm run test:browser:date-tools && npm run test:browser:unit-converter && npm run test:browser:time-tools && npm run test:browser:calculation-tools && npm run test:browser:tabular-data-converter && npm run test:browser:excel-to-csv && npm run test:browser:json-tools",
+        "test:browser": "npm run test:browser:learning && npm run test:browser:tools && npm run test:browser:calendar && npm run test:browser:password-browser && npm run test:browser:text-tools && npm run test:browser:date-tools && npm run test:browser:unit-converter && npm run test:browser:time-tools && npm run test:browser:calculation-tools && npm run test:browser:tabular-data-converter && npm run test:browser:excel-to-csv && npm run test:browser:json-tools && npm run test:browser:yaml-tools",
         "test:browser:calendar": "node tests/Browser/calendar-flow.cjs",
         "test:js": "node --test tests/Unit/*.test.mjs",
         "test:browser:password-browser": "node tests/Browser/browser-password-flow.cjs",
@@ -21,7 +21,8 @@
         "test:browser:unit-converter": "node tests/Browser/unit-converter-flow.cjs",
         "test:browser:time-tools": "node tests/Browser/time-tools-flow.cjs",
         "test:browser:calculation-tools": "node tests/Browser/calculation-tools-flow.cjs",
-        "test:browser:json-tools": "node tests/Browser/json-tools-flow.mjs"
+        "test:browser:json-tools": "node tests/Browser/json-tools-flow.mjs",
+        "test:browser:yaml-tools": "node tests/Browser/yaml-tools-flow.mjs"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
@@ -37,6 +38,7 @@
     "dependencies": {
         "ajv": "8.20.0",
         "encoding-japanese": "2.4.0",
-        "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+        "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
+        "yaml": "2.9.1"
     }
 }

@@ -17,7 +17,7 @@ try {
         page.on('pageerror', error => pageErrors.push(error.message));
         await page.route('**/*', route => new URL(route.request().url()).origin === url.origin ? route.continue() : route.abort());
         assert.equal((await page.goto(new URL('/', url).href)).status(), 200);
-        assert.equal(await page.locator('.tool-card.available').count(), 11);
+        assert.equal(await page.locator('.tool-card.available').count(), 12);
         await page.getByRole('navigation').getByRole('link', { name: '表をCSVに変換' }).click();
         await page.waitForURL('**/excel-to-csv');
         const file = page.locator('#excel-input');
