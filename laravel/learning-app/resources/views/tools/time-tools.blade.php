@@ -5,6 +5,7 @@
         <h1 class="tool-title">時間ツール</h1>
         <p class="lead">時刻を比べる・時間を測る・差を計算する。設定・記録は再読み込みやページ終了で消えます。</p>
     </section>
+    <x-ad-slot />
     <noscript><p class="error-box">このツールにはJavaScriptが必要です。ブラウザーの設定を確認してください。</p></noscript>
     <div id="time-tools" class="time-tools">
 

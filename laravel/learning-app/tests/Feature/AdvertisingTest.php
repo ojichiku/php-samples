@@ -28,10 +28,24 @@ class AdvertisingTest extends TestCase
     public function test_live_ads_appear_on_allowed_pages_and_password_post_results(): void
     {
         $this->enableAds('production');
-        foreach (['/', '/calendar', '/password-generator/generate', '/password-generator-browser', '/date-tools'] as $path) {
+        $expectedSlots = [
+            '/' => 2,
+            '/calendar' => 1,
+            '/password-generator/generate' => 2,
+            '/password-generator-browser' => 2,
+            '/date-tools' => 2,
+            '/unit-converter' => 2,
+            '/time-tools' => 2,
+            '/calculation-tools' => 2,
+            '/tabular-data-converter' => 2,
+            '/excel-to-csv' => 2,
+            '/json-tools' => 2,
+            '/text-tools' => 2,
+        ];
+        foreach ($expectedSlots as $path => $count) {
             $html = $this->get($path)->assertOk()->assertSee('data-ad-slot="1234567890"', false)->getContent();
             $this->assertSame(1, substr_count($html, 'pagead2.googlesyndication.com'));
-            $this->assertSame(in_array($path, ['/', '/password-generator/generate', '/password-generator-browser', '/date-tools'], true) ? 2 : 1, substr_count($html, 'data-ad-slot='));
+            $this->assertSame($count, substr_count($html, 'data-ad-slot='), $path);
         }
         foreach (['/hello/view', '/missing-page'] as $path) {
             $this->get($path)->assertDontSee('adsbygoogle')->assertDontSee('ad-preview');

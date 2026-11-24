@@ -210,7 +210,12 @@ const path = require('node:path');
    }
   }
   await page.goto(base + '/time-tools'); await page.waitForFunction(() => !document.getElementById('time-inputs').disabled);
-  ok('advertisement follows tool and appears once', await page.locator('.ad-slot').count() === 1 && await page.evaluate(() => Boolean(document.querySelector('#time-tools').compareDocumentPosition(document.querySelector('.ad-slot')) & Node.DOCUMENT_POSITION_FOLLOWING)));
+  ok('advertisements appear before and after the tool', await page.locator('.ad-slot').count() === 2 && await page.evaluate(() => {
+    const tool = document.querySelector('#time-tools');
+    const [top, bottom] = document.querySelectorAll('.ad-slot');
+    return Boolean(tool.compareDocumentPosition(top) & Node.DOCUMENT_POSITION_PRECEDING)
+      && Boolean(tool.compareDocumentPosition(bottom) & Node.DOCUMENT_POSITION_FOLLOWING);
+  }));
   await click('watch-tab'); await click('watch-start'); await page.locator('#lap-name').fill('離脱時の記録'); await click('watch-lap');
   await page.evaluate(() => window.dispatchEvent(new PageTransitionEvent('pagehide', { persisted: true })));
   ok('pagehide clears lap names and records', await page.locator('#lap-name').inputValue() === '' && await page.locator('#laps li').count() === 0);

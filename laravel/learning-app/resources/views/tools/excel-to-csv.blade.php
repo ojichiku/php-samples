@@ -9,6 +9,7 @@
         <p class="lead">シートごとにCSVへ変換し、ZIPでまとめて保存します。入力ファイルはサーバーに送信されません。</p>
     </header>
 
+    <x-ad-slot />
     <div class="excel-to-csv">
         <section class="panel" aria-labelledby="excel-input-title">
             <h2 id="excel-input-title">入力ファイル</h2>
@@ -65,4 +66,5 @@
             <ul id="excel-excluded-list"></ul>
         </section>
     </div>
+    <x-ad-slot />
 </x-layout>

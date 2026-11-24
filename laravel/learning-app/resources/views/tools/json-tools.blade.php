@@ -9,6 +9,7 @@
         <p class="lead">入力はこのブラウザー内で処理します。</p>
     </header>
 
+    <x-ad-slot />
     <div class="json-tools">
         <section class="panel" aria-labelledby="json-input-title">
             <h2 id="json-input-title">入力・操作</h2>

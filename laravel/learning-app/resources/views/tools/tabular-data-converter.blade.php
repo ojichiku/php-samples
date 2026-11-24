@@ -9,6 +9,7 @@
         <h1 class="tool-title">表データコンバーター</h1>
         <p>CSV・TSVを確認して、Excel・OpenOffice用のファイルに変換します。</p>
         <p class="notice">ファイルの確認と変換はブラウザー内で行います。ファイルはサーバーに送信されません。</p>
+        <x-ad-slot />
         <section aria-labelledby="input-title">
             <h2 id="input-title">入力ファイル</h2>
             <label for="input-file" class="file-label">CSV・TSVファイルを選択</label>
