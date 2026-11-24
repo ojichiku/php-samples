@@ -40,6 +40,37 @@ try {
         await locate('status').getByText(/1行目8列目/).waitFor();
         assert(await locate('download').isDisabled());
 
+        assert(!(await locate('indent-panel').isVisible()));
+        const nestedJson = '{"item":{"code":"00123","id":9007199254740993}}';
+        await locate('text').fill(nestedJson);
+        await locate('operation').selectOption('format');
+        assert.equal(await locate('indent').inputValue(), '2');
+        for (const [style, whitespace] of [['2', '  '], ['4', '    '], ['tab', '\t']]) {
+            await locate('indent').selectOption(style);
+            assert.equal(await locate('text').inputValue(), nestedJson);
+            assert(await locate('download').isDisabled());
+            assert(!(await locate('output').isVisible()));
+            await locate('run').click();
+            await locate('output').waitFor();
+            const expected = ['{', whitespace + '"item": {', whitespace.repeat(2) + '"code": "00123",',
+                whitespace.repeat(2) + '"id": 9007199254740993', whitespace + '}', '}'].join('\n');
+            assert.equal(await locate('output').inputValue(), expected);
+            if (style === 'tab') {
+                const download = page.waitForEvent('download');
+                await locate('download').click();
+                const file = await download;
+                assert.equal(await readFile(await file.path(), 'utf8'), expected);
+            }
+        }
+        if (artifacts && width !== 320) {
+            await page.screenshot({ fullPage: true, path: `${artifacts}/json-tools-indent-${width}.png` });
+        }
+        await locate('operation').selectOption('minify');
+        assert(!(await locate('indent-panel').isVisible()));
+        await locate('run').click();
+        await locate('output').waitFor();
+        assert.equal(await locate('output').inputValue(), nestedJson);
+
         await locate('operation').selectOption('csv');
         await locate('file').setInputFiles(fileURLToPath(new URL('items.json', fixtures)));
         await locate('file-status').getByText('items.json').waitFor();
@@ -86,6 +117,7 @@ try {
         await locate('status').getByText(/\$ref.*同一文書内/).waitFor();
 
         await locate('format').selectOption('schema');
+        assert(!(await locate('indent-panel').isVisible()));
         await locate('text').fill('{"required":"stock"}');
         await locate('run').click();
         await locate('status').getByText(/\/required.*array/).waitFor();
@@ -95,9 +127,10 @@ try {
         await locate('operation').selectOption('format');
         await locate('run').click();
         await locate('output').waitFor();
-        assert.equal(await locate('output').inputValue(), '{\n  "type": "object"\n}');
+        assert.equal(await locate('output').inputValue(), '{\n\t"type": "object"\n}');
 
         await locate('format').selectOption('jsonl');
+        assert(!(await locate('indent-panel').isVisible()));
         assert(await locate('schema-panel').isHidden());
         assert.equal(await locate('text').inputValue(), '{"type":"object"}');
         await locate('text').fill(' { "id" : 1 }\n null');

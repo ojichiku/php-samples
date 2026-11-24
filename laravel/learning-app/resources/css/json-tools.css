@@ -32,6 +32,8 @@
     font-family: ui-monospace, monospace;
 }
 
+.json-tools #json-output { tab-size: 4; }
+
 .json-tools .json-actions {
     display: flex;
     flex-wrap: wrap;

@@ -10,6 +10,7 @@ import { downloadText } from './text-tools-download.js';
 const element = (name) => document.getElementById('json-' + name);
 const format = element('format');
 const operation = element('operation');
+const indent = element('indent');
 const dataField = { input: element('text'), file: element('file'), status: element('file-status'), name: '', revision: 0 };
 const schemaField = { input: element('schema'), file: element('schema-file'), status: element('schema-file-status'), name: '', revision: 0 };
 const status = element('status');
@@ -41,7 +42,7 @@ function updateControls() {
     run.disabled = busy || !runtimeAvailable || !dataField.input.value || (operation.value === 'validate' && !schemaField.input.value);
     clear.disabled = busy || ![dataField.input.value, schemaField.input.value, result].some(Boolean);
     copy.disabled = download.disabled = busy || !result?.output;
-    format.disabled = operation.disabled = worker !== null;
+    format.disabled = operation.disabled = indent.disabled = worker !== null;
     dataField.file.disabled = schemaField.file.disabled = busy;
     dataField.input.readOnly = schemaField.input.readOnly = worker !== null;
 }
@@ -58,9 +59,10 @@ function resetResult() {
     updateControls();
 }
 
-/** @returns {void} スキーマ入力欄の表示と結果を更新する。 */
+/** @returns {void} 字下げとスキーマ入力欄の表示を更新し、結果を消去する。 */
 function changeOperation() {
     element('schema-panel').hidden = operation.value !== 'validate';
+    element('indent-panel').hidden = operation.value !== 'format' || format.value === 'jsonl';
     resetResult();
 }
 
@@ -161,6 +163,7 @@ function stopWorker(message = '') {
 
 format.addEventListener('change', changeFormat);
 operation.addEventListener('change', changeOperation);
+indent.addEventListener('change', resetResult);
 for (const field of [dataField, schemaField]) {
     field.file.addEventListener('change', () => loadFile(field));
     field.input.addEventListener('input', () => {
@@ -206,6 +209,7 @@ run.addEventListener('click', () => {
         worker.postMessage({
             format: format.value,
             operation: operation.value,
+            indentStyle: indent.value,
             input: dataField.input.value,
             schema: schemaField.input.value,
         });

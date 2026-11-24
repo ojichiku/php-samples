@@ -2,6 +2,8 @@
 import { convertJsonToCsv, formatJsonl, JsonToolError, limitOutput, parseJson, writeJson } from './json-tools-engine.js';
 import { compileSchema, generateSchema, validateAgainstSchema } from './json-schema-tools.js';
 
+const indentation = new Map([['2', '  '], ['4', '    '], ['tab', '\t']]);
+
 /**
  * JSON入力を読み、エラー時は照合のどちらの欄か示す。
  * @param {string} input 入力原文。
@@ -20,11 +22,11 @@ function read(input, label) {
 
 /**
  * 承認済みの処理を選択し、表示・保存用の値を返す。
- * @param {{format: string, operation: string, input: string, schema: string}} request 形式と処理、入力原文と照合スキーマ。
+ * @param {{format: string, operation: string, input: string, schema: string, indentStyle?: '2'|'4'|'tab'}} request 形式、処理、入力原文、照合スキーマ、整形時の字下げ。
  * @returns {{message: string, warning?: string, note?: string, output?: string, suffix?: string, preview?: string[][], invalid?: boolean}} 表示データ。
  * @throws {JsonToolError} 構文や変換条件の違反。
  */
-export function processJson({ format, operation, input, schema }) {
+export function processJson({ format, operation, input, schema, indentStyle }) {
     if (format === 'jsonl') {
         return { ...formatJsonl(input), message: 'JSONLを整形しました。', suffix: '-formatted.jsonl' };
     }
@@ -34,7 +36,7 @@ export function processJson({ format, operation, input, schema }) {
     if (operation === 'format' || operation === 'minify') {
         const pretty = operation === 'format';
         const suffix = format === 'schema' ? '.schema.json' : pretty ? '-formatted.json' : '-minified.json';
-        return { output: writeJson(root, pretty), message: pretty ? '整形しました。' : '圧縮しました。', warning, suffix };
+        return { output: writeJson(root, pretty, indentation.get(indentStyle)), message: pretty ? '整形しました。' : '圧縮しました。', warning, suffix };
     }
     if (warning) throw new JsonToolError(warning + ' 重複を解消してから実行してください。');
     if (operation === 'csv') {

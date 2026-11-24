@@ -129,11 +129,12 @@ export function parseJson(input) {
 /**
  * JSONの字句を保ちながら整形または圧縮する。
  * @param {JsonNode} root 構文木。
- * @param {boolean} pretty 空白2個で整形するか。
+ * @param {boolean} pretty 改行と字下げを加えるか。
+ * @param {string} indent 1階層分の字下げ文字列。
  * @returns {string} JSONテキスト。
  * @throws {JsonToolError} 出力上限超過。
  */
-export function writeJson(root, pretty) {
+export function writeJson(root, pretty, indent = '  ') {
     const chunks = [];
     let length = 0;
     /**
@@ -160,11 +161,11 @@ export function writeJson(root, pretty) {
         const children = object ? node.entries : node.items;
         children.forEach((child, index) => {
             if (index) append(',');
-            if (pretty) append('\n' + '  '.repeat(depth + 1));
+            if (pretty) append('\n' + indent.repeat(depth + 1));
             if (object) append(child.key.raw + (pretty ? ': ' : ':'));
             write(object ? child.node : child, depth + 1);
         });
-        if (pretty && children.length) append('\n' + '  '.repeat(depth));
+        if (pretty && children.length) append('\n' + indent.repeat(depth));
         append(object ? '}' : ']');
     }
     write(root, 0);

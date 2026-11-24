@@ -22,6 +22,14 @@
             <select id="json-operation" disabled>
                 <option value="check">構文チェック</option>
             </select>
+            <div id="json-indent-panel" hidden>
+                <label for="json-indent">字下げ</label>
+                <select id="json-indent" disabled>
+                    <option value="2">半角スペース2個</option>
+                    <option value="4">半角スペース4個</option>
+                    <option value="tab">タブ</option>
+                </select>
+            </div>
             <div>
                 <label id="json-text-label" for="json-text">JSON入力</label>
                 <label class="button secondary json-file-picker">
