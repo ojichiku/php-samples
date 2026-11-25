@@ -1,7 +1,7 @@
 {{-- 対象Routeと広告設定に従い、本番広告またはローカル仮枠を表示する。入力/生成値は受け取らない。 --}}
 @php
     // 広告を許すRouteを列挙し、環境とID書式の両方を検証する。
-    $allowed = request()->routeIs('tools.index', 'calculation.tools', 'tabular.converter', 'excel.csv', 'json.tools', 'yaml.tools', 'time.tools', 'date.tools', 'unit.converter', 'text.tools', 'password.form', 'password.generate', 'password.browser', 'calendar');
+    $allowed = request()->routeIs('tools.index', 'calculation.tools', 'general.calculator', 'tabular.converter', 'excel.csv', 'json.tools', 'yaml.tools', 'time.tools', 'date.tools', 'unit.converter', 'text.tools', 'password.form', 'password.generate', 'password.browser', 'calendar');
     $client = (string) config('advertising.client');
     $slotId = (string) config('advertising.slot');
     $live = $allowed && app()->environment('production') && config('advertising.enabled')

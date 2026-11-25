@@ -12,6 +12,7 @@ Route::view('/', 'tools.index')->name('tools.index');
 Route::view('/text-tools', 'tools.text-tools')->name('text.tools');
 Route::view('/unit-converter', 'tools.unit-converter')->name('unit.converter');
 Route::view('/calculation-tools', 'tools.calculation-tools')->name('calculation.tools');
+Route::view('/general-calculator', 'tools.general-calculator')->name('general.calculator');
 Route::view('/tabular-data-converter', 'tools.tabular-data-converter')->name('tabular.converter');
 Route::view('/excel-to-csv', 'tools.excel-to-csv')->name('excel.csv');
 Route::view('/json-tools', 'tools.json-tools')->name('json.tools');

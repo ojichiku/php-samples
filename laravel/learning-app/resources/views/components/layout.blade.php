@@ -27,6 +27,7 @@
                 <a href="{{ route('unit.converter') }}" @if($active === 'unit-converter') aria-current="page" @endif>単位換算</a>
                 <a href="{{ route('time.tools') }}" @if($active === 'time-tools') aria-current="page" @endif>時間ツール</a>
                 <a href="{{ route('calculation.tools') }}" @if($active === 'calculation-tools') aria-current="page" @endif>日常計算</a>
+                <a href="{{ route('general.calculator') }}" @if($active === 'general-calculator') aria-current="page" @endif>一般電卓</a>
                 <a href="{{ route('tabular.converter') }}" @if($active === 'tabular-data-converter') aria-current="page" @endif>表データ変換</a>
                 <a href="{{ route('excel.csv') }}" @if($active === 'excel-to-csv') aria-current="page" @endif>表をCSVに変換</a>
                 <a href="{{ route('json.tools') }}" @if($active === 'json-tools') aria-current="page" @endif>JSONチェック</a>
@@ -35,7 +36,7 @@
             </nav>
         </div>
     </header>
-    <main @class(['shell', 'calendar-shell' => $active === 'calendar', 'text-tools-shell' => $active === 'text-tools', 'date-tools-shell' => $active === 'date-tools', 'unit-converter-shell' => $active === 'unit-converter', 'password-shell' => in_array($active, ['password', 'password-browser'], true)]) id="main">
+    <main @class(['shell', 'general-calculator-shell' => $active === 'general-calculator', 'calendar-shell' => $active === 'calendar', 'text-tools-shell' => $active === 'text-tools', 'date-tools-shell' => $active === 'date-tools', 'unit-converter-shell' => $active === 'unit-converter', 'password-shell' => in_array($active, ['password', 'password-browser'], true)]) id="main">
         {{ $slot }}
     </main>
     <footer class="site-footer">

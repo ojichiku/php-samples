@@ -1,0 +1,61 @@
+/* ツール固有のルールはメイン本文に限定する。 */
+.general-calculator-shell {
+    max-width: 34rem;
+
+    [hidden] { display: none !important; }
+
+    .calculator { border: 1px solid var(--line); border-radius: 18px; background: #fffdf8; }
+    .display, .controls, .support { display: grid; align-content: start; gap: 12px; min-width: 0; padding: 24px; }
+    .display { border-bottom: 1px solid var(--line); }
+    .support { border-top: 1px solid var(--line); }
+    .function-panel { display: grid; gap: 12px; padding-block: 4px 8px; }
+    .angle { min-width: 0; margin: 0; padding: 0; border: 0; }
+    .angle legend, .expression-label > label { font-size: .9375rem; font-weight: 700; }
+    .angle-options { display: inline-flex; max-width: 100%; gap: 6px; padding-top: 4px; }
+    .angle-options label { position: relative; }
+    .angle-options input { position: absolute; opacity: 0; }
+    .angle-options span { display: grid; place-items: center; min-height: 44px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 8px; background: white; font-size: .875rem; cursor: pointer; }
+    .angle-options input:checked + span { border-color: var(--accent); background: #e9efe5; color: var(--accent); font-weight: 750; }
+    .angle-options input:focus-visible + span { outline: 3px solid #b76722; outline-offset: 3px; }
+    .expression-label, .cursor-controls, .actions { display: flex; align-items: center; gap: 6px; }
+    .expression-label { justify-content: space-between; }
+    .actions { flex-wrap: wrap; }
+    #expression { display: block; width: 100%; min-width: 0; min-height: 48px; padding: 8px 10px; border: 1px solid #91a18d; border-radius: 8px; background: white; color: var(--ink); font: 1.125rem/1.4 ui-monospace, monospace; }
+    .result { display: grid; gap: 2px; text-align: end; padding: 10px 14px; min-width: 0; border: 1px solid var(--line); border-radius: 12px; background: #edf2e9; }
+    .result > span, .result > small { color: var(--muted); font-size: .8125rem; }
+    .result output { font: 700 clamp(1.375rem, 4vw, 2rem)/1.25 ui-monospace, monospace; overflow-wrap: anywhere; }
+    .memory { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; border-top: 1px solid var(--line); padding-top: 10px; }
+    .memory p, .feedback { margin: 0; font-size: .875rem; overflow-wrap: anywhere; }
+    .memory p span { margin-inline-start: 4px; font-weight: 700; }
+    .memory .memory-help { flex-basis: 100%; color: var(--muted); }
+    .feedback { color: var(--accent); }
+    .feedback[data-error] { color: #8b351e; }
+
+    .calculator button { min-width: 44px; min-height: 44px; padding: 5px 8px; color: var(--ink); font-weight: 650; border: 1px solid #c8d5c8; border-radius: 8px; background: white; cursor: pointer; }
+    .calculator button:not(:disabled):hover { background: #e9efe5; }
+    .calculator button:disabled { cursor: default; color: #626c62; background: #eef1eb; border-color: var(--line); }
+    .actions button, .history-header button { font-size: .875rem; }
+    .keys { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+    .keys button { min-height: 48px; font-size: 1.125rem; }
+    .keys .operator { background: #edf2e9; }
+    .keys .clear-key { font-size: .75rem; padding-inline: 2px; }
+    .keys .equals { grid-column: span 2; background: var(--accent); color: white; border-color: var(--accent); }
+    .keys .equals:not(:disabled):hover { background: #184b34; }
+    .fold { min-width: 0; }
+    .fold summary { cursor: pointer; min-height: 44px; padding: 8px 2px; font-weight: 700; }
+    .fold summary span { margin-inline-start: 6px; font-size: .875rem; color: var(--muted); font-weight: 400; }
+    .history { border-top: 1px solid var(--line); padding: 0 24px; }
+    .history[open] { padding-bottom: 16px; }
+    .history-content p { margin: 0; font-size: .875rem; color: var(--muted); }
+    .history-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+    .history ol { list-style: none; display: grid; gap: 6px; padding: 0; margin: 8px 0 0; }
+    .history li button { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 8px; text-align: start; flex-wrap: wrap; overflow-wrap: anywhere; }
+    .history li small { color: var(--muted); font-weight: 400; }
+    .percent-help { margin: 12px 0 0; font-size: .875rem; color: var(--muted); }
+    .percent-help code { white-space: nowrap; }
+
+    @media (max-width: 900px) {
+        .display, .controls, .support { padding: 14px; }
+        .history { padding-inline: 14px; }
+    }
+}

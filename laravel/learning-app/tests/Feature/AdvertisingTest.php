@@ -37,6 +37,7 @@ class AdvertisingTest extends TestCase
             '/unit-converter' => 2,
             '/time-tools' => 2,
             '/calculation-tools' => 2,
+            '/general-calculator' => 2,
             '/tabular-data-converter' => 2,
             '/excel-to-csv' => 2,
             '/json-tools' => 2,

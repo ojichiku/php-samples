@@ -53,6 +53,7 @@ php artisan serve --host=127.0.0.1 --port=8000
 | テキスト便利ツール集 | `/text-tools` | 整形・置換・行整理・正規表現を使い、結果をコピー・保存できる |
 | 日付・元号ツール | `/date-tools` | 西暦と元号の変換・対応表、日数・年齢計算ができる |
 | 単位換算ツール | `/unit-converter` | 8分類の単位換算と、単位名・記号・関係の早見表を確認できる |
+| 一般電卓 | `/general-calculator` | 式の計算、関数、値のメモリと過去の式の呼び戻しを試せる |
 | 年間カレンダー | `/calendar?year=2026` | 12か月・祝日・六曜と年・月切替・今日への移動 |
 | ルートの直接応答 | `/hello` | Hello World!と表示される |
 | Bladeの画面表示 | `/hello/view` | BladeでHello World!を表示する |
@@ -282,3 +283,9 @@ LaravelのルートとBladeが画面を表示し、`resources/js/tabular-data-pa
 YAMLの構文チェック、コメントを保つ整形、YAMLとJSONの相互変換をブラウザー内で行います。YAML出力では半角スペース2個または4個を選べます。
 
 [手順と確認用ファイル](tests/fixtures/yaml-tools/確認手順.txt)で、正常系と構文・文字コード・精度のエラーを試せます。ローカルサーバー起動後は `npm run test:browser:yaml-tools` でも確認できます。
+
+## 一般電卓
+
+`/general-calculator` で式を入力するか、画面のキーで計算します。`0.1+0.2-0.3` は `0`、`200*(1+10%)` は `220` と表示されます。関数欄では度・ラジアン、三角関数、常用対数、自然対数を使えます。
+
+メモリは結果を1件保存し、計算履歴は成功した式を最大20件記録します。どちらもブラウザー内で保持し、再読み込みすると消えます。四則演算は `resources/js/general-calculator-engine.js` で分数のまま計算し、表示するときに有効12桁へ丸めます。実行例は `npm run test:js`、起動後の画面操作は `npm run test:browser:general-calculator` で確認できます。

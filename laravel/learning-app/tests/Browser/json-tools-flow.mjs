@@ -26,7 +26,7 @@ try {
         });
         const locate = (name) => page.locator('#json-' + name);
         assert.equal((await page.goto(new URL('/', origin).href)).status(), 200);
-        assert.equal(await page.locator('.tool-card.available').count(), 12);
+        assert.equal(await page.locator('.tool-card.available').count(), 13);
         await page.getByRole('navigation').getByRole('link', { name: 'JSONチェック' }).click();
         await page.waitForURL('**/json-tools');
         assert.equal(await page.getByRole('navigation').locator('[aria-current="page"]').innerText(), 'JSONチェック');
