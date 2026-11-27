@@ -37,7 +37,7 @@ try {
         };
 
         assert.equal((await page.goto(new URL('/', origin).href)).status(), 200);
-        assert.equal(await page.locator('.tool-card.available').count(), 13);
+        assert.equal(await page.locator('.tool-card.available').count(), 14);
         await page.getByRole('navigation').getByRole('link', { name: 'YAMLチェック', exact: true }).click();
         await page.waitForURL('**/yaml-tools');
         assert.equal(await page.locator('nav [aria-current="page"]').innerText(), 'YAMLチェック');

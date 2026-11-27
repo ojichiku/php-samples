@@ -1,0 +1,63 @@
+.url-encoding {
+    max-width: 40rem;
+    margin-inline: auto;
+}
+
+.url-encoding .url-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+}
+
+.url-encoding .url-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.url-encoding .url-fields label,
+.url-encoding .url-fields h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 8px 0 0;
+}
+
+.url-encoding .url-fields select {
+    min-width: 0;
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #91a18d;
+    border-radius: 10px;
+    background: white;
+}
+
+.url-encoding .url-fields textarea,
+.url-encoding .url-fields pre {
+    min-height: 6rem;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.url-encoding .url-fields textarea {
+    background: white;
+}
+
+.url-encoding .url-fields pre {
+    max-height: 16rem;
+    overflow: auto;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    background: #f3f5ef;
+    border: 1px solid #bac6b3;
+    border-radius: 10px;
+    padding: 16px;
+}
+
+.url-encoding .url-fields .copy-status {
+    margin: 0;
+}
+
+.url-encoding .url-error {
+    margin: 0;
+    color: #992b2b;
+}

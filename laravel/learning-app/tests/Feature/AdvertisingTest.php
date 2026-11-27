@@ -42,6 +42,7 @@ class AdvertisingTest extends TestCase
             '/excel-to-csv' => 2,
             '/json-tools' => 2,
             '/yaml-tools' => 2,
+            '/url-encoding' => 2,
             '/text-tools' => 2,
         ];
         foreach ($expectedSlots as $path => $count) {

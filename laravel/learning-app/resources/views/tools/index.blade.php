@@ -7,7 +7,7 @@
     </section>
     <x-ad-slot />
     <section aria-labelledby="tools-heading">
-        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">13個のツールが利用できます</span></div>
+        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">14個のツールが利用できます</span></div>
         <div class="tool-grid">
             <article class="tool-card available">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">Aa</span><span class="badge">利用できます</span></div>
@@ -86,6 +86,12 @@
                 <h3>一般電卓</h3>
                 <p>式を入力して四則演算や関数を計算し、過去の式を呼び戻して編集できます。</p>
                 <a class="button" href="{{ route('general.calculator') }}">一般電卓を開く <span aria-hidden="true">→</span></a>
+            </article>
+            <article class="tool-card available">
+                <div class="card-top"><span class="tool-icon" aria-hidden="true">%</span><span class="badge">利用できます</span></div>
+                <h3>URLエンコード・デコード</h3>
+                <p>URLのパスやクエリ、フォーム用の値をUTF-8で変換できます。</p>
+                <a class="button" href="{{ route('url.encoding') }}">URLを変換する <span aria-hidden="true">→</span></a>
             </article>
             <article class="tool-card upcoming">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">◎</span><span class="badge neutral">準備中</span></div>

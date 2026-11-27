@@ -1,0 +1,14 @@
+[
+    { "format": "component", "encode": true, "input": "東京 +", "output": "%E6%9D%B1%E4%BA%AC%20%2B" },
+    { "format": "form", "encode": true, "input": "東京 +", "output": "%E6%9D%B1%E4%BA%AC+%2B" },
+    { "format": "component", "encode": false, "input": "a+b%2B", "output": "a+b+" },
+    { "format": "form", "encode": false, "input": "a+b%2B", "output": "a b+" },
+    { "format": "component", "encode": true, "input": " !'()*~_-.\n😀 ", "output": "%20%21%27%28%29%2A~_-.%0A%F0%9F%98%80%20" },
+    { "format": "form", "encode": true, "input": " !'()*~_-.\n😀 ", "output": "+%21%27%28%29*%7E_-.%0A%F0%9F%98%80+" },
+    { "format": "component", "encode": false, "input": "%20%E6%9D%B1%E4%BA%AC%0D%0A%F0%9F%98%80%20", "output": " 東京\r\n😀 " },
+    { "format": "component", "encode": false, "input": "%252B", "output": "%2B" },
+    { "format": "component", "encode": true, "input": "https://example.test/a?x=1", "output": "https%3A%2F%2Fexample.test%2Fa%3Fx%3D1" },
+    { "format": "component", "encode": false, "input": "%ZZ", "error": "16進数" },
+    { "format": "form", "encode": false, "input": "%F0%9F", "error": "UTF-8" },
+    { "format": "component", "encode": false, "input": "%FF", "error": "UTF-8" }
+]

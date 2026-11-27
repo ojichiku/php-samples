@@ -54,6 +54,7 @@ php artisan serve --host=127.0.0.1 --port=8000
 | 日付・元号ツール | `/date-tools` | 西暦と元号の変換・対応表、日数・年齢計算ができる |
 | 単位換算ツール | `/unit-converter` | 8分類の単位換算と、単位名・記号・関係の早見表を確認できる |
 | 一般電卓 | `/general-calculator` | 式の計算、関数、値のメモリと過去の式の呼び戻しを試せる |
+| URLエンコード・デコード | `/url-encoding` | URL部品とフォーム値をUTF-8でエンコード・デコードする |
 | 年間カレンダー | `/calendar?year=2026` | 12か月・祝日・六曜と年・月切替・今日への移動 |
 | ルートの直接応答 | `/hello` | Hello World!と表示される |
 | Bladeの画面表示 | `/hello/view` | BladeでHello World!を表示する |
@@ -289,3 +290,9 @@ YAMLの構文チェック、コメントを保つ整形、YAMLとJSONの相互�
 `/general-calculator` で式を入力するか、画面のキーで計算します。`0.1+0.2-0.3` は `0`、`200*(1+10%)` は `220` と表示されます。関数欄では度・ラジアン、三角関数、常用対数、自然対数を使えます。
 
 メモリは結果を1件保存し、計算履歴は成功した式を最大20件記録します。どちらもブラウザー内で保持し、再読み込みすると消えます。四則演算は `resources/js/general-calculator-engine.js` で分数のまま計算し、表示するときに有効12桁へ丸めます。実行例は `npm run test:js`、起動後の画面操作は `npm run test:browser:general-calculator` で確認できます。
+
+## URLエンコード・デコード
+
+`/url-encoding` で形式を選び、パス1区間やクエリのキー・値を1件入力します。URL部品では空白が `%20`、フォーム値では `+` になり、どちらも入力中のプラス記号は `%2B` になります。入力欄の下にあるエンコードかデコードを押し、結果をコピーできます。変換処理はブラウザーで実行し、入力値を送信・保存しません。
+
+変換処理は `resources/js/url-encoding-engine.js` にあります。`npm run test:js`、広告仮枠付きで起動後の `npm run test:browser:url-encoding`、[手動テスト](tests/fixtures/url-encoding/README.md)で確認できます。

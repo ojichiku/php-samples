@@ -55,15 +55,16 @@ class ToolNavigationTest extends TestCase
      *
      * @return void 各画面のリンク、入力欄、HTTP応答をアサートする。
      */
-    public function test_file_converter_tools_expose_only_get_pages(): void
+    public function test_browser_converter_tools_expose_only_get_pages(): void
     {
         $this->get(route('tools.index'))->assertOk()
             ->assertSee(route('tabular.converter'))
             ->assertSee(route('excel.csv'))
             ->assertSee(route('json.tools'))
-            ->assertSee(route('yaml.tools'));
+            ->assertSee(route('yaml.tools'))
+            ->assertSee(route('url.encoding'));
 
-        foreach (['tabular.converter' => 'input-file', 'excel.csv' => 'excel-input', 'json.tools' => 'json-file', 'yaml.tools' => 'yaml-file'] as $name => $inputId) {
+        foreach (['tabular.converter' => 'input-file', 'excel.csv' => 'excel-input', 'json.tools' => 'json-file', 'yaml.tools' => 'yaml-file', 'url.encoding' => 'url-input'] as $name => $inputId) {
             $url = route($name);
             $this->get($url)->assertOk()
                 ->assertSee('aria-current="page"', false)

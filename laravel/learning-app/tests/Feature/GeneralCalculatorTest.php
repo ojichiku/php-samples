@@ -33,7 +33,7 @@ class GeneralCalculatorTest extends TestCase
         $href = 'href="'.route('general.calculator').'"';
         $this->get(route('calendar'))->assertOk()
             ->assertSeeInOrder(['<nav aria-label="共通メニュー">', '日常計算</a>', $href, '一般電卓</a>', '</nav>'], false);
-        $this->get(route('tools.index'))->assertOk()->assertSee('13個のツール')
+        $this->get(route('tools.index'))->assertOk()->assertSee('14個のツール')
             ->assertSeeInOrder(['<h3>一般電卓</h3>', $href, '一般電卓を開く', '<h3>所有者用メニュー</h3>'], false);
     }
 
