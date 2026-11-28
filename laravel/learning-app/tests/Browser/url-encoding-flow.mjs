@@ -29,7 +29,7 @@ try {
         });
 
         assert.equal((await page.goto(new URL('/', base).href)).status(), 200);
-        assert.equal(await page.locator('.tool-card.available').count(), 14);
+        assert.equal(await page.locator('.tool-card.available').count(), 17);
         await page.getByRole('navigation').getByRole('link', { name: 'URL変換', exact: true }).click();
         await page.waitForURL('**/url-encoding');
         assert.equal(await page.locator('nav [aria-current=page]').innerText(), 'URL変換');

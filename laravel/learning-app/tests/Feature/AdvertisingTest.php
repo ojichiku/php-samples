@@ -43,6 +43,9 @@ class AdvertisingTest extends TestCase
             '/json-tools' => 2,
             '/yaml-tools' => 2,
             '/url-encoding' => 2,
+            '/radix-converter' => 2,
+            '/character-encoding' => 2,
+            '/color-code' => 2,
             '/text-tools' => 2,
         ];
         foreach ($expectedSlots as $path => $count) {

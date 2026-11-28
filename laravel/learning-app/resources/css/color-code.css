@@ -1,0 +1,58 @@
+.color-code-tool {
+    max-width: 40rem;
+    margin-inline: auto;
+}
+
+.color-code-tool .color-code-fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+}
+
+.color-code-tool .color-code-fields label,
+.color-code-tool .color-code-fields h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 8px 0 0;
+}
+
+.color-code-tool .color-code-fields input,
+.color-code-tool .color-code-result,
+.color-code-tool .color-code-swatch {
+    min-width: 0;
+    margin: 0;
+    border: 1px solid #91a18d;
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+.color-code-tool .color-code-fields input {
+    min-height: 44px;
+    background: white;
+    font: inherit;
+}
+
+.color-code-tool .color-code-swatch {
+    min-height: 96px;
+    display: grid;
+    place-items: center;
+    background: #edf0e9;
+    text-align: center;
+}
+
+.color-code-tool .color-code-result {
+    min-height: 44px;
+    background: #f3f5ef;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.color-code-tool .field-help,
+.color-code-tool .copy-status,
+.color-code-tool .color-code-error {
+    margin: 0;
+}
+
+.color-code-tool .color-code-error {
+    color: #992b2b;
+}

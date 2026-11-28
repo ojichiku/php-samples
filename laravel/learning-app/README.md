@@ -296,3 +296,13 @@ YAMLの構文チェック、コメントを保つ整形、YAMLとJSONの相互�
 `/url-encoding` で形式を選び、パス1区間やクエリのキー・値を1件入力します。URL部品では空白が `%20`、フォーム値では `+` になり、どちらも入力中のプラス記号は `%2B` になります。入力欄の下にあるエンコードかデコードを押し、結果をコピーできます。変換処理はブラウザーで実行し、入力値を送信・保存しません。
 
 変換処理は `resources/js/url-encoding-engine.js` にあります。`npm run test:js`、広告仮枠付きで起動後の `npm run test:browser:url-encoding`、[手動テスト](tests/fixtures/url-encoding/README.md)で確認できます。
+
+## 基数・文字コードと改行・色コードの変換
+
+| 画面 | 確認例 |
+| --- | --- |
+| `/radix-converter` | 10進数の `255` を16進数の `FF` に変換。整数を2〜36進の間で変換できます。 |
+| `/character-encoding` | UTF-8とCP932、LFとCRLFを指定して別ファイルへ保存。CP932で保持できない文字は位置を表示し、候補がそろう場合は置換内容を確認して保存できます。[確認手順](tests/fixtures/character-encoding/README.md) |
+| `/color-code` | `#369` を `#336699` と `rgb(51, 102, 153)` に変換し、色見本を確認します。 |
+
+3画面の変換処理はブラウザー内で動きます。ローカルサーバーを広告仮枠付きで起動すると、`npm run test:browser:conversion-tools` で操作と結果を確認できます。

@@ -33,6 +33,9 @@
                 <a href="{{ route('json.tools') }}" @if($active === 'json-tools') aria-current="page" @endif>JSONチェック</a>
                 <a href="{{ route('yaml.tools') }}" @if($active === 'yaml-tools') aria-current="page" @endif>YAMLチェック</a>
                 <a href="{{ route('url.encoding') }}" @if($active === 'url-encoding') aria-current="page" @endif>URL変換</a>
+                <a href="{{ route('radix.converter') }}" @if($active === 'radix-converter') aria-current="page" @endif>基数変換</a>
+                <a href="{{ route('character.encoding') }}" @if($active === 'character-encoding') aria-current="page" @endif>文字コード・改行</a>
+                <a href="{{ route('color.code') }}" @if($active === 'color-code') aria-current="page" @endif>色コード変換</a>
                 <a href="{{ route('text.tools') }}" @if($active === 'text-tools') aria-current="page" @endif>テキストツール</a>
             </nav>
         </div>

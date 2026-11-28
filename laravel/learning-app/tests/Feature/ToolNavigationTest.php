@@ -62,9 +62,22 @@ class ToolNavigationTest extends TestCase
             ->assertSee(route('excel.csv'))
             ->assertSee(route('json.tools'))
             ->assertSee(route('yaml.tools'))
-            ->assertSee(route('url.encoding'));
+            ->assertSee(route('url.encoding'))
+            ->assertSee(route('radix.converter'))
+            ->assertSee(route('character.encoding'))
+            ->assertSee(route('color.code'));
 
-        foreach (['tabular.converter' => 'input-file', 'excel.csv' => 'excel-input', 'json.tools' => 'json-file', 'yaml.tools' => 'yaml-file', 'url.encoding' => 'url-input'] as $name => $inputId) {
+        $inputs = [
+            'tabular.converter' => 'input-file',
+            'excel.csv' => 'excel-input',
+            'json.tools' => 'json-file',
+            'yaml.tools' => 'yaml-file',
+            'url.encoding' => 'url-input',
+            'radix.converter' => 'radix-integer',
+            'character.encoding' => 'encoding-file',
+            'color.code' => 'color-input',
+        ];
+        foreach ($inputs as $name => $inputId) {
             $url = route($name);
             $this->get($url)->assertOk()
                 ->assertSee('aria-current="page"', false)

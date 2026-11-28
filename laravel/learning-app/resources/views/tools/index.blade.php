@@ -7,7 +7,7 @@
     </section>
     <x-ad-slot />
     <section aria-labelledby="tools-heading">
-        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">14個のツールが利用できます</span></div>
+        <div class="section-heading"><h2 id="tools-heading">ツールを選ぶ</h2><span class="muted">17個のツールが利用できます</span></div>
         <div class="tool-grid">
             <article class="tool-card available">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">Aa</span><span class="badge">利用できます</span></div>
@@ -92,6 +92,24 @@
                 <h3>URLエンコード・デコード</h3>
                 <p>URLのパスやクエリ、フォーム用の値をUTF-8で変換できます。</p>
                 <a class="button" href="{{ route('url.encoding') }}">URLを変換する <span aria-hidden="true">→</span></a>
+            </article>
+            <article class="tool-card available">
+                <div class="card-top"><span class="tool-icon" aria-hidden="true">16</span><span class="badge">利用できます</span></div>
+                <h3>基数変換</h3>
+                <p>整数を2進・8進・10進・16進などの間で変換します。</p>
+                <a class="button" href="{{ route('radix.converter') }}">基数を変換する <span aria-hidden="true">→</span></a>
+            </article>
+            <article class="tool-card available">
+                <div class="card-top"><span class="tool-icon" aria-hidden="true">文</span><span class="badge">利用できます</span></div>
+                <h3>文字コード・改行変換</h3>
+                <p>テキストファイルの文字コードと改行を変えて保存します。</p>
+                <a class="button" href="{{ route('character.encoding') }}">文字コード・改行を変換する <span aria-hidden="true">→</span></a>
+            </article>
+            <article class="tool-card available">
+                <div class="card-top"><span class="tool-icon" aria-hidden="true">#</span><span class="badge">利用できます</span></div>
+                <h3>色コード変換</h3>
+                <p>色見本を確認しながらHEXとRGBを相互に変換します。</p>
+                <a class="button" href="{{ route('color.code') }}">色コードを変換する <span aria-hidden="true">→</span></a>
             </article>
             <article class="tool-card upcoming">
                 <div class="card-top"><span class="tool-icon" aria-hidden="true">◎</span><span class="badge neutral">準備中</span></div>

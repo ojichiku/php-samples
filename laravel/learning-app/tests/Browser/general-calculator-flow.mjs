@@ -31,7 +31,7 @@ try {
         };
 
         assert.equal((await page.goto(base.href)).status(), 200);
-        assert.equal(await page.locator('.tool-card.available').count(), 14);
+        assert.equal(await page.locator('.tool-card.available').count(), 17);
         await page.getByRole('navigation').getByRole('link', {name: '一般電卓', exact: true}).click();
         await page.waitForURL('**/general-calculator');
         assert.equal(await page.locator('nav [aria-current="page"]').textContent(), '一般電卓');
